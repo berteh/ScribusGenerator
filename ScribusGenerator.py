@@ -8,12 +8,20 @@
 # - save the Output File as well as the generated Scribus File (which optional)
 #
 # For further information (manual, description, etc.) please visit:
-# www.ekkehardwill.de/sg
+# https://github.com/berteh/ScribusGenerator/
 #
-# Version v2012-01-07: Fixed problems when using an ampersand as values within CSV-data.
+# v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
+# v1.0 (2012-01-07): Fixed problems when using an ampersand as values within CSV-data.
 # Version v2011-01-18: Changed run() so that scribus- and pdf file creation an deletion works without problems.
 # Version v2011-01-17: Fixed the ampersand ('&') problem. It now can be used within variables.
 # Version v2011-01-01: Initial Release.
+#
+"""
+The MIT License
+Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014 Berteh (https://github.com/berteh/)
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+"""
 
 import Tkinter
 from Tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar
@@ -25,6 +33,8 @@ import scribus
 import sys
 import tkMessageBox
 import tkFileDialog
+import xml.etree.ElementTree as ET  # common Python xml implementation
+import tempfile
 
 class CONST:
     # Constants for general usage
@@ -33,6 +43,7 @@ class CONST:
     EMPTY = ''
     APP_NAME = 'Scribus Generator'
     FORMAT_PDF = 'PDF'
+    FORMAT_SLA = 'Scribus'
     FILE_EXTENSION_PDF = 'pdf'
     FILE_EXTENSION_SCRIBUS = 'sla'
     SEP_PATH = '/'  # In any case we use '/' as path separator on any platform
@@ -43,7 +54,7 @@ class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
     def __init__(self, dataObject):
         self.__dataObject = dataObject
-        #logging.basicConfig(level=CONST.LOG_LEVEL, filename='ScribusGenerator.log', format='%(asctime)s - %(name)s - %(levelname)s - Function: %(funcName)s - Line: %(lineno)d Msg: %(message)s')
+        logging.basicConfig(level=CONST.LOG_LEVEL, filename='ScribusGenerator.log', format='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
     
     def run(self):
@@ -55,15 +66,15 @@ class ScribusGenerator:
             index = 0
             # Generate the Scribus Files
             for row in csvData:
-                if(index == 0): # Do this only for the first line which is the Header-Row of the CSV-File
+                if(index == 0): # first line is the Header-Row of the CSV-File
                     headerRowForFileName = row
                     #logging.debug('Before conversion: ' + str(row))
                     headerRowForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
                     #logging.debug('After conversion: ' + str(headerRowForReplacingVariables))
-                    # Copy the original/given Scribus file to a temporary file which acts as a template
-                    template = self.copyScribusContent(self.readFileContent(self.__dataObject.getScribusSourceFile()))
+                    # overwrite (in a tempfile) attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
+                    templateFile = self.overwriteAttributesFromSGAttributes(self.__dataObject.getScribusSourceFile())
                 else:
-                    outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), self.copyScribusContent(template))
+                    outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), self.readFileContent(templateFile))
                     #logging.debug('Replaced Variables With Csv Data')
                     outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row)
                     scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
@@ -80,7 +91,8 @@ class ScribusGenerator:
                     self.exportPDF(scribusOutputFilePath, pdfOutputFilePath)
             
             # Cleanup the generated Scribus Files
-            if(CONST.FALSE == self.__dataObject.getKeepGeneratedScribusFiles()):
+            os.remove(templateFile)
+            if(not (CONST.FORMAT_SLA == self.__dataObject.getOutputFormat()) and CONST.FALSE == self.__dataObject.getKeepGeneratedScribusFiles()):
                 for outputFileName in outputFileNames:
                     scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
                     self.deleteFile(scribusOutputFilePath)
@@ -105,6 +117,7 @@ class ScribusGenerator:
         pdfExport.save()
         scribus.closeDoc()
 
+
     def exportSLA(self, outputFilePath, content):
         # Export to SLA (Scribus Format)
         result = open(outputFilePath, 'w')
@@ -112,6 +125,45 @@ class ScribusGenerator:
         result.flush()
         os.fsync(result.fileno())
         result.close()
+
+    def overwriteAttributesFromSGAttributes(self, contentFile):
+        # returns temporary file copied from content where
+        # attributes have been rewritten from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
+        #
+        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FCOLOR)  
+        
+        tree = ET.parse(contentFile)
+        root = tree.getroot()
+
+        for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):                       
+            
+            sga = pageobject.find(".//ItemAttribute[@Type='SGAttribute']")            
+            attribute = sga.get('Name')            
+            value = sga.get('Value')  
+            param = sga.get('Parameter')
+                  
+            if param is "": # Cannot use 'default' on .get() as it is "" by default in SLA file.
+                param = "." # target is pageobject by default. Cannot use ".|*" as not supported by ET.
+            elif param.startswith("/"): # ET cannot use absolute path on element 
+                param = "."+param 
+
+            try:
+                targets = pageobject.findall(param)
+                if targets :
+                    for target in targets :
+                        #logging.debug('overwriting value of %s in %s with "%s"'%(attribute, target.tag, value))
+                        target.set(attribute,value)
+                else :
+                    logging.debug('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(param, attribute)) #todo message to user
+                    
+            except SyntaxError:
+                logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(param, attribute)) #todo message to user
+                #print("Please check following XPath expression that is not supported by ElementTree: %s" %param)
+
+        handle, filename = tempfile.mkstemp(suffix=".sla", text=True)
+        tree.write(filename, encoding="UTF-8") 
+        return filename
+
     
     def deleteFile(self, outputFilePath):
         # Delete the temporarily generated files from off the file system
@@ -195,7 +247,9 @@ class ScribusGenerator:
             for col in row:
                 rowlist.append(col)
             result.append(rowlist)
-        return result
+        return result    
+
+
 
 class GeneratorDataObject:
     # Data Object for transfering the settings made by the user on the UI
@@ -252,9 +306,9 @@ class GeneratorControl:
         self.__scribusSourceFileEntryVariable = StringVar()
         self.__outputDirectoryEntryVariable = StringVar()
         self.__outputFileNameEntryVariable = StringVar()
-        self.__outputFormatList = (CONST.FORMAT_PDF) # at the moment only PDF is a valid output format
+        self.__outputFormatList = [CONST.FORMAT_PDF, CONST.FORMAT_SLA] # SLA & PDF are valid output format
         self.__selectedOutputFormat = StringVar()
-        self.__selectedOutputFormat.set(self.__outputFormatList)
+        self.__selectedOutputFormat.set(CONST.FORMAT_PDF)
         self.__keepGeneratedScribusFilesCheckboxVariable = IntVar()
         self.__root = root
     
@@ -334,6 +388,15 @@ class GeneratorDialog:
     def __init__(self, root, ctrl):
         self.__root = root
         self.__ctrl = ctrl
+
+#    def updateDisabled(self, value, label, button):
+#        if (value is CONST.FORMAT_SLA) :
+#            label.configure(state='disabled')
+#            button.configure(state='disabled')
+#        else :
+#            label.configure(state='normal')
+#            button.configure(state='normal')
+
     
     def show(self):
         self.__root.title(CONST.APP_NAME)
@@ -383,17 +446,18 @@ class GeneratorDialog:
         outputFileNameLabel.grid(column=0, row=1, padx=5, pady=5, sticky='w')
         outputFileNameEntry = Entry(outputFrame, width=70, textvariable=self.__ctrl.getOutputFileNameEntryVariable())
         outputFileNameEntry.grid(column=1, row=1, padx=5, pady=5, sticky='ew')
-        
-        outputFormatLabel = Label(outputFrame, text='Output Format:', width=15, anchor='w')
-        outputFormatLabel.grid(column=0, row=2, padx=5, pady=5, sticky='w')
-        outputFormatListBox = OptionMenu(outputFrame, self.__ctrl.getSelectedOutputFormat(), self.__ctrl.getOutputFormatList())
-        outputFormatListBox.grid(column=1, row=2, padx=5, pady=5, sticky='w')
-        
+         
         keepGeneratedScribusFilesLabel = Label(outputFrame, text='Keep Scribus Files:', width=15, anchor='w')
         keepGeneratedScribusFilesLabel.grid(column=0, row=3, padx=5, pady=5, sticky='w')
         keepGeneratedScribusFilesCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getKeepGeneratedScribusFilesCheckboxVariable())
         keepGeneratedScribusFilesCheckbox.grid(column=1, row=3, padx=5, pady=5, sticky='w')
         
+        outputFormatLabel = Label(outputFrame, text='Output Format:', width=15, anchor='w')
+        outputFormatLabel.grid(column=0, row=2, padx=5, pady=5, sticky='w')
+        outputFormatListBox = OptionMenu(outputFrame, self.__ctrl.getSelectedOutputFormat(), *self.__ctrl.getOutputFormatList()) #, 
+            #command=lambda l=keepGeneratedScribusFilesLabel, c=keepGeneratedScribusFilesCheckbox, v=self.__ctrl.getSelectedOutputFormat(): self.updateDisabled(v, l,c))
+        outputFormatListBox.grid(column=1, row=2, padx=5, pady=5, sticky='w')
+      
         # Buttons to Cancel or to Run the Generator with the given Settings
         helpButton = Button(buttonFrame, text='Help', width=10, command=self.__ctrl.helpButtonHandler)
         helpButton.grid(column=0, row=0, padx=5, pady=5, sticky='e')
@@ -433,9 +497,4 @@ def main_wrapper(argv):
 if __name__ == '__main__':
     main_wrapper(sys.argv)
     
-"""
-The MIT License
-Copyright (c) 2010 and beyond Ekkehard Will (www.ekkehardwill.de)
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-"""
+
