@@ -50,12 +50,12 @@ What about Settings?
 In the dialog you can configure the input and output settings for **Scribus Generator**.
 ![Illustration 3: Input and Output Settings](pic/SG-10.png)
 
-
+| Setting | explanation |
+| ---- | ---- |
 | *Scribus File* | Choose the Scribus File containing the variables to replace. |
 | *Data File* | Choose the Data File containing the comma separated values. |
 | *Output Directory* | Choose the path to an existing directory where to save the result. |
-| *Output File Name* | You can use the same variables as defined in the Scribus File/Data File. You can also mix the variables with other characters.
-If you leave the field empty an index will be used. The index/resulting files will be sorted according to the occurrence of rows in the Data File. |
+| *Output File Name* | You can use the same variables as defined in the Scribus File/Data File. You can also mix the variables with other characters. If you leave the field empty an index will be used. The index/resulting files will be sorted according to the occurrence of rows in the Data File. |
 | *Ouput Format* | Choose the Output Format of the generated files, e.g. PDF. |
 | *Keep Scribus Files* | Choose whether to keep the generated Scribus Files. Otherwise they will be deleted after generation and only the files in the specified output format will be kept.|
 
