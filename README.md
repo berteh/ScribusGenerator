@@ -42,7 +42,6 @@ What about Data File?
 
 ![Illustration: Data File for Generator](pic/SG-05.png)
 
-
 As you can see, the columns have the same ``name`` as variables (``%VAR_name%``) referenced in the Sribus file you have designed.
 
 
@@ -61,6 +60,7 @@ In the dialog you can configure the input and output settings for **Scribus Gene
 | **Output File Name** | You can use the same variables as defined in the Scribus File/Data File. You can also mix the variables with other characters. If you leave the field empty an index will be used. The index/resulting files will be sorted according to the occurrence of rows in the Data File. |
 | **Ouput Format** | Choose the Output Format of the generated files, either PDF or Scribus. |
 | **Keep Scribus Files** | Choose whether to keep the generated Scribus Files. Otherwise they will be deleted after generation and only the files in the specified output format will be kept. This option has no effect if you choose Scribus output format.|
+
 
 
 What about Images?
@@ -112,7 +112,7 @@ Issues
 ### Variable Names
 
 If possible, use plain characters (ASCII) for variable names and do not use whitespaces and other special characters (like '&'). E.g. use ``%VAR_first_name%`` and ``%VAR_zip_code%`` instead of ``%VAR_first name%`` and ``%VAR_&zip#code%``.
-The columns of the data file (CSV) then would be ``first_name</var> and ``zip_code``.		
+The columns of the data file (CSV) then would be ``first_name`` and ``zip_code``.		
 
 **Note**: This is only important for variable names in the scribus file and column names of the data file. The data FIELDS (the rows of the CVS) of course may contain ANY characters.
 
