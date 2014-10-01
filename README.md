@@ -31,6 +31,7 @@ What about Scribus file?
 Create and design your Scribus file as any other. At the positions where you need to replace text with data, just add ``%VAR_name%`` where ``name`` is the column in the data table.
 
 You can place the variable at any position within a Text Frame. Apply all format and style to the variable as it would be the concerning original text.
+
 ![Illustration 1: Scribus File](pic/SG-01.png)
 
 
@@ -38,6 +39,7 @@ What about Data File?
 --------
 
 **Scribus Generator** expects a CSV file (_Comma Separated Values_), which is very simple to create. Open a spread sheet editor, enter the data and save/export as CSV. UTF-8 encoding is recommended.
+
 ![Illustration 2: Data File](pic/SG-05.png)
 
 
@@ -48,6 +50,7 @@ What about Settings?
 ---------
 
 In the dialog you can configure the input and output settings for **Scribus Generator**.
+
 ![Illustration 3: Input and Output Settings](pic/SG-10.png)
 
 | Setting | explanation |
@@ -68,12 +71,15 @@ Images can also be referenced so they dynamically will be rendered with **Scribu
 *   There will have to be defined exactly one folder containing the images (this folder can be located anywhere on PC).
 
 Add an Image Frame anywhere in the Scribus file (_«Scribus → Insert → Insert Image Frame»_) and open the dialog for getting an image (_e.g. right click Image Frame → Get Image..._ on selected frame). Within the dialog navigate to the folder containing the images, though there won't be any images selected. Instead, the variable will be inserted into the value field of the _File name_.
+
 ![Illustration 4: Insert variable instead of image](pic/SG-15-1.png)
 
 After confirming the dialog, there isn't displayed a picture in the Image Frame, however the variable name can be seen.
+
 ![Illustration 5: Image Frame containing variable](pic/SG-15-2.png)
 
 The images can be defined as any other variable described in previous sections. There just has to be a column with column-name corresponding to variable-name in the Scribus file.
+
 ![Illustration 6: Data file referencing images](pic/SG-15-3.png)
 
 
@@ -86,7 +92,7 @@ Issues
 ### Variable Names
 
 If possible, use plain characters (ASCII) for variable names and do not use whitespaces and other special characters (like '&'). E.g. use ``%VAR_first_name%`` and ``%VAR_zip_code%`` instead of ``%VAR_first name%`` and ``%VAR_&zip#code%``.
-The columns of the data file (CSV) then would be ``first_name</var> and ``zip_code``.		
+The columns of the data file (CSV) then would be ``first_name`` and ``zip_code``.		
 
 **Note**: This is only important for variable names in the scribus file and column names of the data file. The data FIELDS (the rows of the CVS) of course may contain ANY characters.
 
