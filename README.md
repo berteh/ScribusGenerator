@@ -87,24 +87,24 @@ More advanced uses
 -----------
 Scribus Generator allows more tech-savvy users you to customize the generated documents even more, changing virtually any attribute of any object, such as the fill or outline color of a line, the color of some text, a line thickness, an object position,...
 
-To change the color of an object, add an *attribute* to it (_«righ-click on object → Attributes → Add »_). The **type** attribute must be set to ["SGAttribute"][1], it's **name** to the [object property][2] you want to change and its **value** to the desired dynamic value (typically ``%VAR_name%``).
+To change the color of an object, add an *attribute* to it (_«righ-click on object → Attributes → Add »_). The **type** attribute must be set to [``SGAttribute``][1], it's **name** to the [object property][2] you want to change and its **value** to the desired dynamic value (typically ``%VAR_name%``).
 
-![Illustration: Use Attributes to modify advanced object properties](pic/SG-15-3.png)
+![Illustration: Use Attributes to modify advanced object properties](pic/SG-20.png "Use Attributes to modify advanced object properties")
 
-To change the properties of a sub-element (such as the text lines in a text frame), you may use the **parameter** field to define which sub-elements should receive the new property. Use ``*`` to modify all direct children, or any other [valid XPATH expression][3] to modify only a subset.
+To change the properties of a sub-element (such as the text lines in a text frame), you may use the **parameter** field to define which sub-elements should receive the new property. Use ``*`` to modify all direct children, or any other [simplified XPATH expression][3] to modify only a subset.
 
 ### Selected examples of SGAttributes:
 
-| Explanation | Name | Value | Parameter |
-| --- | --- | --- | --- |
-| Fill color of a polygon | PCOLOR | %VAR_color% | |
-| Color of all text elements in a frame | FCOLOR | %VAR_color% | * |
-| Font of the 2^d text line in a frame | FONT | %VAR_font% | //ITEXT[2] |
+| Name | Type | Value | Parameter | Explanation 
+| --- | --- | --- | --- | --- |
+| ``PCOLOR`` | ``SGAttribute`` | ``%VAR_color%`` | | Fill color of a polygon 
+| ``FCOLOR`` | ``SGAttribute`` | ``%VAR_color%`` | ``*`` | Color of all text elements in a frame 
+| ``FONT`` | ``SGAttribute`` | ``%VAR_font%`` | ``//ITEXT[2]`` | Font of the 2d text line in a frame 
 
 
-[1]: SGAttribute is short for "Scribus Generator Attribute"
-[2]: Object property is expressed in the exact [SLA syntax](http://wiki.scribus.net/canvas/File_Format_Specification_for_Scribus_1.4#Tags)
-[3]: The reduced set of XPATH expressions valid in the **parameter** field is defined in the [ElementTree XPath support documentation](https://docs.python.org/2/library/xml.etree.elementtree.html#supported-xpath-syntax).
+[1]: # "SGAttribute is short for 'Scribus Generator Attribute'"
+[2]: http://wiki.scribus.net/canvas/File_Format_Specification_for_Scribus_1.4#Tags "Object property is expressed in the exact SLA syntax"
+[3]: https://docs.python.org/2/library/xml.etree.elementtree.html#supported-xpath-syntax "The reduced set of XPATH expressions valid in the 'parameter' field is defined in the ElementTree XPath support documentation."
 
 Issues
 -------
