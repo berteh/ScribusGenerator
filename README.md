@@ -24,6 +24,11 @@ Scribus comes with a broad set of page layout features and functionality. One fe
 
 [Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. It can be placed with  the standard extension scripts. On Windows platform this location would be ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\``, on Ubuntu ``/usr/share/scribus/scripts/``.
 
+A [short *how to* video](https://www.youtube.com/embed/kMsRn38TOiQ) introduces this Scribus Generator. 6 first minutes for the basic overview, 12 last for more advanced features.
+
+
+[![Scribus Generator how to - high quality pdf generatio](pic/screencast.png)](https://www.youtube.com/embed/kMsRn38TOiQ)
+
 
 What about Scribus file?
 ------
@@ -66,7 +71,7 @@ In the dialog you can configure the input and output settings for **Scribus Gene
 What about Images?
 ------------
 
-Images can also be referenced so they dynamically will be rendered with **Scribus Generator**. 
+Images can also be referenced so they dynamically will be rendered with **Scribus Generator**. See the [screencast video @6:10](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=370).
 
 All images supported by **Scribus** can be used. However, to work with ScribusGeneratr, they must all be located in a single folder containing all images. This folder can be located anywhere on your PC.
 
@@ -82,10 +87,19 @@ The images can be defined as any other variable described in previous sections. 
 
 ![Illustration: Data file referencing images](pic/SG-15-3.png)
 
+What about Colors?
+---------------
+
+Colors can be dynamically replaced just like text. See the [screencast video @8:31](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=512), or simply 
+
+1. edit the colours of your Scribus file (``edit > colours``) and rename the colors you want to replace with variable names (typically replace ``FromSVG#whatever`` with the now well known form ``%VAR_name%``).
+1. define the colours you want to use in the final document, and use their Scribus names as values in your color data field. 
+
+![Illustration: Replace colors dynamically](pic/SG-16.png)
 
 More advanced uses
 -----------
-Scribus Generator allows more tech-savvy users you to customize the generated documents even more, changing virtually any attribute of any object, such as the fill or outline color of a line, the color of some text, a line thickness, an object position,...
+Scribus Generator allows more tech-savvy users you to customize the generated documents even more, changing virtually any attribute of any object, such as the fill or outline color of a line, the color of some text, a line thickness, an object position,... See the [screencast video @13:13](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=793).
 
 To change the color of an object, add an *attribute* to it (_«righ-click on object → Attributes → Add »_). The **type** attribute must be set to [``SGAttribute``][1], it's **name** to the [object property][2] you want to change and its **value** to the desired dynamic value (typically ``%VAR_name%``).
 
@@ -97,14 +111,15 @@ To change the properties of a sub-element (such as the text lines in a text fram
 
 | Name | Type | Value | Parameter | Explanation 
 | --- | --- | --- | --- | --- |
-| ``PCOLOR`` | ``SGAttribute`` | ``%VAR_color%`` | | Fill color of a polygon 
-| ``FCOLOR`` | ``SGAttribute`` | ``%VAR_color%`` | ``*`` | Color of all text elements in a frame 
-| ``FONT`` | ``SGAttribute`` | ``%VAR_font%`` | ``//ITEXT[2]`` | Font of the 2d text line in a frame 
+| ``FONT`` | ``SGAttribute`` | ``%VAR_font%`` | ``//ITEXT[2]`` | Font of the 2d text line in a frame, like "Arial Regular"
+| ``FONTSIZE`` | ``SGAttribute`` | ``%VAR_size%`` | ``//ITEXT`` | Text size all text lines in a frame, like "14" 
+| ``YPOS`` | ``SGAttribute`` | ``%VAR_top%`` |  | Margin from the top for vertical element position, like "22.04"
 
 
 [1]: # "SGAttribute is short for 'Scribus Generator Attribute'"
 [2]: http://wiki.scribus.net/canvas/File_Format_Specification_for_Scribus_1.4#Tags "Object property is expressed in the exact SLA syntax"
 [3]: https://docs.python.org/2/library/xml.etree.elementtree.html#supported-xpath-syntax "The reduced set of XPATH expressions valid in the 'parameter' field is defined in the ElementTree XPath support documentation."
+[4]: simply use the color name as defined in your Scribus file colours (``edit > Colours``).
 
 Issues
 -------

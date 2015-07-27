@@ -54,7 +54,7 @@ class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
     def __init__(self, dataObject):
         self.__dataObject = dataObject
-        logging.basicConfig(level=CONST.LOG_LEVEL, filename='ScribusGenerator.log', format='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
+        logging.basicConfig(level=CONST.LOG_LEVEL, filename='/tmp/ScribusGenerator.log', format='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
     
     def run(self):
