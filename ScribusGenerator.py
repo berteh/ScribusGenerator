@@ -35,6 +35,7 @@ import tkMessageBox
 import tkFileDialog
 import xml.etree.ElementTree as ET  # common Python xml implementation
 import tempfile
+import math
 
 class CONST:
     # Constants for general usage
@@ -61,6 +62,7 @@ class ScribusGenerator:
         # Read CSV data and replace the variables in the Scribus File with the cooresponding data. Finaly export to the specified format.
         try:
             csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
+            fillCount = int(math.floor(math.log(len(csvData))))
             template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
             outputFileNames = []
             index = 0
@@ -76,7 +78,7 @@ class ScribusGenerator:
                 else:
                     outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), self.readFileContent(templateFile))
                     #logging.debug('Replaced Variables With Csv Data')
-                    outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row)
+                    outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
                     scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
                     self.exportSLA(scribusOutputFilePath, outContent)
                     outputFileNames.append(outputFileName)
@@ -173,10 +175,11 @@ class ScribusGenerator:
         # Build the absolute path, like C:/tmp/template.sla
         return outputDirectory + CONST.SEP_PATH + outputFileName + CONST.SEP_EXT + fileExtension
     
-    def createOutputFileName(self, index, outputFileName, headerRow, row):
+    def createOutputFileName(self, index, outputFileName, headerRow, row, fillCount):
         # If the User has not set an Output File Name, an internal unique file name
         # will be generated which is the index of the loop.
         result = str(index)
+        result = result.zfill(fillCount)
         # Following characters are not allowed for File-Names on WINDOWS: < > ? " : | \ / *
         if(CONST.EMPTY != outputFileName):
                 table = {
