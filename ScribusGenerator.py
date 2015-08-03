@@ -35,7 +35,6 @@ import tkMessageBox
 import tkFileDialog
 import xml.etree.ElementTree as ET  # common Python xml implementation
 import tempfile
-import math
 
 class CONST:
     # Constants for general usage
@@ -62,7 +61,7 @@ class ScribusGenerator:
         # Read CSV data and replace the variables in the Scribus File with the cooresponding data. Finaly export to the specified format.
         try:
             csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
-            fillCount = int(math.floor(math.log(len(csvData))))
+            fillCount = len(str(len(csvData)))
             template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
             outputFileNames = []
             index = 0
