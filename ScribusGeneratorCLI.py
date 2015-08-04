@@ -35,20 +35,22 @@ parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpForm
 
 examples:
 	
-  %(prog)s --verbose --fast --outDir "/home/user/tmp" example/Business_Card.sla 
-  	generates Scribus files for each line of example/Business_Card.csv
-  	in the "/home/user/tmp" subdirectory.
-
-  %(prog)s --verbose --fast --outName "card_%VAR_email%"  */*.sla 
-    generates Scribus files for each sla file in any subdirectory
-    that has a csv file with a similar name in the same directory.
-    Generated files will have a name constructed from the "email" field
-    data, and are stored in their respective sla file directory.
-
   %(prog)s my-template.sla
  	generates Scribus and PDF files for each line of 'my-template.csv'
  	by subsituting the provides values into 'my-template.sla' to the 
  	current directory.
+
+  %(prog)s --verbose --fast --outDir "/home/user/tmp" example/Business_Card.sla 
+  	generates Scribus files for each line of example/Business_Card.csv
+  	in the "/home/user/tmp" subdirectory.
+
+  %(prog)s --verbose --fast --outName "card_%%VAR_email%%"  */*.sla 
+	generates Scribus files for each sla file in any subdirectory
+	that has a csv file with a similar name in the same directory.
+	Generated files will have a name constructed from the "email" field
+	data, and are stored in their respective sla file directory.
+
+
 
  more information: https://github.com/berteh/ScribusGenerator/
  ''')

@@ -121,6 +121,62 @@ To change the properties of a sub-element (such as the text lines in a text fram
 [3]: https://docs.python.org/2/library/xml.etree.elementtree.html#supported-xpath-syntax "The reduced set of XPATH expressions valid in the 'parameter' field is defined in the ElementTree XPath support documentation."
 [4]: simply use the color name as defined in your Scribus file colours (``edit > Colours``).
 
+Running Scribus Generator from the command line
+---------
+It is possible to (partially) run Scribus Generator from the command line. Partially meaning: SLA generation works great, but no PDF generation for the moment.
+
+Find all needed information from script help: ``./ScribusGeneratorCLI.py --help``
+
+    positional arguments:
+      infiles               SLA file(s) to use as template(s) for the generation,
+                            wildcards are supported
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -c CSVFILE, --csvFile CSVFILE
+                            CSV file containing the data to substitute in each
+                            template during generation. Default is scribus source
+                            file(s) name with "csv" extension instead of "sla". If
+                            csv file is not found, generation from this particular
+                            template is skipped.
+      -d CSVDELIMITER, --csvDelimiter CSVDELIMITER
+                            CSV field delimiter character. Default is comma: ","
+      -f, --fast, --noPdf   no PDF generation, scribus SLA only (much faster)
+      -n OUTNAME, --outName OUTNAME
+                            name of the generated files, with no extension.
+                            Default is a simple incremental index.
+      -o OUTDIR, --outDir OUTDIR
+                            directory were generated files are stored. Default is
+                            the directory of the scribus source file. outputDir
+                            will be created if it does not exist.
+      -p, --pdfOnly, --noSla
+                            discard Scribus SLA, generate PDF only. This option is
+                            not used when --fast or --noPdf is used.
+      -v, --verbose         print detailed progress information on the command
+                            line.
+
+    requirements
+    	This program requires Scribus 1.4.+ (for PDF generation only) and Python 2.7+
+
+    examples:
+    	
+      ScribusGeneratorCLI.py my-template.sla
+     	generates Scribus and PDF files for each line of 'my-template.csv'
+     	by subsituting the provides values into 'my-template.sla' to the 
+     	current directory.
+
+      ScribusGeneratorCLI.py --verbose --fast --outDir "/home/user/tmp" example/Business_Card.sla 
+      	generates Scribus files for each line of example/Business_Card.csv
+      	in the "/home/user/tmp" subdirectory.
+
+      ScribusGeneratorCLI.py --verbose --fast --outName "card_%VAR_email%"  */*.sla 
+    	generates Scribus files for each sla file in any subdirectory
+    	that has a csv file with a similar name in the same directory.
+    	Generated files will have a name constructed from the "email" field
+    	data, and are stored in their respective sla file directory.
+
+
+
 Issues
 -------
 
