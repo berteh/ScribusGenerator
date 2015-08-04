@@ -10,11 +10,12 @@
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
+# v2.0 (2015-08-03): command-line support
 # v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
 # v1.0 (2012-01-07): Fixed problems when using an ampersand as values within CSV-data.
-# Version v2011-01-18: Changed run() so that scribus- and pdf file creation an deletion works without problems.
-# Version v2011-01-17: Fixed the ampersand ('&') problem. It now can be used within variables.
-# Version v2011-01-01: Initial Release.
+# v2011-01-18: Changed run() so that scribus- and pdf file creation an deletion works without problems.
+# v2011-01-17: Fixed the ampersand ('&') problem. It now can be used within variables.
+# v2011-01-01: Initial Release.
 #
 """
 The MIT License
@@ -23,284 +24,18 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+import ScribusGeneratorBackend
+from ScribusGeneratorBackend import CONST, ScribusGenerator, GeneratorDataObject
 import Tkinter
 from Tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar
-import csv
 import os
-import logging
 import traceback
 import scribus
 import sys
 import tkMessageBox
 import tkFileDialog
-import xml.etree.ElementTree as ET  # common Python xml implementation
-import tempfile
-
-class CONST:
-    # Constants for general usage
-    TRUE = 1
-    FALSE = 0
-    EMPTY = ''
-    APP_NAME = 'Scribus Generator'
-    FORMAT_PDF = 'PDF'
-    FORMAT_SLA = 'Scribus'
-    FILE_EXTENSION_PDF = 'pdf'
-    FILE_EXTENSION_SCRIBUS = 'sla'
-    SEP_PATH = '/'  # In any case we use '/' as path separator on any platform
-    SEP_EXT = os.extsep
-    LOG_LEVEL = logging.INFO # Use logging.DEBUG for loggin any problems occured 
-    
-class ScribusGenerator:
-    # The Generator Module has all the logic and will do all the work
-    def __init__(self, dataObject):
-        self.__dataObject = dataObject
-        logging.basicConfig(level=CONST.LOG_LEVEL, filename='/tmp/ScribusGenerator.log', format='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
-
-    
-    def run(self):
-        # Read CSV data and replace the variables in the Scribus File with the cooresponding data. Finaly export to the specified format.
-        try:
-            csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
-            fillCount = len(str(len(csvData)))
-            template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
-            outputFileNames = []
-            index = 0
-            # Generate the Scribus Files
-            for row in csvData:
-                if(index == 0): # first line is the Header-Row of the CSV-File
-                    headerRowForFileName = row
-                    #logging.debug('Before conversion: ' + str(row))
-                    headerRowForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
-                    #logging.debug('After conversion: ' + str(headerRowForReplacingVariables))
-                    # overwrite (in a tempfile) attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
-                    templateFile = self.overwriteAttributesFromSGAttributes(self.__dataObject.getScribusSourceFile())
-                else:
-                    outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), self.readFileContent(templateFile))
-                    #logging.debug('Replaced Variables With Csv Data')
-                    outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
-                    scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
-                    self.exportSLA(scribusOutputFilePath, outContent)
-                    outputFileNames.append(outputFileName)
-                    #logging.debug('Scribus File CREATED: ' + str(scribusOutputFilePath))
-                index = index + 1
-            
-            # Export the generated Scribus Files as PDF
-            if(CONST.FORMAT_PDF == self.__dataObject.getOutputFormat()):
-                for outputFileName in outputFileNames:
-                    pdfOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_PDF)
-                    scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
-                    self.exportPDF(scribusOutputFilePath, pdfOutputFilePath)
-            
-            # Cleanup the generated Scribus Files
-            os.remove(templateFile)
-            if(not (CONST.FORMAT_SLA == self.__dataObject.getOutputFormat()) and CONST.FALSE == self.__dataObject.getKeepGeneratedScribusFiles()):
-                for outputFileName in outputFileNames:
-                    scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
-                    self.deleteFile(scribusOutputFilePath)
-                        
-        except Exception:
-            tkMessageBox.showerror(message=traceback.format_exc())
-            
-
-    def exportPDF(self, scribusFilePath, pdfFilePath):
-        # Export to PDF
-        scribus.openDoc(scribusFilePath)
-        listOfPages = []
-        i = 0
-        while (i < scribus.pageCount()):
-            i = i + 1
-            listOfPages.append(i)
-            
-        pdfExport = scribus.PDFfile()
-        pdfExport.info = CONST.APP_NAME
-        pdfExport.file = str(pdfFilePath)
-        pdfExport.pages = listOfPages
-        pdfExport.save()
-        scribus.closeDoc()
 
 
-    def exportSLA(self, outputFilePath, content):
-        # Export to SLA (Scribus Format)
-        result = open(outputFilePath, 'w')
-        result.writelines(content)
-        result.flush()
-        os.fsync(result.fileno())
-        result.close()
-
-    def overwriteAttributesFromSGAttributes(self, contentFile):
-        # returns temporary file copied from content where
-        # attributes have been rewritten from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
-        #
-        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FCOLOR)  
-        
-        tree = ET.parse(contentFile)
-        root = tree.getroot()
-
-        for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):                       
-            
-            sga = pageobject.find(".//ItemAttribute[@Type='SGAttribute']")            
-            attribute = sga.get('Name')            
-            value = sga.get('Value')  
-            param = sga.get('Parameter')
-                  
-            if param is "": # Cannot use 'default' on .get() as it is "" by default in SLA file.
-                param = "." # target is pageobject by default. Cannot use ".|*" as not supported by ET.
-            elif param.startswith("/"): # ET cannot use absolute path on element 
-                param = "."+param 
-
-            try:
-                targets = pageobject.findall(param)
-                if targets :
-                    for target in targets :
-                        #logging.debug('overwriting value of %s in %s with "%s"'%(attribute, target.tag, value))
-                        target.set(attribute,value)
-                else :
-                    logging.debug('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(param, attribute)) #todo message to user
-                    
-            except SyntaxError:
-                logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(param, attribute)) #todo message to user
-                #print("Please check following XPath expression that is not supported by ElementTree: %s" %param)
-
-        handle, filename = tempfile.mkstemp(suffix=".sla", text=True)
-        tree.write(filename, encoding="UTF-8") 
-        return filename
-
-    
-    def deleteFile(self, outputFilePath):
-        # Delete the temporarily generated files from off the file system
-        os.remove(outputFilePath)
-
-    def createOutputFilePath(self, outputDirectory, outputFileName, fileExtension):
-        # Build the absolute path, like C:/tmp/template.sla
-        return outputDirectory + CONST.SEP_PATH + outputFileName + CONST.SEP_EXT + fileExtension
-    
-    def createOutputFileName(self, index, outputFileName, headerRow, row, fillCount):
-        # If the User has not set an Output File Name, an internal unique file name
-        # will be generated which is the index of the loop.
-        result = str(index)
-        result = result.zfill(fillCount)
-        # Following characters are not allowed for File-Names on WINDOWS: < > ? " : | \ / *
-        if(CONST.EMPTY != outputFileName):
-                table = {
-                         #ord(u'ä'): u'ae',
-                         #ord(u'Ä'): u'Ae',
-                         #ord(u'ö'): u'oe',
-                         #ord(u'Ö'): u'Oe',
-                         #ord(u'ü'): u'ue',
-                         #ord(u'Ü'): u'Ue',
-                         #ord(u'ß'): u'ss',
-                         ord(u'<'): u'_',
-                         ord(u'>'): u'_',
-                         ord(u'?'): u'_',
-                         ord(u'"'): u'_',
-                         ord(u':'): u'_',
-                         ord(u'|'): u'_',
-                         ord(u'\\'): u'_',
-                         ord(u'/'): u'_',
-                         ord(u'*'): u'_'
-                     }
-                result = self.replaceVariablesWithCsvData(headerRow, row, [outputFileName])
-                result = result.decode('utf_8')
-                result = result.translate(table)
-        return result
-
-    def copyScribusContent(self, src):
-        # Returns a plain copy of src where src is expected to be a list (of text lines)
-        result = []
-        for line in src:
-            result.append(line)
-        return result
-
-    def readFileContent(self, src):
-        # Returns the list of lines (as strings) of the text-file
-        tmp = open(src, 'r')
-        result = tmp.readlines()
-        tmp.close()
-        return result
-     
-    def handleAmpersand(self, row):
-        # If someone uses an '&' as variable (e.g. %VAR_&position%), this text will be saved
-        # like %VAR_&amp;position% as the & is being converted by scribus to textual ampersand.
-        # Therefore we have to check and convert. It will also be used to replace ampersand of
-        # CSV rows, so that you can have values like e.g. "A & B Company".
-        result = []
-        for i in row:
-            result.append(i.replace('&', '&amp;'))
-        return result
-    
-    
-    def replaceVariablesWithCsvData(self, headerRow, row, lines): # lines as list of strings
-        result = ''
-        for line in lines:
-            i = 0
-            for cell in row:
-                tmp = ('%VAR_' + headerRow[i] + '%')
-                line = line.replace(tmp, cell) # string.replace(old, new)
-                i = i + 1
-            result = result + line
-        return result
-         
-    def getCsvData(self, csvfile):
-        # Read CSV file and return  2-dimensional list containing the data
-        reader = csv.reader(file(csvfile))
-        result = []
-        for row in reader:
-            rowlist = []
-            for col in row:
-                rowlist.append(col)
-            result.append(rowlist)
-        return result    
-
-
-
-class GeneratorDataObject:
-    # Data Object for transfering the settings made by the user on the UI
-    def __init__(self):
-        self.__sribusSourceFile = CONST.EMPTY
-        self.__dataSourceFile = CONST.EMPTY
-        self.__outputDirectory = CONST.EMPTY
-        self.__outputFileName = CONST.EMPTY
-        self.__outputFormat = CONST.EMPTY
-        self.__keepGeneratedScribusFiles = CONST.FALSE
-    
-    # Get
-    def getScribusSourceFile(self):
-        return self.__sribusSourceFile
-    
-    def getDataSourceFile(self):
-        return self.__dataSourceFile
-    
-    def getOutputDirectory(self):
-        return self.__outputDirectory
-    
-    def getOutputFileName(self):
-        return self.__outputFileName
-    
-    def getOutputFormat(self):
-        return self.__outputFormat
-    
-    def getKeepGeneratedScribusFiles(self):
-        return self.__keepGeneratedScribusFiles
-    
-    # Set
-    def setScribusSourceFile(self, fileName):
-        self.__sribusSourceFile = fileName
-        
-    def setDataSourceFile(self, fileName):
-        self.__dataSourceFile = fileName
-    
-    def setOutputDirectory(self, directory):
-        self.__outputDirectory = directory
-        
-    def setOutputFileName(self, fileName):
-        self.__outputFileName = fileName
-        
-    def setOutputFormat(self, outputFormat):
-        self.__outputFormat = outputFormat
-        
-    def setKeepGeneratedScribusFiles(self, value):
-        self.__keepGeneratedScribusFiles = value
-        
 class GeneratorControl:
     # Controler being the bridge between UI and Logic.
     def __init__(self, root):
@@ -313,6 +48,12 @@ class GeneratorControl:
         self.__selectedOutputFormat.set(CONST.FORMAT_PDF)
         self.__keepGeneratedScribusFilesCheckboxVariable = IntVar()
         self.__root = root
+        if scribus.haveDoc():
+            doc = scribus.getDocName()
+            self.__scribusSourceFileEntryVariable.set(doc)
+            self.__outputDirectoryEntryVariable.set(os.path.split(doc)[0])
+            self.__dataSourceFileEntryVariable.set(os.path.splitext(doc)[0]+".csv")
+        
     
     def getDataSourceFileEntryVariable(self):
         return self.__dataSourceFileEntryVariable
@@ -378,7 +119,11 @@ class GeneratorControl:
         if (CONST.TRUE == self.allValuesSet()):
             dataObject = self.createGeneratorDataObject()
             generator = ScribusGenerator(dataObject)
-            generator.run()
+            try:
+                generator.run() 
+            except Exception:
+                tkMessageBox.showerror(message=traceback.format_exc())
+
         else:
             tkMessageBox.showerror(title='Validation failed', message='Please check if all settings have been set correctly!')
     
@@ -391,13 +136,13 @@ class GeneratorDialog:
         self.__root = root
         self.__ctrl = ctrl
 
-#    def updateDisabled(self, value, label, button):
-#        if (value is CONST.FORMAT_SLA) :
-#            label.configure(state='disabled')
-#            button.configure(state='disabled')
-#        else :
-#            label.configure(state='normal')
-#            button.configure(state='normal')
+    #    def updateDisabled(self, value, label, button):
+    #        if (value is CONST.FORMAT_SLA) :
+    #            label.configure(state='disabled')
+    #            button.configure(state='disabled')
+    #        else :
+    #            label.configure(state='normal')
+    #            button.configure(state='normal')
 
     
     def show(self):
@@ -498,5 +243,3 @@ def main_wrapper(argv):
     
 if __name__ == '__main__':
     main_wrapper(sys.argv)
-    
-
