@@ -61,7 +61,7 @@ class ScribusGenerator:
         
         #defaults for missing info
         if(self.__dataObject.getSingleOutput() and (self.__dataObject.getOutputFileName() is CONST.EMPTY)):
-            self.__dataObject.setOutputFileName(os.path.split(os.path.splitext(self.__dataObject.getDataSourceFile())[0])[1] +'__single')    
+            self.__dataObject.setOutputFileName(os.path.split(os.path.splitext(self.__dataObject.getScribusSourceFile())[0])[1] +'__single')    
 
         #generating
         logging.debug("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
@@ -291,7 +291,7 @@ class ScribusGenerator:
          
     def getCsvData(self, csvfile):
         # Read CSV file and return  2-dimensional list containing the data
-        reader = csv.reader(file(csvfile), delimiter=CONST.CSV_SEP)
+        reader = csv.reader(file(csvfile), delimiter=self.__dataObject.getCsvSeparator())
         result = []
         for row in reader:
             rowlist = []
