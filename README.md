@@ -27,7 +27,7 @@ Scribus comes with a broad set of page layout features and functionality. One fe
 A [short *how to* video](https://www.youtube.com/embed/kMsRn38TOiQ) introduces this Scribus Generator. 6 first minutes for the basic overview, 12 last for more advanced features.
 
 
-[![Scribus Generator how to - high quality pdf generatio](pic/screencast.png)](https://www.youtube.com/embed/kMsRn38TOiQ)
+[![Scribus Generator how to - high quality pdf generation](pic/screencast.png)](https://www.youtube.com/embed/kMsRn38TOiQ)
 
 
 The Scribus "template" file
@@ -161,31 +161,36 @@ Find all needed information from the script help: ``./ScribusGeneratorCLI.py --h
       -p, --pdfOnly, --noSla
                             discard Scribus SLA, generate PDF only. This option is
                             not used when --fast or --noPdf is used.
-      -s, --Single          generate a single output (SLA and/or PDF) file that
+      -s, --single          generate a single output (SLA and/or PDF) file that
                             combines all data rows, for each source file.
       -v, --verbose         print detailed progress information on the command
                             line.
 
     requirements
-    	This program requires Python 2.7+, and Scribus 1.4.+ for PDF generation only.
+      This program requires Python 2.7+
 
     examples:
-    	
-      ScribusGeneratorCLI.py my-template.sla
-     	generates Scribus and PDF files for each line of 'my-template.csv'
-     	by subsituting the provides values into 'my-template.sla' to the 
-     	current directory.
+      
+      ScribusGeneratorCLI.py my-template.sla --noPdf
+        generates Scribus files for each line of 'my-template.csv'
+        by subsituting the provides values into 'my-template.sla' to the 
+        current directory.
 
       ScribusGeneratorCLI.py --verbose --fast --outDir "/home/user/tmp" example/Business_Card.sla 
-      	generates Scribus files for each line of example/Business_Card.csv
-      	in the "/home/user/tmp" subdirectory.
+        generates Scribus files for each line of example/Business_Card.csv
+        in the "/home/user/tmp" subdirectory.
 
       ScribusGeneratorCLI.py --verbose --fast --outName "card_%VAR_email%"  */*.sla 
-    	generates Scribus files for each sla file in any subdirectory
-    	that has a csv file with a similar name in the same directory.
-    	Generated files will have a name constructed from the "email" field
-    	data, and are stored in their respective sla file directory.
+        generates Scribus files for each csv line of each sla file in any subdirectory
+        that has a csv file with a similar name in the same directory.
+        Generated files will have a name constructed from the "email" field
+        data, and are stored in their respective sla file directory.
 
+      ScribusGeneratorCLI.py --single -c translations.csv -vfn doc_  lang/*.sla 
+        generates a single Scribus file for each sla file in the lang/ subdirectory
+        using all rows of the translations.csv data file.
+        Generated files will have a name constructed from the "doc_" prefix
+        and the input sla file name.
 
 
 Known Issues
@@ -200,11 +205,14 @@ If you would like to contribute another GUI to Scribus Generator that works in M
 ### Variable Names
 
 If possible, use plain characters (ASCII) for variable names and do not use whitespaces and other special characters (like '&'). E.g. use ``%VAR_first_name%`` and ``%VAR_zip_code%`` instead of ``%VAR_first name%`` and ``%VAR_&zip#code%``.
-The columns of the data file (CSV) then would be ``first_name`` and ``zip_code``.		
+The columns of the data file (CSV) then would be ``first_name`` and ``zip_code``.   
 
 **Note**: This is only important for variable names in the scribus file and column names of the data file. The data FIELDS (the rows of the CVS) of course may contain ANY characters.
 
 
+Support
+--------
+Check out the [wiki](https://github.com/berteh/ScribusGenerator/wiki) for more ideas, look at the [solved](https://github.com/berteh/ScribusGenerator/issues?q=is%3Aissue+is%3Aclosed) and [open issues](https://github.com/berteh/ScribusGenerator/issues), and then report a new issue if you have a problem.
 
 Licence
 --------
