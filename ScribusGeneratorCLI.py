@@ -134,8 +134,7 @@ for infile in args.infiles:
 	message('generating all files for '+os.path.split(infile)[1]+' in directory '+dataObject.getOutputDirectory())
 	try:
 		generator.run()
+		message('... done')
+		message('Scribus Generation completed. Congrats!')
 	except Exception:
-		print "error"+traceback.format_exc()
-	message('  ... done')
-message('Scribus Generation completed. Congrats!')
-    
+		print "error "+traceback.format_exc()

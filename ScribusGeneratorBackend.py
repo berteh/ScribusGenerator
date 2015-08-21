@@ -10,7 +10,7 @@
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
-# v2.0 (2015-08-03): command-line support
+# v1.9(2015-08-03): command-line support
 # v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
 # v1.0 (2012-01-07): Fixed problems when using an ampersand as values within CSV-data.
 # v2011-01-18: Changed run() so that scribus- and pdf file creation an deletion works without problems.
@@ -43,7 +43,7 @@ class CONST:
     FILE_EXTENSION_SCRIBUS = 'sla'
     SEP_PATH = '/'  # In any case we use '/' as path separator on any platform
     SEP_EXT = os.extsep
-    LOG_LEVEL = logging.INFO # Use logging.DEBUG for loggin any problems occured 
+    LOG_LEVEL = logging.DEBUG # Use logging.DEBUG for loggin any problems occured 
     CSV_SEP = "," #CSV entry separator, comma by default
     
 class ScribusGenerator:
@@ -51,6 +51,7 @@ class ScribusGenerator:
     def __init__(self, dataObject):
         self.__dataObject = dataObject
         logging.basicConfig(level=CONST.LOG_LEVEL, filename='ScribusGenerator.log', format='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
+        logging.info("ScribusGenerator initialized")
 
     
     def run(self):
@@ -70,9 +71,11 @@ class ScribusGenerator:
                 headerRowForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
                 #logging.debug('After conversion: ' + str(headerRowForReplacingVariables))
                 # overwrite (in a tempfile) attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
-                templateFile = self.overwriteAttributesFromSGAttributes(self.__dataObject.getScribusSourceFile())
+                tree = ET.parse(self.__dataObject.getScribusSourceFile())
+                root = tree.getroot()
+                templateElt = self.overwriteAttributesFromSGAttributes(root)
             else:
-                outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), self.readFileContent(templateFile))
+                outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt))
                 #logging.debug('Replaced Variables With Csv Data')
                 outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
                 scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
@@ -89,7 +92,6 @@ class ScribusGenerator:
                 self.exportPDF(scribusOutputFilePath, pdfOutputFilePath)
         
         # Cleanup the generated Scribus Files
-        os.remove(templateFile)
         if(not (CONST.FORMAT_SLA == self.__dataObject.getOutputFormat()) and CONST.FALSE == self.__dataObject.getKeepGeneratedScribusFiles()):
             for outputFileName in outputFileNames:
                 scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
@@ -125,14 +127,12 @@ class ScribusGenerator:
         os.fsync(result.fileno())
         result.close()
 
-    def overwriteAttributesFromSGAttributes(self, contentFile):
+    def overwriteAttributesFromSGAttributes(self, root):
         # returns temporary file copied from content where
         # attributes have been rewritten from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
         #
-        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FCOLOR)  
+        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FCOLOR)        
         
-        tree = ET.parse(contentFile)
-        root = tree.getroot()
 
         for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):                       
             
@@ -150,18 +150,18 @@ class ScribusGenerator:
                 targets = pageobject.findall(param)
                 if targets :
                     for target in targets :
-                        #logging.debug('overwriting value of %s in %s with "%s"'%(attribute, target.tag, value))
+                        logging.debug('overwriting value of %s in %s with "%s"'%(attribute, target.tag, value))
                         target.set(attribute,value)
                 else :
-                    logging.debug('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(param, attribute)) #todo message to user
+                    logging.error('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(param, attribute)) #todo message to user
                     
             except SyntaxError:
                 logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(param, attribute)) #todo message to user
                 #print("Please check following XPath expression that is not supported by ElementTree: %s" %param)
 
-        handle, filename = tempfile.mkstemp(suffix=".sla", text=True)
-        tree.write(filename, encoding="UTF-8") 
-        return filename
+        #handle, filename = tempfile.mkstemp(suffix=".sla", text=True)
+        #tree.write(filename, encoding="UTF-8") 
+        return root
 
     
     def deleteFile(self, outputFilePath):
