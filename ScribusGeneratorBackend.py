@@ -58,6 +58,7 @@ class ScribusGenerator:
         # Read CSV data and replace the variables in the Scribus File with the cooresponding data. Finaly export to the specified format.
         # may throw exceptions if errors are met, use traceback to get all error details
         
+        logging.debug("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
         csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
         fillCount = len(str(len(csvData)))
         template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
@@ -65,25 +66,44 @@ class ScribusGenerator:
         index = 0
         # Generate the Scribus Files
         for row in csvData:
-            if(index == 0): # first line is the Header-Row of the CSV-File
+            if(index == 0): # first line is the Header-Row of the CSV-File                
                 headerRowForFileName = row
-                #logging.debug('Before conversion: ' + str(row))
                 headerRowForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
-                #logging.debug('After conversion: ' + str(headerRowForReplacingVariables))
-                # overwrite (in a tempfile) attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
+                # overwrite attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
+                logging.debug("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
                 tree = ET.parse(self.__dataObject.getScribusSourceFile())
                 root = tree.getroot()
-                templateElt = self.overwriteAttributesFromSGAttributes(root)
+                templateElt = self.overwriteAttributesFromSGAttributes(root)                
             else:
                 outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt))
                 #logging.debug('Replaced Variables With Csv Data')
-                outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
-                scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
-                self.exportSLA(scribusOutputFilePath, outContent)
-                outputFileNames.append(outputFileName)
-                #logging.debug('Scribus File CREATED: ' + str(scribusOutputFilePath))
+                if (self.__dataObject.getSingleOutput()):
+                    if (index == 1):  # generation from first row is the reference content for merging the rest
+                        outputElt = ET.fromstring(outContent)
+                        docElt = outputElt.find('DOCUMENT')  
+                        docElt.set('AUTHOR','ScribusGenerator')  
+                    else : # merge
+                        print("outContent is %s"%(outContent[:30]))
+                        tmpElt = ET.fromstring(outContent).find('DOCUMENT')
+                        #TODO shift page and pageobject pos
+                        docElt.extend(tmpElt.findall('PAGE'))
+                        docElt.extend(tmpElt.findall('PAGEOBJECT'))                            
+                        logging.debug("single shift of %s pages and %s objects is not implemented yet"%(len(tmpElt.findall('PAGE')),len(tmpElt.findall('PAGEOBJECT'))))
+                else :
+                    outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
+                    scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
+                    self.exportSLA(scribusOutputFilePath, outContent)
+                    outputFileNames.append(outputFileName)
+                    logging.debug("scribus file created: %s"%(scribusOutputFilePath))                        
             index = index + 1
         
+        # create single sla
+        if (self.__dataObject.getSingleOutput()):            
+            scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), self.__dataObject.getOutputFileName(), CONST.FILE_EXTENSION_SCRIBUS)
+            outTree = ET.ElementTree(outputElt)
+            outTree.write(scribusOutputFilePath, encoding="UTF-8")
+            logging.debug("scribus file created: %s"%(scribusOutputFilePath)) 
+
         # Export the generated Scribus Files as PDF
         if(CONST.FORMAT_PDF == self.__dataObject.getOutputFormat()):
             for outputFileName in outputFileNames:
