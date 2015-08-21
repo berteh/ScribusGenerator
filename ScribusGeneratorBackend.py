@@ -44,8 +44,8 @@ class CONST:
     SEP_PATH = '/'  # In any case we use '/' as path separator on any platform
     SEP_EXT = os.extsep
     LOG_LEVEL = logging.DEBUG # Use logging.DEBUG for loggin any problems occured 
-    CSV_SEP = "," #CSV entry separator, comma by default
-    GROUPSCOUNT = 999  # should be  max(//PAGEOBJECT@NUMGROUP)  but ElementTree support of XPath is too limited
+    CSV_SEP = "," # CSV entry separator, comma by default
+    CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     
 class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
@@ -66,7 +66,8 @@ class ScribusGenerator:
         #generating
         logging.debug("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
         csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
-        fillCount = len(str(len(csvData)))
+        dataC = len(csvData)-1
+        fillCount = len(str(dataC))
         template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
         outputFileNames = []
         index = 0
@@ -83,24 +84,26 @@ class ScribusGenerator:
                
             else:
                 outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt))
-                #logging.debug('Replaced Variables With Csv Data')
                 if (self.__dataObject.getSingleOutput()):
-                    if (index == 1):  # generation from first row is the reference content for merging the rest
+                    if (index == 1):
                         logging.debug("generating reference content from row #1")
                         outputElt = ET.fromstring(outContent)
                         docElt = outputElt.find('DOCUMENT')  
-                        docElt.set('AUTHOR','ScribusGenerator')
                         pagescount = int(docElt.get('ANZPAGES'))
                         pageheight = int(docElt.get('PAGEHEIGHT'))
                         vgap = int(docElt.get('GapVertical'))
-                        groupscount = CONST.GROUPSCOUNT  # should be  max(//PAGEOBJECT@NUMGROUP)  but ET support of XPath is too limited
-                        docElt.set('ANZPAGES', str(pagescount*(len(csvData)-1)))
-                    else : # merge
+                        groupscount = int(docElt.get('GROUPC'))
+                        version = outputElt.get('Version')
+                        if version.startswith('1.4'):
+                            docElt.set('GROUPC', str(groupscount*dataC))
+                        docElt.set('ANZPAGES', str(pagescount*dataC))                        
+                        docElt.set('DOCCONTRIB',docElt.get('DOCCONTRIB')+CONST.CONTRIB_TEXT)
+                    else:
                         logging.debug("merging content from row #%s"%(index))
                         tmpElt = ET.fromstring(outContent).find('DOCUMENT')
-                        shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, groupscount, index-1)
+                        shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, version)
                         docElt.extend(shiftedElts)                                                
-                else :
+                else:
                     outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
                     scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
                     self.exportSLA(scribusOutputFilePath, outContent)
@@ -163,11 +166,9 @@ class ScribusGenerator:
         # returns temporary file copied from content where
         # attributes have been rewritten from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
         #
-        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FCOLOR)        
-        
+        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FCOLOR)   
 
-        for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):                       
-            
+        for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):
             sga = pageobject.find(".//ItemAttribute[@Type='SGAttribute']")            
             attribute = sga.get('Name')            
             value = sga.get('Value')  
@@ -191,12 +192,10 @@ class ScribusGenerator:
                 logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(param, attribute)) #todo message to user
                 #print("Please check following XPath expression that is not supported by ElementTree: %s" %param)
 
-        #handle, filename = tempfile.mkstemp(suffix=".sla", text=True)
-        #tree.write(filename, encoding="UTF-8") 
         return root
 
 
-    def shiftPagesAndObjects(self, docElt, pagescount, pageheight, vgap, groupscount, index):
+    def shiftPagesAndObjects(self, docElt, pagescount, pageheight, vgap, index, groupscount, version):
         shifted = []
         voffset = (int(pageheight)+int(vgap)) * index
         for page in docElt.findall('PAGE'):
@@ -206,8 +205,9 @@ class ScribusGenerator:
         for obj in docElt.findall('PAGEOBJECT'):
             obj.set('YPOS', str(float(obj.get('YPOS')) + voffset))
             obj.set('OwnPage', str(int(obj.get('OwnPage')) + pagescount))
-            if not (obj.get('NUMGROUP') is '0'):
-                obj.set('NUMGROUP', str(int(obj.get('NUMGROUP')) + groupscount))
+            if version.startswith('1.4'):
+                if not (obj.get('NUMGROUP') is '0'):  
+                    obj.set('NUMGROUP', str(int(obj.get('NUMGROUP')) + groupscount))
             shifted.append(obj)
         logging.debug("shifted page %s element of %s"%(index,voffset))
         return shifted
@@ -278,12 +278,12 @@ class ScribusGenerator:
     
     def replaceVariablesWithCsvData(self, headerRow, row, lines): # lines as list of strings
         result = ''
-        for line in lines:
+        for line in lines: # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
             i = 0
             for cell in row:
                 tmp = ('%VAR_' + headerRow[i] + '%')
                 #do not substitute in colors definition, find something more efficient
-                if (not(line.strip().startswith('<COLOR NAME='))):
+                if (not(line.strip().startswith('<COLOR '))):
                     line = line.replace(tmp, cell) # string.replace(old, new)
                 i = i + 1
             result = result + line
