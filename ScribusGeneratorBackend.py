@@ -260,7 +260,8 @@ class GeneratorDataObject:
         outputFileName = CONST.EMPTY,
         outputFormat = CONST.EMPTY,
         keepGeneratedScribusFiles = CONST.FALSE,
-        csvSeparator = CONST.CSV_SEP):
+        csvSeparator = CONST.CSV_SEP,
+        singleOutput = CONST.FALSE):
         self.__scribusSourceFile = scribusSourceFile
         self.__dataSourceFile = dataSourceFile
         self.__outputDirectory = outputDirectory
@@ -268,6 +269,7 @@ class GeneratorDataObject:
         self.__outputFormat = outputFormat
         self.__keepGeneratedScribusFiles = keepGeneratedScribusFiles
         self.__csvSeparator = csvSeparator
+        self.__singleOutput = singleOutput
     
     # Get
     def getScribusSourceFile(self):
@@ -290,7 +292,10 @@ class GeneratorDataObject:
 
     def getCsvSeparator(self):
         return self.__csvSeparator
-    
+
+    def getSingleOutput(self):
+        return self.__singleOutput
+
     # Set
     def setScribusSourceFile(self, fileName):
         self.__scribusSourceFile = fileName
@@ -312,3 +317,6 @@ class GeneratorDataObject:
 
     def setCsvSeparator(self, value):
         self.__csvSeparator = value
+
+    def setSingleOutput(self, value):
+        self.__singleOutput = value
