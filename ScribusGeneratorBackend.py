@@ -10,7 +10,7 @@
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
-# v2.0 (2015-08-03): command-line support
+# v1.9(2015-08-03): command-line support
 # v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
 # v1.0 (2012-01-07): Fixed problems when using an ampersand as values within CSV-data.
 # v2011-01-18: Changed run() so that scribus- and pdf file creation an deletion works without problems.
@@ -43,58 +43,95 @@ class CONST:
     FILE_EXTENSION_SCRIBUS = 'sla'
     SEP_PATH = '/'  # In any case we use '/' as path separator on any platform
     SEP_EXT = os.extsep
-    LOG_LEVEL = logging.INFO # Use logging.DEBUG for loggin any problems occured 
-    CSV_SEP = "," #CSV entry separator, comma by default
+    LOG_LEVEL = logging.DEBUG # Use logging.DEBUG for loggin any problems occured 
+    CSV_SEP = "," # CSV entry separator, comma by default
+    CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     
 class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
     def __init__(self, dataObject):
         self.__dataObject = dataObject
         logging.basicConfig(level=CONST.LOG_LEVEL, filename='ScribusGenerator.log', format='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
+        logging.info("ScribusGenerator initialized")
 
     
     def run(self):
         # Read CSV data and replace the variables in the Scribus File with the cooresponding data. Finaly export to the specified format.
         # may throw exceptions if errors are met, use traceback to get all error details
         
+        #defaults for missing info
+        if(self.__dataObject.getSingleOutput() and (self.__dataObject.getOutputFileName() is CONST.EMPTY)):
+            self.__dataObject.setOutputFileName(os.path.split(os.path.splitext(self.__dataObject.getDataSourceFile())[0])[1] +'__single')    
+
+        #generating
+        logging.debug("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
         csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
-        fillCount = len(str(len(csvData)))
+        dataC = len(csvData)-1
+        fillCount = len(str(dataC))
         template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
         outputFileNames = []
         index = 0
         # Generate the Scribus Files
         for row in csvData:
-            if(index == 0): # first line is the Header-Row of the CSV-File
+            if(index == 0): # first line is the Header-Row of the CSV-File                
                 headerRowForFileName = row
-                #logging.debug('Before conversion: ' + str(row))
                 headerRowForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
-                #logging.debug('After conversion: ' + str(headerRowForReplacingVariables))
-                # overwrite (in a tempfile) attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
-                templateFile = self.overwriteAttributesFromSGAttributes(self.__dataObject.getScribusSourceFile())
+                # overwrite attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
+                logging.debug("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
+                tree = ET.parse(self.__dataObject.getScribusSourceFile())
+                root = tree.getroot()
+                templateElt = self.overwriteAttributesFromSGAttributes(root)                 
+               
             else:
-                outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), self.readFileContent(templateFile))
-                #logging.debug('Replaced Variables With Csv Data')
-                outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
-                scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
-                self.exportSLA(scribusOutputFilePath, outContent)
-                outputFileNames.append(outputFileName)
-                #logging.debug('Scribus File CREATED: ' + str(scribusOutputFilePath))
+                outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt))
+                if (self.__dataObject.getSingleOutput()):
+                    if (index == 1):
+                        logging.debug("generating reference content from row #1")
+                        outputElt = ET.fromstring(outContent)
+                        docElt = outputElt.find('DOCUMENT')  
+                        pagescount = int(docElt.get('ANZPAGES'))
+                        pageheight = int(docElt.get('PAGEHEIGHT'))
+                        vgap = int(docElt.get('GapVertical'))
+                        groupscount = int(docElt.get('GROUPC'))
+                        version = outputElt.get('Version')
+                        if version.startswith('1.4'):
+                            docElt.set('GROUPC', str(groupscount*dataC))
+                        docElt.set('ANZPAGES', str(pagescount*dataC))                        
+                        docElt.set('DOCCONTRIB',docElt.get('DOCCONTRIB')+CONST.CONTRIB_TEXT)
+                    else:
+                        logging.debug("merging content from row #%s"%(index))
+                        tmpElt = ET.fromstring(outContent).find('DOCUMENT')
+                        shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, version)
+                        docElt.extend(shiftedElts)                                                
+                else:
+                    outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
+                    scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
+                    self.exportSLA(scribusOutputFilePath, outContent)
+                    outputFileNames.append(outputFileName)
+                    logging.info("scribus file created: %s"%(scribusOutputFilePath))                        
             index = index + 1
         
+        # write single sla
+        if (self.__dataObject.getSingleOutput()):            
+            scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), self.__dataObject.getOutputFileName(), CONST.FILE_EXTENSION_SCRIBUS)
+            outTree = ET.ElementTree(outputElt)            
+            outTree.write(scribusOutputFilePath, encoding="UTF-8")
+            outputFileNames.append(self.__dataObject.getOutputFileName())
+            logging.info("scribus file created: %s"%(scribusOutputFilePath)) 
+
         # Export the generated Scribus Files as PDF
         if(CONST.FORMAT_PDF == self.__dataObject.getOutputFormat()):
             for outputFileName in outputFileNames:
                 pdfOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_PDF)
                 scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
                 self.exportPDF(scribusOutputFilePath, pdfOutputFilePath)
+                logging.info("pdf file created: %s"%(pdfOutputFilePath))
         
         # Cleanup the generated Scribus Files
-        os.remove(templateFile)
         if(not (CONST.FORMAT_SLA == self.__dataObject.getOutputFormat()) and CONST.FALSE == self.__dataObject.getKeepGeneratedScribusFiles()):
             for outputFileName in outputFileNames:
                 scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
                 self.deleteFile(scribusOutputFilePath)
-                        
       
             
 
@@ -125,17 +162,13 @@ class ScribusGenerator:
         os.fsync(result.fileno())
         result.close()
 
-    def overwriteAttributesFromSGAttributes(self, contentFile):
+    def overwriteAttributesFromSGAttributes(self, root):
         # returns temporary file copied from content where
         # attributes have been rewritten from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
         #
-        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FCOLOR)  
-        
-        tree = ET.parse(contentFile)
-        root = tree.getroot()
+        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FCOLOR)   
 
-        for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):                       
-            
+        for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):
             sga = pageobject.find(".//ItemAttribute[@Type='SGAttribute']")            
             attribute = sga.get('Name')            
             value = sga.get('Value')  
@@ -150,18 +183,34 @@ class ScribusGenerator:
                 targets = pageobject.findall(param)
                 if targets :
                     for target in targets :
-                        #logging.debug('overwriting value of %s in %s with "%s"'%(attribute, target.tag, value))
+                        logging.debug('overwriting value of %s in %s with "%s"'%(attribute, target.tag, value))
                         target.set(attribute,value)
                 else :
-                    logging.debug('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(param, attribute)) #todo message to user
+                    logging.error('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(param, attribute)) #todo message to user
                     
             except SyntaxError:
                 logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(param, attribute)) #todo message to user
                 #print("Please check following XPath expression that is not supported by ElementTree: %s" %param)
 
-        handle, filename = tempfile.mkstemp(suffix=".sla", text=True)
-        tree.write(filename, encoding="UTF-8") 
-        return filename
+        return root
+
+
+    def shiftPagesAndObjects(self, docElt, pagescount, pageheight, vgap, index, groupscount, version):
+        shifted = []
+        voffset = (int(pageheight)+int(vgap)) * index
+        for page in docElt.findall('PAGE'):
+            page.set('PAGEYPOS', str(float(page.get('PAGEYPOS')) + voffset))
+            page.set('NUM', str(int(page.get('NUM')) + pagescount))
+            shifted.append(page)
+        for obj in docElt.findall('PAGEOBJECT'):
+            obj.set('YPOS', str(float(obj.get('YPOS')) + voffset))
+            obj.set('OwnPage', str(int(obj.get('OwnPage')) + pagescount))
+            if version.startswith('1.4'):
+                if not (obj.get('NUMGROUP') is '0'):  
+                    obj.set('NUMGROUP', str(int(obj.get('NUMGROUP')) + groupscount))
+            shifted.append(obj)
+        logging.debug("shifted page %s element of %s"%(index,voffset))
+        return shifted
 
     
     def deleteFile(self, outputFilePath):
@@ -229,12 +278,12 @@ class ScribusGenerator:
     
     def replaceVariablesWithCsvData(self, headerRow, row, lines): # lines as list of strings
         result = ''
-        for line in lines:
+        for line in lines: # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
             i = 0
             for cell in row:
                 tmp = ('%VAR_' + headerRow[i] + '%')
                 #do not substitute in colors definition, find something more efficient
-                if (not(line.strip().startswith('<COLOR NAME='))):
+                if (not(line.strip().startswith('<COLOR '))):
                     line = line.replace(tmp, cell) # string.replace(old, new)
                 i = i + 1
             result = result + line
@@ -260,7 +309,8 @@ class GeneratorDataObject:
         outputFileName = CONST.EMPTY,
         outputFormat = CONST.EMPTY,
         keepGeneratedScribusFiles = CONST.FALSE,
-        csvSeparator = CONST.CSV_SEP):
+        csvSeparator = CONST.CSV_SEP,
+        singleOutput = CONST.FALSE):
         self.__scribusSourceFile = scribusSourceFile
         self.__dataSourceFile = dataSourceFile
         self.__outputDirectory = outputDirectory
@@ -268,6 +318,7 @@ class GeneratorDataObject:
         self.__outputFormat = outputFormat
         self.__keepGeneratedScribusFiles = keepGeneratedScribusFiles
         self.__csvSeparator = csvSeparator
+        self.__singleOutput = singleOutput
     
     # Get
     def getScribusSourceFile(self):
@@ -290,7 +341,10 @@ class GeneratorDataObject:
 
     def getCsvSeparator(self):
         return self.__csvSeparator
-    
+
+    def getSingleOutput(self):
+        return self.__singleOutput
+
     # Set
     def setScribusSourceFile(self, fileName):
         self.__scribusSourceFile = fileName
@@ -312,3 +366,6 @@ class GeneratorDataObject:
 
     def setCsvSeparator(self, value):
         self.__csvSeparator = value
+
+    def setSingleOutput(self, value):
+        self.__singleOutput = value

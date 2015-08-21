@@ -13,7 +13,7 @@ It is available for Linux, Unix-like, Mac OS X, OS/2, and Microsoft Windows. Kno
 
 Scribus is designed for flexible layout and typesetting and the ability to prepare files for professional quality image setting equipment. It can also create animated and interactive PDF presentations and forms. Example uses include writing small newspapers, brochures, newsletters, posters and books.
 
-What about Scribus Generator?
+What is Scribus Generator?
 -------
 
 Scribus comes with a broad set of page layout features and functionality. One feature missing is to replace text with data dynamically. This kind of feature you may already know as the typical __mail merge__ functionality in your preferred office application.
@@ -27,33 +27,35 @@ Scribus comes with a broad set of page layout features and functionality. One fe
 A [short *how to* video](https://www.youtube.com/embed/kMsRn38TOiQ) introduces this Scribus Generator. 6 first minutes for the basic overview, 12 last for more advanced features.
 
 
-[![Scribus Generator how to - high quality pdf generatio](pic/screencast.png)](https://www.youtube.com/embed/kMsRn38TOiQ)
+[![Scribus Generator how to - high quality pdf generation](pic/screencast.png)](https://www.youtube.com/embed/kMsRn38TOiQ)
 
 
-What about Scribus file?
+The Scribus "template" file
 ------
 
 Create and design your Scribus file as any other. At the positions where you need to replace text with data, just add ``%VAR_name%`` where ``name`` is the column in the data table.
 
-You can place the variable at any position within a Text Frame. Apply all format and style to the variable as it would be the concerning original text.
+You can place the variable at any position within a Text Frame. Apply all format and style to the variable that you wish to apply to the final text.
 
 ![Illustration: Scribus File for Generator](pic/SG-01.png)
 
 
-What about Data File?
+The (csv) Data File
 --------
 
-**Scribus Generator** expects a CSV file (_Comma Separated Values_), which is very simple to create. Open a spread sheet editor, enter the data and save/export as CSV. UTF-8 encoding is recommended.
+**Scribus Generator** expects a CSV file (_Comma Separated Values_), which is very simple to create. Open a spread sheet editor (such as [LibreOffice](http://www.libreoffice.org/) or Excel), enter the data and save/export as CSV. UTF-8 encoding is recommended.
 
 ![Illustration: Data File for Generator](pic/SG-05.png)
 
 As you can see, the columns have the same ``name`` as variables (``%VAR_name%``) referenced in the Sribus file you have designed.
 
 
-What about Settings?
+Run the Generator Script - Settings
 ---------
 
-In the dialog you can configure the input and output settings for **Scribus Generator**.
+Run the script via the menu: ``Script > execute Script`` and launch ``ScribusGenerator.py``.
+
+In the script dialog you can configure the input and output settings for **Scribus Generator**.
 
 ![Illustration: Input and Output Settings](pic/SG-10.png)
 
@@ -64,14 +66,14 @@ In the dialog you can configure the input and output settings for **Scribus Gene
 | **Output Directory** | Choose the path to an existing directory where to save the result. |
 | **Output File Name** | You can use the same variables as defined in the Scribus File/Data File. You can also mix the variables with other characters. If you leave the field empty an index will be used. The index/resulting files will be sorted according to the occurrence of rows in the Data File. |
 | **Ouput Format** | Choose the Output Format of the generated files, either PDF or Scribus. |
-| **Keep Scribus Files** | Choose whether to keep the generated Scribus Files. Otherwise they will be deleted after generation and only the files in the specified output format will be kept. This option has no effect if you choose Scribus output format.|
+| **Keep Scribus Files** | Select to keep the generated Scribus Files. Otherwise they will be deleted after pdf generation. This option has no effect if you choose Scribus output format.|
+| **Merge Output in Single File** | Select to  generate a single output (SLA and/or PDF) file that combines all data rows. |
 
 
-
-What about Images?
+Dynamic Images
 ------------
 
-Images can also be referenced so they dynamically will be rendered with **Scribus Generator**. See the [screencast video @6:10](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=370).
+Images references can also be dynamically modified with **Scribus Generator**. See the [screencast video @6:10](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=370).
 
 All images supported by **Scribus** can be used. However, to work with ScribusGeneratr, they must all be located in a single folder containing all images. This folder can be located anywhere on your PC.
 
@@ -79,23 +81,29 @@ Add an Image Frame anywhere in the Scribus file (_«Scribus → Insert → Inser
 
 ![Illustration: Insert variable instead of image](pic/SG-15-1.png)
 
-After confirming the dialog, there isn't displayed a picture in the Image Frame, however the variable name can be seen.
+After confirming the dialog, no image is displayed in the Image Frame any longer, however the variable name can be seen.
 
 ![Illustration: Image Frame containing variable](pic/SG-15-2.png)
 
-The images can be defined as any other variable described in previous sections. There just has to be a column with column-name corresponding to variable-name in the Scribus file.
+The images file can be defined just like any other variable described in earlier. There just has to be a column with a column-name corresponding to the variable-name in the Scribus template file.
 
 ![Illustration: Data file referencing images](pic/SG-15-3.png)
 
-What about Colors?
+Dynamic Colors
 ---------------
 
 Colors can be dynamically replaced just like text. See the [screencast video @8:31](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=512), or simply 
 
-1. edit the colours of your Scribus file (``edit > colours``) and rename the colors you want to replace with variable names (typically replace ``FromSVG#whatever`` with the now well known form ``%VAR_name%``).
-1. define the colours you want to use in the final document, and use their Scribus names as values in your color data field. 
+1. edit the colors of your Scribus file (``edit > colours``) and rename the colors you want to replace with variable names (typically replace ``FromSVG#whatever`` with the now well known form ``%VAR_name%``).
+1. define the colors you want to use in the final document, and use their Scribus names as values in your color data field. 
 
 ![Illustration: Replace colors dynamically](pic/SG-16.png)
+
+Merged output - single document
+------------
+Instead of generating a single (sla or pdf) file for each data row, you can generate a single file that merges all these. Simply select the option accordingly to get the result illustrated below in a single Scribus (and/or pdf) file.
+
+![Illustration: Single ouput to merge all generated files](pic/mergedSLA.png)
 
 More advanced uses
 -----------
@@ -123,9 +131,10 @@ To change the properties of a sub-element (such as the text lines in a text fram
 
 Running Scribus Generator from the command line
 ---------
-It is possible to (partially) run Scribus Generator from the command line. Partially meaning: SLA generation works great, but no PDF generation for the moment.
+It is possible to run Scribus Generator from the command line. Great to automate your workflow or integrate with other tools!
+Note only the SLA generation works from the command line. PDF generation is at the moment impossible (from the Scribus Generator command line) due to Scribus limitations.
 
-Find all needed information from script help: ``./ScribusGeneratorCLI.py --help``
+Find all needed information from the script help: ``./ScribusGeneratorCLI.py --help``
 
     positional arguments:
       infiles               SLA file(s) to use as template(s) for the generation,
@@ -152,49 +161,65 @@ Find all needed information from script help: ``./ScribusGeneratorCLI.py --help`
       -p, --pdfOnly, --noSla
                             discard Scribus SLA, generate PDF only. This option is
                             not used when --fast or --noPdf is used.
+      -s, --single          generate a single output (SLA and/or PDF) file that
+                            combines all data rows, for each source file.
       -v, --verbose         print detailed progress information on the command
                             line.
 
     requirements
-    	This program requires Scribus 1.4.+ (for PDF generation only) and Python 2.7+
+      This program requires Python 2.7+
 
     examples:
-    	
-      ScribusGeneratorCLI.py my-template.sla
-     	generates Scribus and PDF files for each line of 'my-template.csv'
-     	by subsituting the provides values into 'my-template.sla' to the 
-     	current directory.
+      
+      ScribusGeneratorCLI.py my-template.sla --noPdf
+        generates Scribus files for each line of 'my-template.csv'
+        by subsituting the provides values into 'my-template.sla' to the 
+        current directory.
 
       ScribusGeneratorCLI.py --verbose --fast --outDir "/home/user/tmp" example/Business_Card.sla 
-      	generates Scribus files for each line of example/Business_Card.csv
-      	in the "/home/user/tmp" subdirectory.
+        generates Scribus files for each line of example/Business_Card.csv
+        in the "/home/user/tmp" subdirectory.
 
       ScribusGeneratorCLI.py --verbose --fast --outName "card_%VAR_email%"  */*.sla 
-    	generates Scribus files for each sla file in any subdirectory
-    	that has a csv file with a similar name in the same directory.
-    	Generated files will have a name constructed from the "email" field
-    	data, and are stored in their respective sla file directory.
+        generates Scribus files for each csv line of each sla file in any subdirectory
+        that has a csv file with a similar name in the same directory.
+        Generated files will have a name constructed from the "email" field
+        data, and are stored in their respective sla file directory.
+
+      ScribusGeneratorCLI.py --single -c translations.csv -vfn doc_  lang/*.sla 
+        generates a single Scribus file for each sla file in the lang/ subdirectory
+        using all rows of the translations.csv data file.
+        Generated files will have a name constructed from the "doc_" prefix
+        and the input sla file name.
 
 
-
-Issues
+Known Issues
 -------
+
+### MacOS/X troubleshooting
+
+Some install of Python on MacOS/X do not ship Tk, that is required for ScribusGenerator GUI. Either find a way to setup a compliant Tk environment, or simply use the Scribus Generator command line interface.
+
+If you would like to contribute another GUI to Scribus Generator that works in MacOS/X don't hesitate!
 
 ### Variable Names
 
 If possible, use plain characters (ASCII) for variable names and do not use whitespaces and other special characters (like '&'). E.g. use ``%VAR_first_name%`` and ``%VAR_zip_code%`` instead of ``%VAR_first name%`` and ``%VAR_&zip#code%``.
-The columns of the data file (CSV) then would be ``first_name`` and ``zip_code``.		
+The columns of the data file (CSV) then would be ``first_name`` and ``zip_code``.   
 
 **Note**: This is only important for variable names in the scribus file and column names of the data file. The data FIELDS (the rows of the CVS) of course may contain ANY characters.
 
 
+Support
+--------
+Check out the [wiki](https://github.com/berteh/ScribusGenerator/wiki) for more ideas, look at the [solved](https://github.com/berteh/ScribusGenerator/issues?q=is%3Aissue+is%3Aclosed) and [open issues](https://github.com/berteh/ScribusGenerator/issues), and then report a new issue if you have a problem.
 
 Licence
 --------
 
-The MIT License
-Copyright 
-(c) from 2011 on, Ekkehard Will (www.ekkehardwill.de)
+The MIT License<br/>
+Copyright <br/>
+(c) 2011, Ekkehard Will (www.ekkehardwill.de)<br/>
 (c) 2014, Berteh (https://github.com/berteh/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: 
