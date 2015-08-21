@@ -68,6 +68,8 @@ parser.add_argument('-o', '--outDir', default=None,
 	help='directory were generated files are stored. Default is the directory of the scribus source file. outputDir will be created if it does not exist.')
 parser.add_argument('-p', '--pdfOnly', '--noSla', action='store_true', default=False,
 	help='discard Scribus SLA, generate PDF only. This option is not used when --fast or --noPdf is used.')
+parser.add_argument('-s', '--single', action='store_true', default=False,
+	help='generate a single output (SLA and/or PDF) file that combines all data rows, for each source file.')
 parser.add_argument('-v', '--verbose', action='store_true', default=False,
 	help='print detailed progress information on the command line.')
 
@@ -106,7 +108,8 @@ dataObject = GeneratorDataObject(
     outputFileName = args.outName, 											# is CONST.EMPTY by default
     outputFormat = ife(args.fast, CONST.FORMAT_SLA, CONST.FORMAT_PDF),
     keepGeneratedScribusFiles = ife(args.pdfOnly, CONST.FALSE, CONST.TRUE),	# not used if outputFormat is sla.
-    csvSeparator = args.csvDelimiter) 										# is CONST.CSV_SEP by default
+    csvSeparator = args.csvDelimiter, 										# is CONST.CSV_SEP by default
+    singleOutput = args.single)
 
 generator = ScribusGenerator(dataObject)
 message('ScribusGenerator is starting generation for '+str(len(args.infiles))+' template(s).')
@@ -123,6 +126,11 @@ for infile in args.infiles:
 	    if not os.path.exists(dataObject.getOutputDirectory()):
 			message('creating output directory: '+dataObject.getOutputDirectory())
 			os.makedirs(dataObject.getOutputDirectory())
+	if(args.single and (args.outName is CONST.EMPTY)):
+		dataObject.setOutputFileName(os.path.split(infile)[1]+'__single')
+	else:
+		if(args.single and (len(args.infiles)>1)):
+			dataObject.setOutputFileName(args.outName+'__'+os.path.split(infile)[1])
 	message('generating all files for '+os.path.split(infile)[1]+' in directory '+dataObject.getOutputDirectory())
 	try:
 		generator.run()
