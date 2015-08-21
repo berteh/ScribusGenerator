@@ -47,6 +47,7 @@ class GeneratorControl:
         self.__selectedOutputFormat = StringVar()
         self.__selectedOutputFormat.set(CONST.FORMAT_PDF)
         self.__keepGeneratedScribusFilesCheckboxVariable = IntVar()
+        self.__mergeOutputCheckboxVariable = IntVar()
         self.__root = root
         if scribus.haveDoc():
             doc = scribus.getDocName()
@@ -93,11 +94,16 @@ class GeneratorControl:
     def getKeepGeneratedScribusFilesCheckboxVariable(self):
         return self.__keepGeneratedScribusFilesCheckboxVariable
     
+    def getMergeOutputCheckboxVariable(self):
+        return self.__mergeOutputCheckboxVariable
+  
     def allValuesSet(self):
         # Simple check whether input fields are NOT EMPTY.
         # The user could fill in crap into the input fields. This would lead to an error, but crap in crap out!
         result = 0
-        if((self.__scribusSourceFileEntryVariable.get() != CONST.EMPTY) and (self.__dataSourceFileEntryVariable.get() != CONST.EMPTY) and (self.__outputDirectoryEntryVariable.get() != CONST.EMPTY)):
+        if((self.__scribusSourceFileEntryVariable.get() != CONST.EMPTY) and 
+            (self.__dataSourceFileEntryVariable.get() != CONST.EMPTY) and 
+            (self.__outputDirectoryEntryVariable.get() != CONST.EMPTY)):
             result = 1
         return result
     
@@ -110,6 +116,7 @@ class GeneratorControl:
         result.setOutputFileName(self.__outputFileNameEntryVariable.get())
         result.setOutputFormat(self.__selectedOutputFormat.get())
         result.setKeepGeneratedScribusFiles(self.__keepGeneratedScribusFilesCheckboxVariable.get())
+        result.setSingleOutput(self.__mergeOutputCheckboxVariable.get())
         return result
     
     def buttonCancelHandler(self):
@@ -128,7 +135,7 @@ class GeneratorControl:
             tkMessageBox.showerror(title='Validation failed', message='Please check if all settings have been set correctly!')
     
     def helpButtonHandler(self):
-        tkMessageBox.showinfo('Help', message='For any information please visit: www.ekkehardwill.de/sg')
+        tkMessageBox.showinfo('Help', message='For any information please visit: https://github.com/berteh/ScribusGenerator/')
  
 class GeneratorDialog:
     # The UI to configure the settings by the user
@@ -198,6 +205,13 @@ class GeneratorDialog:
         keepGeneratedScribusFilesLabel.grid(column=0, row=3, padx=5, pady=5, sticky='w')
         keepGeneratedScribusFilesCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getKeepGeneratedScribusFilesCheckboxVariable())
         keepGeneratedScribusFilesCheckbox.grid(column=1, row=3, padx=5, pady=5, sticky='w')
+
+
+        mergeOutputLabel = Label(outputFrame, text='Merge Output in Single File:', width=22, anchor='w')
+        mergeOutputLabel.grid(column=0, row=4, padx=5, pady=5, sticky='w')
+        mergeOutputCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getMergeOutputCheckboxVariable())
+        mergeOutputCheckbox.grid(column=1, row=4, padx=5, pady=5, sticky='w')
+
         
         outputFormatLabel = Label(outputFrame, text='Output Format:', width=15, anchor='w')
         outputFormatLabel.grid(column=0, row=2, padx=5, pady=5, sticky='w')

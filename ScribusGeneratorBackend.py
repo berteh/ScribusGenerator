@@ -45,7 +45,7 @@ class CONST:
     SEP_EXT = os.extsep
     LOG_LEVEL = logging.DEBUG # Use logging.DEBUG for loggin any problems occured 
     CSV_SEP = "," #CSV entry separator, comma by default
-    GROUPSCOUNT = 999  # should be  max(//PAGEOBJECT@NUMGROUP)  but ET support of XPath is too limited
+    GROUPSCOUNT = 999  # should be  max(//PAGEOBJECT@NUMGROUP)  but ElementTree support of XPath is too limited
     
 class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
@@ -59,6 +59,11 @@ class ScribusGenerator:
         # Read CSV data and replace the variables in the Scribus File with the cooresponding data. Finaly export to the specified format.
         # may throw exceptions if errors are met, use traceback to get all error details
         
+        #defaults for missing info
+        if(self.__dataObject.getSingleOutput() and (self.__dataObject.getOutputFileName() is CONST.EMPTY)):
+            self.__dataObject.setOutputFileName(os.path.split(os.path.splitext(self.__dataObject.getDataSourceFile())[0])[1] +'__single')    
+
+        #generating
         logging.debug("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
         csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
         fillCount = len(str(len(csvData)))
@@ -106,8 +111,9 @@ class ScribusGenerator:
         # write single sla
         if (self.__dataObject.getSingleOutput()):            
             scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), self.__dataObject.getOutputFileName(), CONST.FILE_EXTENSION_SCRIBUS)
-            outTree = ET.ElementTree(outputElt)
+            outTree = ET.ElementTree(outputElt)            
             outTree.write(scribusOutputFilePath, encoding="UTF-8")
+            outputFileNames.append(self.__dataObject.getOutputFileName())
             logging.info("scribus file created: %s"%(scribusOutputFilePath)) 
 
         # Export the generated Scribus Files as PDF

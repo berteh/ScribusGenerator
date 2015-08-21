@@ -126,11 +126,8 @@ for infile in args.infiles:
 	    if not os.path.exists(dataObject.getOutputDirectory()):
 			message('creating output directory: '+dataObject.getOutputDirectory())
 			os.makedirs(dataObject.getOutputDirectory())
-	if(args.single and (args.outName is CONST.EMPTY)):
-		dataObject.setOutputFileName(os.path.split(infile)[1]+'__single')
-	else:
-		if(args.single and (len(args.infiles)>1)):
-			dataObject.setOutputFileName(args.outName+'__'+os.path.split(infile)[1])
+	if(args.single and (len(args.infiles)>1)):
+		dataObject.setOutputFileName(args.outName+'__'+os.path.split(infile)[1])
 	message('generating all files for '+os.path.split(infile)[1]+' in directory '+dataObject.getOutputDirectory())
 	try:
 		generator.run()
