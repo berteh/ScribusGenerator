@@ -45,6 +45,7 @@ class CONST:
     SEP_EXT = os.extsep
     LOG_LEVEL = logging.DEBUG # Use logging.DEBUG for loggin any problems occured 
     CSV_SEP = "," #CSV entry separator, comma by default
+    GROUPSCOUNT = 999  # should be  max(//PAGEOBJECT@NUMGROUP)  but ET support of XPath is too limited
     
 class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
@@ -73,36 +74,41 @@ class ScribusGenerator:
                 logging.debug("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
                 tree = ET.parse(self.__dataObject.getScribusSourceFile())
                 root = tree.getroot()
-                templateElt = self.overwriteAttributesFromSGAttributes(root)                
+                templateElt = self.overwriteAttributesFromSGAttributes(root)                 
+               
             else:
                 outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt))
                 #logging.debug('Replaced Variables With Csv Data')
                 if (self.__dataObject.getSingleOutput()):
                     if (index == 1):  # generation from first row is the reference content for merging the rest
+                        logging.debug("generating reference content from row #1")
                         outputElt = ET.fromstring(outContent)
                         docElt = outputElt.find('DOCUMENT')  
-                        docElt.set('AUTHOR','ScribusGenerator')  
+                        docElt.set('AUTHOR','ScribusGenerator')
+                        pagescount = int(docElt.get('ANZPAGES'))
+                        pageheight = int(docElt.get('PAGEHEIGHT'))
+                        vgap = int(docElt.get('GapVertical'))
+                        groupscount = CONST.GROUPSCOUNT  # should be  max(//PAGEOBJECT@NUMGROUP)  but ET support of XPath is too limited
+                        docElt.set('ANZPAGES', str(pagescount*(len(csvData)-1)))
                     else : # merge
-                        print("outContent is %s"%(outContent[:30]))
+                        logging.debug("merging content from row #%s"%(index))
                         tmpElt = ET.fromstring(outContent).find('DOCUMENT')
-                        #TODO shift page and pageobject pos
-                        docElt.extend(tmpElt.findall('PAGE'))
-                        docElt.extend(tmpElt.findall('PAGEOBJECT'))                            
-                        logging.debug("single shift of %s pages and %s objects is not implemented yet"%(len(tmpElt.findall('PAGE')),len(tmpElt.findall('PAGEOBJECT'))))
+                        shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, groupscount, index-1)
+                        docElt.extend(shiftedElts)                                                
                 else :
                     outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
                     scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
                     self.exportSLA(scribusOutputFilePath, outContent)
                     outputFileNames.append(outputFileName)
-                    logging.debug("scribus file created: %s"%(scribusOutputFilePath))                        
+                    logging.info("scribus file created: %s"%(scribusOutputFilePath))                        
             index = index + 1
         
-        # create single sla
+        # write single sla
         if (self.__dataObject.getSingleOutput()):            
             scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), self.__dataObject.getOutputFileName(), CONST.FILE_EXTENSION_SCRIBUS)
             outTree = ET.ElementTree(outputElt)
             outTree.write(scribusOutputFilePath, encoding="UTF-8")
-            logging.debug("scribus file created: %s"%(scribusOutputFilePath)) 
+            logging.info("scribus file created: %s"%(scribusOutputFilePath)) 
 
         # Export the generated Scribus Files as PDF
         if(CONST.FORMAT_PDF == self.__dataObject.getOutputFormat()):
@@ -110,13 +116,13 @@ class ScribusGenerator:
                 pdfOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_PDF)
                 scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
                 self.exportPDF(scribusOutputFilePath, pdfOutputFilePath)
+                logging.info("pdf file created: %s"%(pdfOutputFilePath))
         
         # Cleanup the generated Scribus Files
         if(not (CONST.FORMAT_SLA == self.__dataObject.getOutputFormat()) and CONST.FALSE == self.__dataObject.getKeepGeneratedScribusFiles()):
             for outputFileName in outputFileNames:
                 scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
                 self.deleteFile(scribusOutputFilePath)
-                        
       
             
 
@@ -182,6 +188,23 @@ class ScribusGenerator:
         #handle, filename = tempfile.mkstemp(suffix=".sla", text=True)
         #tree.write(filename, encoding="UTF-8") 
         return root
+
+
+    def shiftPagesAndObjects(self, docElt, pagescount, pageheight, vgap, groupscount, index):
+        shifted = []
+        voffset = (int(pageheight)+int(vgap)) * index
+        for page in docElt.findall('PAGE'):
+            page.set('PAGEYPOS', str(float(page.get('PAGEYPOS')) + voffset))
+            page.set('NUM', str(int(page.get('NUM')) + pagescount))
+            shifted.append(page)
+        for obj in docElt.findall('PAGEOBJECT'):
+            obj.set('YPOS', str(float(obj.get('YPOS')) + voffset))
+            obj.set('OwnPage', str(int(obj.get('OwnPage')) + pagescount))
+            if not (obj.get('NUMGROUP') is '0'):
+                obj.set('NUMGROUP', str(int(obj.get('NUMGROUP')) + groupscount))
+            shifted.append(obj)
+        logging.debug("shifted page %s element of %s"%(index,voffset))
+        return shifted
 
     
     def deleteFile(self, outputFilePath):
