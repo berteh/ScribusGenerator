@@ -196,11 +196,11 @@ Find all needed information from the script help: ``./ScribusGeneratorCLI.py --h
 Known Issues
 -------
 
-### MacOS/X troubleshooting
+### Mac OSX troubleshooting
 
-Some install of Python on MacOS/X do not ship Tk, that is required for ScribusGenerator GUI. Either find a way to setup a compliant Tk environment, or simply use the Scribus Generator command line interface.
+Some install of Python on Mac OSX do not ship a working Tkinter package, that is required for ScribusGenerator GUI. Either find a way to setup a compliant TCL/Tk environment, or simply use the [Scribus Generator command line interface](#running-scribus-generator-from-the-command-line).
 
-If you would like to contribute another GUI to Scribus Generator that works in MacOS/X don't hesitate!
+If you would like to contribute another GUI to Scribus Generator that works in Mac OSX don't hesitate! Simply [fork, branch, code and pull a request](https://guides.github.com/activities/contributing-to-open-source/#contributing) to get your contribution reviewed !
 
 ### Variable Names
 
