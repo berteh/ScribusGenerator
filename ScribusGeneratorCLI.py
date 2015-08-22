@@ -138,5 +138,9 @@ for infile in args.infiles:
         generator.run()
         message('... done')
         message('Scribus Generation completed. Congrats!')
-    except Exception:
-        print "error "+traceback.format_exc()
+    except ValueError as e:
+        print "\nerror: could likely not replace a variable with its value.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n"
+    except IndexError as e:
+        print "\nerror: could likely not find the value for one variable.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n"
+   except Exception:
+        print "\nerror: "+traceback.format_exc()

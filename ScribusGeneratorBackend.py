@@ -65,7 +65,7 @@ class ScribusGenerator:
 
         #generating
         logging.debug("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
-        csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
+        csvData = self.getCsvData(self.__dataObject.getDataSourceFile())        
         dataC = len(csvData)-1
         fillCount = len(str(dataC))
         template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
@@ -132,6 +132,8 @@ class ScribusGenerator:
             for outputFileName in outputFileNames:
                 scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
                 self.deleteFile(scribusOutputFilePath)
+
+        return 1;
       
             
 
@@ -283,7 +285,7 @@ class ScribusGenerator:
             for cell in row:
                 tmp = ('%VAR_' + headerRow[i] + '%')
                 #do not substitute in colors definition, find something more efficient
-                if (not(line.strip().startswith('<COLOR '))):
+                if (not(line.strip().startswith('<COLOR '))): # TODO fix this detection does not work on 1.5.1svn SLA file
                     line = line.replace(tmp, cell) # string.replace(old, new)
                 i = i + 1
             result = result + line

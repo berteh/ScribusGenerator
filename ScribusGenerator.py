@@ -41,6 +41,8 @@ class GeneratorControl:
     def __init__(self, root):
         self.__dataSourceFileEntryVariable = StringVar()
         self.__scribusSourceFileEntryVariable = StringVar()
+        self.__dataSeparatorEntryVariable = StringVar()
+        self.__dataSeparatorEntryVariable.set(CONST.CSV_SEP)
         self.__outputDirectoryEntryVariable = StringVar()
         self.__outputFileNameEntryVariable = StringVar()
         self.__outputFormatList = [CONST.FORMAT_PDF, CONST.FORMAT_SLA] # SLA & PDF are valid output format
@@ -73,6 +75,9 @@ class GeneratorControl:
         result = tkFileDialog.askopenfilename(title='Choose...', defaultextension='.sla', filetypes=[('SLA', '*.sla *.SLA')])
         if result:
             self.__scribusSourceFileEntryVariable.set(result)
+
+    def getDataSeparatorEntryVariable(self):
+        return self.__dataSeparatorEntryVariable
         
     def getOutputDirectoryEntryVariable(self):
         return self.__outputDirectoryEntryVariable
@@ -81,7 +86,8 @@ class GeneratorControl:
         result = tkFileDialog.askdirectory()
         if result:
             self.__outputDirectoryEntryVariable.set(result)
-        
+
+
     def getOutputFileNameEntryVariable(self):
         return self.__outputFileNameEntryVariable
         
@@ -103,20 +109,23 @@ class GeneratorControl:
         result = 0
         if((self.__scribusSourceFileEntryVariable.get() != CONST.EMPTY) and 
             (self.__dataSourceFileEntryVariable.get() != CONST.EMPTY) and 
-            (self.__outputDirectoryEntryVariable.get() != CONST.EMPTY)):
+            (self.__outputDirectoryEntryVariable.get() != CONST.EMPTY) and
+            (len(self.__dataSeparatorEntryVariable.get()) == 1)):
             result = 1
         return result
     
     def createGeneratorDataObject(self):
         # Collect the settings the user has made and build the Data Object
-        result = GeneratorDataObject()
-        result.setScribusSourceFile(self.__scribusSourceFileEntryVariable.get())
-        result.setDataSourceFile(self.__dataSourceFileEntryVariable.get())
-        result.setOutputDirectory(self.__outputDirectoryEntryVariable.get())
-        result.setOutputFileName(self.__outputFileNameEntryVariable.get())
-        result.setOutputFormat(self.__selectedOutputFormat.get())
-        result.setKeepGeneratedScribusFiles(self.__keepGeneratedScribusFilesCheckboxVariable.get())
-        result.setSingleOutput(self.__mergeOutputCheckboxVariable.get())
+        result = GeneratorDataObject(
+            scribusSourceFile = self.__scribusSourceFileEntryVariable.get(),
+            dataSourceFile = self.__dataSourceFileEntryVariable.get(),
+            outputDirectory = self.__outputDirectoryEntryVariable.get(),
+            outputFileName = self.__outputFileNameEntryVariable.get(),
+            outputFormat = self.__selectedOutputFormat.get(),
+            keepGeneratedScribusFiles = self.__keepGeneratedScribusFilesCheckboxVariable.get(),
+            csvSeparator = self.__dataSeparatorEntryVariable.get(), 
+            singleOutput = self.__mergeOutputCheckboxVariable.get()
+            )
         return result
     
     def buttonCancelHandler(self):
@@ -128,14 +137,19 @@ class GeneratorControl:
             generator = ScribusGenerator(dataObject)
             try:
                 generator.run() 
+                tkMessageBox.showinfo('Scribus Generator', message='Done. Generated files are in '+dataObject.getOutputDirectory())
+            except ValueError as e:
+                tkMessageBox.showerror(title='Error Scribus Generator', message="Could likely not replace a variable with its value,\nplease check your Data File and Data Separator settings.\n moreover: "+e.message+"\n")
+            except IndexError as e:
+                tkMessageBox.showerror(title='Error Scribus Generator', message="Could not find the value for one variable.\nplease check your Data File and Data Separator settings.\n moreover: "+e.message+"\n")
             except Exception:
-                tkMessageBox.showerror(message=traceback.format_exc())
+                tkMessageBox.showerror(title='Error Scribus Generator', message="Something went wrong\nRead the log file for more\n."+traceback.format_exc())
 
         else:
             tkMessageBox.showerror(title='Validation failed', message='Please check if all settings have been set correctly!')
     
     def helpButtonHandler(self):
-        tkMessageBox.showinfo('Help', message='For any information please visit: https://github.com/berteh/ScribusGenerator/')
+        tkMessageBox.showinfo('Help', message="For any information please visit:\nhttps://github.com/berteh/ScribusGenerator/")
  
 class GeneratorDialog:
     # The UI to configure the settings by the user
@@ -188,6 +202,12 @@ class GeneratorDialog:
         dataSourceFileButton = Button(inputFrame, text='...', command=self.__ctrl.dataSourceFileEntryVariableHandler)
         dataSourceFileButton.grid(column=2, row=1, padx=5, pady=5, sticky='e')
         
+        dataSeparatorLabel = Label(inputFrame, text='Data Field Separator:', width=15, anchor='w')
+        dataSeparatorLabel.grid(column=0, row=2, padx=5, pady=5, sticky='w')
+        dataSeparatorEntry = Entry(inputFrame, width=3, textvariable=self.__ctrl.getDataSeparatorEntryVariable())
+        dataSeparatorEntry.grid(column=1, row=2, padx=5, pady=5, sticky='w')
+
+
         # Output-Settings
         outputDirectoryLabel = Label(outputFrame, text='Output Directory:', width=15, anchor='w')
         outputDirectoryLabel.grid(column=0, row=0, padx=5, pady=5, sticky='w')
