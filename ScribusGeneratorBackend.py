@@ -65,7 +65,16 @@ class ScribusGenerator:
 
         #generating
         logging.debug("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
-        csvData = self.getCsvData(self.__dataObject.getDataSourceFile())        
+        csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
+        if(len(csvData) < 1):
+            logging.error("Data file %s is empty. At least a header line and a line of data is needed. Halting."%(self.__dataObject.getDataSourceFile()))
+            return -1
+        if(len(csvData) < 2):
+            logging.error("Data file %s has only one line. At least a header line and a line of data is needed. Halting."%(self.__dataObject.getDataSourceFile()))
+            return -1
+        firstElement = 1 # This is first data row as element 0 is the header row
+        lastElement = len(csvData) # The python slice functionality (array[firstElement:lastElement]) will include the lastElement -1 but not the lastElement
+        csvData = csvData[0:1] + csvData[firstElement : lastElement] # Create a new array starting with the header row followed by the user-selected range of rows
         dataC = len(csvData)-1
         fillCount = len(str(dataC))
         template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
