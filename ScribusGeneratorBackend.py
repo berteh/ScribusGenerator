@@ -90,8 +90,8 @@ class ScribusGenerator:
                         outputElt = ET.fromstring(outContent)
                         docElt = outputElt.find('DOCUMENT')  
                         pagescount = int(docElt.get('ANZPAGES'))
-                        pageheight = int(docElt.get('PAGEHEIGHT'))
-                        vgap = int(docElt.get('GapVertical'))
+                        pageheight = float(docElt.get('PAGEHEIGHT'))
+                        vgap = float(docElt.get('GapVertical'))
                         groupscount = int(docElt.get('GROUPC'))
                         version = outputElt.get('Version')
                         if version.startswith('1.4'):
@@ -199,7 +199,7 @@ class ScribusGenerator:
 
     def shiftPagesAndObjects(self, docElt, pagescount, pageheight, vgap, index, groupscount, version):
         shifted = []
-        voffset = (int(pageheight)+int(vgap)) * index
+        voffset = (float(pageheight)+float(vgap)) * index
         for page in docElt.findall('PAGE'):
             page.set('PAGEYPOS', str(float(page.get('PAGEYPOS')) + voffset))
             page.set('NUM', str(int(page.get('NUM')) + pagescount))
