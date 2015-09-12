@@ -83,7 +83,7 @@ def message(*msg):
     """ Utility "print" function that handles verbosity of messages
     """
     if (args.verbose):
-        print ''.join(msg)
+        print (''.join(msg))
     return
 
 def ife(test, if_result, else_result):
@@ -97,7 +97,7 @@ def ife(test, if_result, else_result):
 args = parser.parse_args()
 
 if(args.pdfOnly or (not args.fast)):
-    print "PDF generation is currently not available from command line, but SLA is. Simply add the '--noPdf' option to your command and it will run just fine. "
+    print ("PDF generation is currently not available from command line, but SLA is. Simply add the '--noPdf' option to your command and it will run just fine. ")
     sys.exit()
 
 # create outDir if needed
@@ -139,8 +139,8 @@ for infile in args.infiles:
         message('... done')
         message('Scribus Generation completed. Congrats!')
     except ValueError as e:
-        print "\nerror: could likely not replace a variable with its value.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n"
+        print ("\nerror: could likely not replace a variable with its value.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n")
     except IndexError as e:
-        print "\nerror: could likely not find the value for one variable.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n"
-   except Exception:
-        print "\nerror: "+traceback.format_exc()
+        print ("\nerror: could likely not find the value for one variable.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n")
+    except Exception:
+        print ("\nerror: "+traceback.format_exc())
