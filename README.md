@@ -123,8 +123,8 @@ Dynamic Links
 
 A clickable (web)link can be inserted on nearly any scribus object in 2 steps:
 
-# ``right-click > PDF Options``, activate ``Is PDF Annotation``
-# ``right-click > PDF Options > Annotation Properties``, select type ``External Web-Link`` and enter the target url, where you can obviously use variables to be subsituted too, as illustrated below.
+1. ``right-click > PDF Options``, activate ``Is PDF Annotation``
+1. ``right-click > PDF Options > Annotation Properties``, select type ``External Web-Link`` and enter the target url, where you can obviously use variables to be subsituted too, as illustrated below.
 
 ![Illustration: Include dynamic clickable (web)links](pic/weblink_pdfannotation.png)
 
