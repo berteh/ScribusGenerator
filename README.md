@@ -3,6 +3,35 @@ ScribusGenerator
 
 Mail-Merge-like extension to Scribus, to generate Scribus and pdf documents automatically from external data.
 
+What is Scribus Generator?
+-------
+
+[Scribus](http://www.scribus.net/)  comes with a broad set of page layout features and functionality. One feature missing is to replace text with data dynamically. This kind of feature you may already know as the typical __mail merge__ functionality in your preferred office application.
+
+[**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) provides this functionality. It allows you to:
+
+- replace texts dynamically
+- replace images dynamically
+- change colors, position, text font or size dynamically
+- generate separate PDF (or Scribus) files for each data entry, or a single file from all your data
+- work directly in Scribus with a nice user interface, or from the command line
+- use any data source (Excel, OpenOffice, MySQL, Notepad, ...) that can export to CSV.
+- and much more...
+
+
+Generally speaking, **Scribus Generator** replaces text with data to automatically generate files (e.g. SLA, PDF). It has been originally written by [Ekkehard Will](http://www.ekkehardwill.de/sg/) and further extended by [Berteh](https://github.com/berteh/).
+
+A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces this Scribus Generator. 6 first minutes for the basic overview, 12 last for some more advanced features.
+
+[![Scribus Generator how to - high quality pdf generation](pic/screencast.png)](https://www.youtube.com/watch/kMsRn38TOiQ)
+
+
+
+[Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. It can be placed with the standard extension scripts. On Windows platform this location would be ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\``, on Ubuntu ``/usr/share/scribus/scripts/``.
+
+**Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line). It is implemented as a Python script. 
+
+
 
 What about Scribus?
 --------
@@ -13,21 +42,6 @@ It is available for Linux, Unix-like, Mac OS X, OS/2, and Microsoft Windows. Kno
 
 Scribus is designed for flexible layout and typesetting and the ability to prepare files for professional quality image setting equipment. It can also create animated and interactive PDF presentations and forms. Example uses include writing small newspapers, brochures, newsletters, posters and books.
 
-What is Scribus Generator?
--------
-
-Scribus comes with a broad set of page layout features and functionality. One feature missing is to replace text with data dynamically. This kind of feature you may already know as the typical __mail merge__ functionality in your preferred office application.
-
-**Scribus Generator** fills this lack of functionality. **Scribus Generator** in general is an extension to replace text with data to automaticaly generate files (e.g. SLA, PDF). It has been originaly written by [Ekkehard Will](http://www.ekkehardwill.de/sg/) and further extended by [Berteh](https://github.com/berteh/).
-
-**Scribus Generator** can be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or used from the [command line](#running-scribus-generator-from-the-command-line). It is implemented as a Python script. 
-
-[Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. It can be placed with the standard extension scripts. On Windows platform this location would be ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\``, on Ubuntu ``/usr/share/scribus/scripts/``.
-
-A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces this Scribus Generator. 6 first minutes for the basic overview, 12 last for some more advanced features.
-
-
-[![Scribus Generator how to - high quality pdf generation](pic/screencast.png)](https://www.youtube.com/watch/kMsRn38TOiQ)
 
 
 The Scribus "template" file
