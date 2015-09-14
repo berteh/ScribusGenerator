@@ -228,9 +228,6 @@ class GeneratorDialog:
         toLabel.grid(column=4, row=2, padx=5, pady=5, sticky='e')
         toEntry = Entry(inputFrame, width=3, textvariable=self.__ctrl.getToVariable())
         toEntry.grid(column=5, row=2, padx=5, pady=5, sticky='w')
-
-        #rangeHelp = Label(inputFrame, text='(set to 0 to neglect)', width=30, anchor='w')
-        #rangeHelp.grid(column=4, columnspan=2,  row=4, padx=5, pady=5, sticky='w')
    
 
 
@@ -247,6 +244,12 @@ class GeneratorDialog:
         outputFileNameEntry = Entry(outputFrame, textvariable=self.__ctrl.getOutputFileNameEntryVariable())
         outputFileNameEntry.grid(column=1, columnspan=4, row=1, padx=5, pady=5, sticky='ew')
          
+
+        keepGeneratedScribusFilesLabel = Label(outputFrame, text='Keep Scribus Files:', width=15, anchor='e')
+        keepGeneratedScribusFilesLabel.grid(column=4, row=2, padx=5, pady=5, sticky='e')
+        keepGeneratedScribusFilesCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getKeepGeneratedScribusFilesCheckboxVariable(), anchor='w')
+        keepGeneratedScribusFilesCheckbox.grid(column=5, row=2, padx=5, pady=5, sticky='w')
+
         mergeOutputLabel = Label(outputFrame, text='Merge in Single File:', width=15, anchor='w')
         mergeOutputLabel.grid(column=0, row=2, padx=5, pady=5, sticky='w')
         mergeOutputCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getMergeOutputCheckboxVariable())
@@ -254,15 +257,9 @@ class GeneratorDialog:
 
         outputFormatLabel = Label(outputFrame, text='Output Format:', anchor='e')
         outputFormatLabel.grid(column=2, row=2, padx=5, pady=5, sticky='e')
-        outputFormatListBox = OptionMenu(outputFrame, self.__ctrl.getSelectedOutputFormat(), *self.__ctrl.getOutputFormatList()) #,
-            #command=lambda l=keepGeneratedScribusFilesLabel, c=keepGeneratedScribusFilesCheckbox, v=self.__ctrl.getSelectedOutputFormat(): self.updateDisabled(v, l,c))
-        outputFormatListBox.grid(column=3, row=2, padx=5, pady=5, sticky='w')
-      
-        keepGeneratedScribusFilesLabel = Label(outputFrame, text='Keep Scribus Files:', width=15, anchor='e')
-        keepGeneratedScribusFilesLabel.grid(column=4, row=2, padx=5, pady=5, sticky='e')
-        keepGeneratedScribusFilesCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getKeepGeneratedScribusFilesCheckboxVariable(), anchor='w')
-        keepGeneratedScribusFilesCheckbox.grid(column=5, row=2, padx=5, pady=5, sticky='w')
-
+        outputFormatListBox = OptionMenu(outputFrame, self.__ctrl.getSelectedOutputFormat(), *self.__ctrl.getOutputFormatList(),
+            command=lambda l=keepGeneratedScribusFilesLabel, c=keepGeneratedScribusFilesCheckbox, v=self.__ctrl.getSelectedOutputFormat(): self.updateState(v, l,c))
+        outputFormatListBox.grid(column=3, row=2, padx=5, pady=5, sticky='w')            
        
 
         # Buttons to Cancel or to Run the Generator with the given Settings
@@ -277,6 +274,18 @@ class GeneratorDialog:
         mainFrame.grid()
         self.__root.grid()
         self.__root.mainloop()
+
+    def updateState(self, value, label, entry):
+        if(value.get()==CONST.FORMAT_PDF): # test works, from the dialog belo
+            tkMessageBox.showinfo('Info', message="enabling checkbox")
+            label.configure(state='normal')
+            entry.configure(state='normal')
+        else:            
+            tkMessageBox.showinfo('Info', message="disabling checkbox")
+            label.configure(state='disabled')
+            entry.configure(state='disabled')
+        #self.__root.update_idletasks() # how to force "redraw" with grid() manager?
+
 
 def main(argv):
     root = Tkinter.Tk()
