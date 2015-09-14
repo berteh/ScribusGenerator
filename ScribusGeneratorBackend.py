@@ -93,15 +93,17 @@ class ScribusGenerator:
                         pageheight = float(docElt.get('PAGEHEIGHT'))
                         vgap = float(docElt.get('GapVertical'))
                         groupscount = int(docElt.get('GROUPC'))
+                        objscount = len(outputElt.findall('.//PAGEOBJECT'))
+                        logging.debug("current template has #%s pageobjects"%(objscount))
                         version = outputElt.get('Version')
-                        if version.startswith('1.4'):
-                            docElt.set('GROUPC', str(groupscount*dataC))
+#                        if version.startswith('1.4'):
+#                            docElt.set('GROUPC', str(groupscount*dataC))
                         docElt.set('ANZPAGES', str(pagescount*dataC))                        
                         docElt.set('DOCCONTRIB',docElt.get('DOCCONTRIB')+CONST.CONTRIB_TEXT)
                     else:
                         logging.debug("merging content from row #%s"%(index))
                         tmpElt = ET.fromstring(outContent).find('DOCUMENT')
-                        shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, version)
+                        shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, objscount, version)
                         docElt.extend(shiftedElts)                                                
                 else:
                     outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
@@ -197,7 +199,7 @@ class ScribusGenerator:
         return root
 
 
-    def shiftPagesAndObjects(self, docElt, pagescount, pageheight, vgap, index, groupscount, version):
+    def shiftPagesAndObjects(self, docElt, pagescount, pageheight, vgap, index, groupscount, objscount, version):
         shifted = []
         voffset = (float(pageheight)+float(vgap)) * index
         for page in docElt.findall('PAGE'):
@@ -208,8 +210,18 @@ class ScribusGenerator:
             obj.set('YPOS', str(float(obj.get('YPOS')) + voffset))
             obj.set('OwnPage', str(int(obj.get('OwnPage')) + pagescount))
             if version.startswith('1.4'):
-                if not (obj.get('NUMGROUP') is '0'):  
-                    obj.set('NUMGROUP', str(int(obj.get('NUMGROUP')) + groupscount))
+#                if not (int(obj.get('NUMGROUP')) == 0):
+#                    obj.set('NUMGROUP', str(int(obj.get('NUMGROUP')) + groupscount * index))
+                if not (str(obj.get('NEXTITEM')) == "-1"): # next linked frame by position                
+                    obj.set('NEXTITEM', str(int(obj.get('NEXTITEM')) + (objscount * index)))               
+                if not (str(obj.get('BACKITEM')) == "-1"): # previous linked frame  by position
+                    obj.set('BACKITEM', str(int(obj.get('BACKITEM')) + (objscount * index)))
+            else : #1.5, 1.6
+                obj.set('ItemID', str(objscount * index) + str(int(obj.get('ItemID')))[3:] ) # update ID with something unlikely allocated, todo ensure unique ID.
+                if not (str(obj.get('NEXTITEM')) == "-1"): # next linked frame by ItemID   
+                    obj.set('NEXTITEM', str(objscount * index) + str(int(obj.get('NEXTITEM')))[3:] )
+                if not (str(obj.get('BACKITEM')) == "-1"): # previous linked frame by ItemID    
+                    obj.set('BACKITEM', str(objscount * index) + str(int(obj.get('BACKITEM')))[3:] )
             shifted.append(obj)
         logging.debug("shifted page %s element of %s"%(index,voffset))
         return shifted
