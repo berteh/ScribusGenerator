@@ -118,6 +118,17 @@ Colors can be dynamically replaced just like text. See the [screencast video @8:
 
 ![Illustration: Replace colors dynamically](pic/SG-16.png)
 
+Dynamic Links
+--------------
+
+A clickable (web)link can be inserted on nearly any scribus object in 2 steps:
+
+# ``right-click > PDF Options``, activate ``Is PDF Annotation``
+# ``right-click > PDF Options > Annotation Properties``, select type ``External Web-Link`` and enter the target url, where you can obviously use variables to be subsituted too, as illustrated below.
+
+![Illustration: Include dynamic clickable (web)links](pic/weblink_pdfannotation.png)
+
+
 Merged output - single document
 ------------
 Instead of generating a single (sla or pdf) file for each data row, you can generate a single file that merges all these. Simply select the option accordingly to get the result illustrated below in a single Scribus (and/or pdf) file. If your document layout has multiple pages (double sided, or folded leaflet), it is important for Scribus Generator to be able to merge the files that your template has the same number of pages (or a multiple thereof). For instance, for a 3-fold document, your source sla should have 3, 6, or 9 pages (or any multiple of 3).
