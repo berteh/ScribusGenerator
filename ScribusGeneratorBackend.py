@@ -63,7 +63,7 @@ class ScribusGenerator:
         if(self.__dataObject.getSingleOutput() and (self.__dataObject.getOutputFileName() is CONST.EMPTY)):
             self.__dataObject.setOutputFileName(os.path.split(os.path.splitext(self.__dataObject.getScribusSourceFile())[0])[1] +'__single')    
 
-        #generating
+        #parsing
         logging.debug("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
         csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
         if(len(csvData) < 1):
@@ -73,26 +73,25 @@ class ScribusGenerator:
             logging.error("Data file %s has only one line. At least a header line and a line of data is needed. Halting."%(self.__dataObject.getDataSourceFile()))
             return -1
 
-        # Calculate the index of firstElement
-        firstElement = 1 # This is first data row as elemetn 0 is the header row
+        #range
+        firstElement = 1
         if(self.__dataObject.getFirstRow() != CONST.EMPTY):
             try:
                 newFirstElementValue = int(self.__dataObject.getFirstRow())
                 firstElement = max(newFirstElementValue, 1) # Guard against 0 or negative numbers
             except:
-                logging.warning("Could not parse value of 'first row' as an integer.")
-
-        # Calculate the index of lastElement
-        lastElement = len(csvData) # The python slice functionality (array[firstElement:lastElement]) will include the lastElement -1 but not the lastElement
+                logging.warning("Could not parse value of 'first row' as an integer, using default value instead")
+        lastElement = len(csvData)
         if(self.__dataObject.getLastRow() != CONST.EMPTY):
             try:
                 newLastElementValue = int(self.__dataObject.getLastRow())
-                lastElement = min(newLastElementValue + 1, len(csvData)) # Guard against numbers higher than the length of csvData
+                lastElement = min(newLastElementValue + 1, lastElement) # Guard against numbers higher than the length of csvData
             except:
-                logging.warning("Could not parse value of 'last row' as an integer.")
-        # Slice the data arcordingly
-        csvData = csvData[0:1] + csvData[firstElement : lastElement] # Create a new array starting with the header row followed by the user-selected range of rows
+                logging.warning("Could not parse value of 'last row' as an integer, using default value instead")       
+        if ( (firstElement != 1) or (lastElement != len(csvData)) ):
+            csvData = csvData[0:1] + csvData[firstElement : lastElement]
 
+        #generation
         dataC = len(csvData)-1
         fillCount = len(str(dataC))
         template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
