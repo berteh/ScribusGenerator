@@ -65,7 +65,34 @@ class ScribusGenerator:
 
         #generating
         logging.debug("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
-        csvData = self.getCsvData(self.__dataObject.getDataSourceFile())        
+        csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
+        if(len(csvData) < 1):
+            logging.error("Data file %s is empty. At least a header line and a line of data is needed. Halting."%(self.__dataObject.getDataSourceFile()))
+            return -1
+        if(len(csvData) < 2):
+            logging.error("Data file %s has only one line. At least a header line and a line of data is needed. Halting."%(self.__dataObject.getDataSourceFile()))
+            return -1
+
+        # Calculate the index of firstElement
+        firstElement = 1 # This is first data row as elemetn 0 is the header row
+        if(self.__dataObject.getFirstRow() != CONST.EMPTY):
+            try:
+                newFirstElementValue = int(self.__dataObject.getFirstRow())
+                firstElement = max(newFirstElementValue, 1) # Guard against 0 or negative numbers
+            except:
+                logging.warning("Could not parse value of 'first row' as an integer.")
+
+        # Calculate the index of lastElement
+        lastElement = len(csvData) # The python slice functionality (array[firstElement:lastElement]) will include the lastElement -1 but not the lastElement
+        if(self.__dataObject.getLastRow() != CONST.EMPTY):
+            try:
+                newLastElementValue = int(self.__dataObject.getLastRow())
+                lastElement = min(newLastElementValue + 1, len(csvData)) # Guard against numbers higher than the length of csvData
+            except:
+                logging.warning("Could not parse value of 'last row' as an integer.")
+        # Slice the data arcordingly
+        csvData = csvData[0:1] + csvData[firstElement : lastElement] # Create a new array starting with the header row followed by the user-selected range of rows
+
         dataC = len(csvData)-1
         fillCount = len(str(dataC))
         template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
@@ -324,7 +351,9 @@ class GeneratorDataObject:
         outputFormat = CONST.EMPTY,
         keepGeneratedScribusFiles = CONST.FALSE,
         csvSeparator = CONST.CSV_SEP,
-        singleOutput = CONST.FALSE):
+        singleOutput = CONST.FALSE, 
+        firstRow = CONST.EMPTY, 
+        lastRow = CONST.EMPTY):
         self.__scribusSourceFile = scribusSourceFile
         self.__dataSourceFile = dataSourceFile
         self.__outputDirectory = outputDirectory
@@ -333,6 +362,8 @@ class GeneratorDataObject:
         self.__keepGeneratedScribusFiles = keepGeneratedScribusFiles
         self.__csvSeparator = csvSeparator
         self.__singleOutput = singleOutput
+        self.__firstRow = firstRow
+        self.__lastRow = lastRow
     
     # Get
     def getScribusSourceFile(self):
@@ -359,6 +390,12 @@ class GeneratorDataObject:
     def getSingleOutput(self):
         return self.__singleOutput
 
+    def getFirstRow(self):
+        return self.__firstRow
+
+    def getLastRow(self):
+        return self.__lastRow
+
     # Set
     def setScribusSourceFile(self, fileName):
         self.__scribusSourceFile = fileName
@@ -383,3 +420,9 @@ class GeneratorDataObject:
 
     def setSingleOutput(self, value):
         self.__singleOutput = value
+
+    def setFirstRow(self, value):
+        self.__firstRow = value
+
+    def setLastRow(self, value):
+        self.__lastRow = value

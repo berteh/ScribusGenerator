@@ -77,13 +77,17 @@ parser.add_argument('-s', '--single', action='store_true', default=False,
     help='generate a single output (SLA and/or PDF) file that combines all data rows, for each source file.')
 parser.add_argument('-v', '--verbose', action='store_true', default=False,
     help='print detailed progress information on the command line.')
+parser.add_argument('-from', '--firstrow', default=None, type=int, dest='firstRow',
+    help='Starting row of data to merge (not counting the header row), first row by default.')
+parser.add_argument('-to', '--lastrow', default=None, type=int, dest='lastRow',
+    help='Last row of data to merge (not counting the header row), last row by default.')
 
 
 def message(*msg):
     """ Utility "print" function that handles verbosity of messages
     """
     if (args.verbose):
-        print ''.join(msg)
+        print (''.join(msg))
     return
 
 def ife(test, if_result, else_result):
@@ -97,7 +101,7 @@ def ife(test, if_result, else_result):
 args = parser.parse_args()
 
 if(args.pdfOnly or (not args.fast)):
-    print "PDF generation is currently not available from command line, but SLA is. Simply add the '--noPdf' option to your command and it will run just fine. "
+    print ("PDF generation is currently not available from command line, but SLA is. Simply add the '--noPdf' option to your command and it will run just fine. ")
     sys.exit()
 
 # create outDir if needed
@@ -114,7 +118,9 @@ dataObject = GeneratorDataObject(
     outputFormat = ife(args.fast, CONST.FORMAT_SLA, CONST.FORMAT_PDF),
     keepGeneratedScribusFiles = ife(args.pdfOnly, CONST.FALSE, CONST.TRUE), # not used if outputFormat is sla.
     csvSeparator = args.csvDelimiter,                                       # is CONST.CSV_SEP by default
-    singleOutput = args.single)
+    singleOutput = args.single,
+    firstRow = args.firstRow,
+    lastRow = args.lastRow)
 
 generator = ScribusGenerator(dataObject)
 message('ScribusGenerator is starting generation for '+str(len(args.infiles))+' template(s).')
@@ -139,8 +145,8 @@ for infile in args.infiles:
         message('... done')
         message('Scribus Generation completed. Congrats!')
     except ValueError as e:
-        print "\nerror: could likely not replace a variable with its value.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n"
+        print ("\nerror: could likely not replace a variable with its value.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n")
     except IndexError as e:
-        print "\nerror: could likely not find the value for one variable.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n"
-   except Exception:
-        print "\nerror: "+traceback.format_exc()
+        print ("\nerror: could likely not find the value for one variable.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n")
+    except Exception:
+        print ("\nerror: "+traceback.format_exc())

@@ -18,22 +18,22 @@ What is Scribus Generator?
 
 Scribus comes with a broad set of page layout features and functionality. One feature missing is to replace text with data dynamically. This kind of feature you may already know as the typical __mail merge__ functionality in your preferred office application.
 
-**Scribus Generator** fills this lack of functionality. **Scribus Generator** in general is an extension to replace text with data to automatic generated files (e.g. SLA, PDF). It has been written by [Ekkehard Will](http://www.ekkehardwill.de/sg/) and further extended by [Berteh](https://github.com/berteh/).
+**Scribus Generator** fills this lack of functionality. **Scribus Generator** in general is an extension to replace text with data to automaticaly generate files (e.g. SLA, PDF). It has been originaly written by [Ekkehard Will](http://www.ekkehardwill.de/sg/) and further extended by [Berteh](https://github.com/berteh/).
 
-**Scribus Generator** is implemented as a Python script. It simply can be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_.
+**Scribus Generator** can be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or used from the [command line](#running-scribus-generator-from-the-command-line). It is implemented as a Python script. 
 
-[Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. It can be placed with  the standard extension scripts. On Windows platform this location would be ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\``, on Ubuntu ``/usr/share/scribus/scripts/``.
+[Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. It can be placed with the standard extension scripts. On Windows platform this location would be ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\``, on Ubuntu ``/usr/share/scribus/scripts/``.
 
-A [short *how to* video](https://www.youtube.com/embed/kMsRn38TOiQ) introduces this Scribus Generator. 6 first minutes for the basic overview, 12 last for more advanced features.
+A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces this Scribus Generator. 6 first minutes for the basic overview, 12 last for some more advanced features.
 
 
-[![Scribus Generator how to - high quality pdf generation](pic/screencast.png)](https://www.youtube.com/embed/kMsRn38TOiQ)
+[![Scribus Generator how to - high quality pdf generation](pic/screencast.png)](https://www.youtube.com/watch/kMsRn38TOiQ)
 
 
 The Scribus "template" file
 ------
 
-Create and design your Scribus file as any other. At the positions where you need to replace text with data, just add ``%VAR_name%`` where ``name`` is the column in the data table.
+Create and design your Scribus file as any other. At the positions where you need to replace text with data, just add ``%VAR_name%`` where ``name`` is the column your  data file.
 
 You can place the variable at any position within a Text Frame. Apply all format and style to the variable that you wish to apply to the final text.
 
@@ -43,7 +43,7 @@ You can place the variable at any position within a Text Frame. Apply all format
 The (csv) Data File
 --------
 
-**Scribus Generator** expects a CSV file (_Comma Separated Values_), which is very simple to create. Open a spread sheet editor (such as [LibreOffice](http://www.libreoffice.org/) or Excel), enter the data and save/export as CSV. UTF-8 encoding is recommended.
+**Scribus Generator** expects a CSV file (_Comma Separated Values_), which is very simple to create with a standard spread sheet editor (such as [LibreOffice](http://www.libreoffice.org/) or Excel): enter the data and save/export as CSV. UTF-8 encoding is recommended.
 
 ![Illustration: Data File for Generator](pic/SG-05.png)
 
@@ -59,15 +59,20 @@ In the script dialog you can configure the input and output settings for **Scrib
 
 ![Illustration: Input and Output Settings](pic/SG-10.png)
 
-| Setting | explanation |
+| Input Setting | explanation |
 | ---- | ---- |
 | **Scribus File** | Choose the Scribus File containing the variables to replace. |
 | **Data File** | Choose the Data File containing the comma separated values. |
+| **Data Field Separator** | Character that delimitates data field in your CSV file, comma (,) by default. |
+| **From - To** | To run Scribus Generator on a subset of your data mention the starting and/or last lines of this subset, not counting the header line. Simply leave empty to generate from the beginning (or to the last) data entry.|
+
+| Output Setting | explanation |
+| ---- | ---- |
 | **Output Directory** | Choose the path to an existing directory where to save the result. |
 | **Output File Name** | You can use the same variables as defined in the Scribus File/Data File. You can also mix the variables with other characters. If you leave the field empty an index will be used. The index/resulting files will be sorted according to the occurrence of rows in the Data File. |
+| **Merge in Single File** | Select to  generate a single output (SLA and/or PDF) file that combines all data rows. |
 | **Ouput Format** | Choose the Output Format of the generated files, either PDF or Scribus. |
 | **Keep Scribus Files** | Select to keep the generated Scribus Files. Otherwise they will be deleted after pdf generation. This option has no effect if you choose Scribus output format.|
-| **Merge Output in Single File** | Select to  generate a single output (SLA and/or PDF) file that combines all data rows. |
 
 
 Dynamic Images
@@ -165,6 +170,14 @@ Find all needed information from the script help: ``./ScribusGeneratorCLI.py --h
                             combines all data rows, for each source file.
       -v, --verbose         print detailed progress information on the command
                             line.
+      -from FIRSTROW, --firstrow FIRSTROW
+                            Starting row of data to merge (not counting the header
+                            row), first row by default.
+      -to LASTROW, --lastrow LASTROW
+                            Last row of data to merge (not counting the header
+                            row), last row by default.
+
+
 
     requirements
       This program requires Python 2.7+
