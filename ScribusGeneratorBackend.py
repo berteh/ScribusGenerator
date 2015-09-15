@@ -52,7 +52,7 @@ class ScribusGenerator:
     def __init__(self, dataObject):
         self.__dataObject = dataObject
         logging.config.fileConfig("logging.conf")
-        logging.info("ScribusGenerator initialized")
+        logging.debug("ScribusGenerator initialized")
 
     
     def run(self):

@@ -117,7 +117,7 @@ dataObject = GeneratorDataObject(
 
 generator = ScribusGenerator(dataObject)
 log = generator.getLog()
-log.info('ScribusGenerator is starting generation for '+str(len(args.infiles))+' template(s).')
+log.debug('ScribusGenerator is starting generation for '+str(len(args.infiles))+' template(s).')
 
 for infile in args.infiles: 
     dataObject.setScribusSourceFile(infile)
@@ -133,7 +133,7 @@ for infile in args.infiles:
             os.makedirs(dataObject.getOutputDirectory())
     if(args.single and (len(args.infiles)>1)):
         dataObject.setOutputFileName(args.outName+'__'+os.path.split(infile)[1])
-    log.info('generating all files for '+os.path.split(infile)[1]+' in directory '+dataObject.getOutputDirectory())
+    log.info('Generating all files for '+os.path.split(infile)[1]+' in directory '+dataObject.getOutputDirectory())
     try:
         generator.run()
         log.info("Scribus Generation completed. Congrats!")
