@@ -30,7 +30,8 @@ import logging.config
 #import traceback
 import sys
 import xml.etree.ElementTree as ET  # common Python xml implementation
-import tempfile
+#import tempfile
+import json
 
 class CONST:
     # Constants for general usage
@@ -106,6 +107,7 @@ class ScribusGenerator:
                 logging.debug("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
                 tree = ET.parse(self.__dataObject.getScribusSourceFile())
                 root = tree.getroot()
+                #save settings
                 templateElt = self.overwriteAttributesFromSGAttributes(root)                 
                
             else:
@@ -343,6 +345,9 @@ class ScribusGenerator:
     def getLog(self):
         return logging
 
+    
+
+
 class GeneratorDataObject:
     # Data Object for transfering the settings made by the user on the UI / CLI
     def __init__(self,
@@ -428,3 +433,32 @@ class GeneratorDataObject:
 
     def setLastRow(self, value):
         self.__lastRow = value
+
+    # (de)Serialize
+    def toString(self):
+        return json.dumps([ {
+            "_comment":"this is only a placeholder for ScribusGenerator default settings. more info at https://github.com/berteh/ScribusGenerator/. modify at your own risks.",
+            "scribusfile":self.__scribusSourceFile,
+            "csvfile":self.__dataSourceFile,
+            "outdir":self.__outputDirectory,
+            "outname":self.__outputFileName,
+            "outformat":self.__outputFormat,
+            "keepsla":self.__keepGeneratedScribusFiles,
+            "separator":self.__csvSeparator,
+            "single":self.__singleOutput,
+            "from":self.__firstRow,
+            "to":self.__lastRow
+        }], sort_keys=True)
+
+    def fromString(self, string): #todo add validity/plausibility checks on all values?
+        j = json.loads(string)
+        self.__scribusSourceFile = j["scribusfile"]
+        self.__dataSourceFile = j["csvfile"]
+        self.__outputDirectory = j["outdir"]
+        self.__outputFileName = j["outname"]
+        self.__outputFormat = j["outformat"]
+        self.__keepGeneratedScribusFiles = j["keepsla"]
+        self.__csvSeparator = j["separator"]
+        self.__singleOutput = j["single"]
+        self.__firstRow = j["from"]
+        self.__lastRow = j["to"]
