@@ -47,6 +47,7 @@ class CONST:
     SEP_EXT = os.extsep    
     CSV_SEP = "," # CSV entry separator, comma by default
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
+    STORAGE_NAME = "ScribusGeneratorDefaultSettings"
     
 class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
@@ -108,6 +109,23 @@ class ScribusGenerator:
                 tree = ET.parse(self.__dataObject.getScribusSourceFile())
                 root = tree.getroot()
                 #save settings
+                if (self.__dataObject.getSaveSettings()):                                    
+                    serial=self.__dataObject.toString()
+                    logging.debug("saving settings as: %s"%serial)
+                    docElt = root.find('DOCUMENT')
+                    if (docElt is None):
+                        logging.error("could not find DOC element")
+                        sys.exit()
+                    storageElt = docElt.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')  
+                    if (storageElt is None):
+                        colorElt = docElt.find('./COLOR')                     
+                        scriptPos = docElt.getchildren().index(colorElt) - 1
+                        logging.debug("creating new storage element in SLA template at position %s"%scriptPos)
+                        storageElt = ET.Element("SCRIPT", {"NAME":CONST.STORAGE_NAME})
+                        docElt.insert(scriptPos, storageElt)
+                    storageElt.set("SCRIPT",serial)
+                    tree.write(self.__dataObject.getScribusSourceFile()) #todo check if scribus reloads (or overwrites :/ ) when doc is opened
+
                 templateElt = self.overwriteAttributesFromSGAttributes(root)                 
                
             else:
@@ -195,7 +213,7 @@ class ScribusGenerator:
         result.close()
 
     def overwriteAttributesFromSGAttributes(self, root):
-        # returns temporary file copied from content where
+        # modifies root such that
         # attributes have been rewritten from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
         #
         # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FCOLOR)   
@@ -222,7 +240,6 @@ class ScribusGenerator:
                     
             except SyntaxError:
                 logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(param, attribute)) #todo message to user
-                #print("Please check following XPath expression that is not supported by ElementTree: %s" %param)
 
         return root
 
@@ -360,7 +377,8 @@ class GeneratorDataObject:
         csvSeparator = CONST.CSV_SEP,
         singleOutput = CONST.FALSE, 
         firstRow = CONST.EMPTY, 
-        lastRow = CONST.EMPTY):
+        lastRow = CONST.EMPTY,
+        saveSettings = CONST.TRUE):
         self.__scribusSourceFile = scribusSourceFile
         self.__dataSourceFile = dataSourceFile
         self.__outputDirectory = outputDirectory
@@ -371,6 +389,7 @@ class GeneratorDataObject:
         self.__singleOutput = singleOutput
         self.__firstRow = firstRow
         self.__lastRow = lastRow
+        self.__saveSettings = saveSettings
     
     # Get
     def getScribusSourceFile(self):
@@ -403,6 +422,9 @@ class GeneratorDataObject:
     def getLastRow(self):
         return self.__lastRow
 
+    def getSaveSettings(self):
+        return self.__saveSettings
+
     # Set
     def setScribusSourceFile(self, fileName):
         self.__scribusSourceFile = fileName
@@ -434,31 +456,40 @@ class GeneratorDataObject:
     def setLastRow(self, value):
         self.__lastRow = value
 
+    def setSaveSettings(self, value):
+        self.__saveSettings = value
+
     # (de)Serialize
     def toString(self):
-        return json.dumps([ {
-            "_comment":"this is only a placeholder for ScribusGenerator default settings. more info at https://github.com/berteh/ScribusGenerator/. modify at your own risks.",
-            "scribusfile":self.__scribusSourceFile,
-            "csvfile":self.__dataSourceFile,
-            "outdir":self.__outputDirectory,
-            "outname":self.__outputFileName,
-            "outformat":self.__outputFormat,
-            "keepsla":self.__keepGeneratedScribusFiles,
-            "separator":self.__csvSeparator,
-            "single":self.__singleOutput,
-            "from":self.__firstRow,
-            "to":self.__lastRow
-        }], sort_keys=True)
+        return json.dumps({
+            '_comment':"this is only a placeholder for ScribusGenerator default settings. more info at https://github.com/berteh/ScribusGenerator/. modify at your own risks.",
+            'scribusfile':self.__scribusSourceFile,
+            'csvfile':self.__dataSourceFile,
+            'outdir':self.__outputDirectory,
+            'outname':self.__outputFileName,
+            'outformat':self.__outputFormat,
+            'keepsla':self.__keepGeneratedScribusFiles,
+            'separator':self.__csvSeparator,
+            'single':self.__singleOutput,
+            'from':self.__firstRow,
+            'to':self.__lastRow,
+            'savesettings':self.__saveSettings
+        }, sort_keys=True)
 
-    def fromString(self, string): #todo add validity/plausibility checks on all values?
+    def loadFromString(self, string): #todo add validity/plausibility checks on all values? 
         j = json.loads(string)
-        self.__scribusSourceFile = j["scribusfile"]
-        self.__dataSourceFile = j["csvfile"]
-        self.__outputDirectory = j["outdir"]
-        self.__outputFileName = j["outname"]
-        self.__outputFormat = j["outformat"]
-        self.__keepGeneratedScribusFiles = j["keepsla"]
-        self.__csvSeparator = j["separator"]
+        for k,v in j.iteritems():
+            if v == None:
+                j[k] = CONST.EMPTY
+        self.__scribusSourceFile = j['scribusfile']
+        self.__dataSourceFile = j['csvfile']
+        self.__outputDirectory = j['outdir']
+        self.__outputFileName = j['outname']
+        self.__outputFormat = j['outformat']
+        self.__keepGeneratedScribusFiles = j['keepsla']
+        self.__csvSeparator = str(j['separator']) #str()to prevent TypeError: : "delimiter" must be string, not unicode; on csv.reader()
         self.__singleOutput = j["single"]
         self.__firstRow = j["from"]
         self.__lastRow = j["to"]
+        # self.__saveSettings is NOT loaded on purpose
+        return j

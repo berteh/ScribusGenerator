@@ -115,6 +115,11 @@ dataObject = GeneratorDataObject(
     firstRow = args.firstRow,
     lastRow = args.lastRow)
 
+serial=dataObject.toString()
+#print("options serialized is: %s"%(serial))
+t=dataObject.loadFromString(serial)
+#print("test deserialized has: separator: %s and single: %s"%(t['separator'],t['single']))
+
 generator = ScribusGenerator(dataObject)
 log = generator.getLog()
 log.debug('ScribusGenerator is starting generation for '+str(len(args.infiles))+' template(s).')
