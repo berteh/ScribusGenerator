@@ -27,7 +27,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import ScribusGeneratorBackend
 from ScribusGeneratorBackend import CONST, ScribusGenerator, GeneratorDataObject
 import Tkinter
-from Tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar
+from Tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar, DISABLED, NORMAL
 import os
 import traceback
 import scribus
@@ -169,15 +169,7 @@ class GeneratorDialog:
         self.__root = root
         self.__ctrl = ctrl
 
-    #    def updateDisabled(self, value, label, button):
-    #        if (value is CONST.FORMAT_SLA) :
-    #            label.configure(state='disabled')
-    #            button.configure(state='disabled')
-    #        else :
-    #            label.configure(state='normal')
-    #            button.configure(state='normal')
-
-    
+     
     def show(self):
         self.__root.title(CONST.APP_NAME)
         mainFrame = Frame(self.__root)
@@ -258,7 +250,7 @@ class GeneratorDialog:
         outputFormatLabel = Label(outputFrame, text='Output Format:', anchor='e')
         outputFormatLabel.grid(column=2, row=2, padx=5, pady=5, sticky='e')
         outputFormatListBox = OptionMenu(outputFrame, self.__ctrl.getSelectedOutputFormat(), *self.__ctrl.getOutputFormatList(),
-            command=lambda l=keepGeneratedScribusFilesLabel, c=keepGeneratedScribusFilesCheckbox, v=self.__ctrl.getSelectedOutputFormat(): self.updateState(v, l,c))
+            command=lambda l=keepGeneratedScribusFilesLabel, c=keepGeneratedScribusFilesCheckbox, v=self.__ctrl.getSelectedOutputFormat(): self.updateState(v, l, c))
         outputFormatListBox.grid(column=3, row=2, padx=5, pady=5, sticky='w')            
        
 
@@ -276,14 +268,14 @@ class GeneratorDialog:
         self.__root.mainloop()
 
     def updateState(self, value, label, entry):
-        if(value.get()==CONST.FORMAT_PDF): # test works, from the dialog belo
+        if(value.get()==CONST.FORMAT_PDF): # test works, from the dialog below
             tkMessageBox.showinfo('Info', message="enabling checkbox")
-            label.configure(state='normal')
-            entry.configure(state='normal')
+            label.configure(state=NORMAL)
+            entry.configure(state=NORMAL)
         else:            
-            tkMessageBox.showinfo('Info', message="disabling checkbox")
-            label.configure(state='disabled')
-            entry.configure(state='disabled')
+            tkMessageBox.showinfo('Info', message="disabling the checkbox")
+            label.configure(state=DISABLED)
+            entry.configure(state=DISABLED)
         #self.__root.update_idletasks() # how to force "redraw" with grid() manager?
 
 
