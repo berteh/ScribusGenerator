@@ -26,6 +26,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import csv
 import os
 import logging
+import logging.config
 #import traceback
 import sys
 import xml.etree.ElementTree as ET  # common Python xml implementation
@@ -42,8 +43,7 @@ class CONST:
     FILE_EXTENSION_PDF = 'pdf'
     FILE_EXTENSION_SCRIBUS = 'sla'
     SEP_PATH = '/'  # In any case we use '/' as path separator on any platform
-    SEP_EXT = os.extsep
-    LOG_LEVEL = logging.DEBUG # Use logging.DEBUG for loggin any problems occured 
+    SEP_EXT = os.extsep    
     CSV_SEP = "," # CSV entry separator, comma by default
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     
@@ -51,7 +51,7 @@ class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
     def __init__(self, dataObject):
         self.__dataObject = dataObject
-        logging.basicConfig(level=CONST.LOG_LEVEL, filename='ScribusGenerator.log', format='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
+        logging.config.fileConfig("logging.conf")
         logging.info("ScribusGenerator initialized")
 
     
@@ -338,7 +338,10 @@ class ScribusGenerator:
             for col in row:
                 rowlist.append(col)
             result.append(rowlist)
-        return result    
+        return result  
+
+    def getLog(self):
+        return logging
 
 class GeneratorDataObject:
     # Data Object for transfering the settings made by the user on the UI / CLI

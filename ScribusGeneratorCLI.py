@@ -83,13 +83,6 @@ parser.add_argument('-to', '--lastrow', default=None, type=int, dest='lastRow',
     help='Last row of data to merge (not counting the header row), last row by default.')
 
 
-def message(*msg):
-    """ Utility "print" function that handles verbosity of messages
-    """
-    if (args.verbose):
-        print (''.join(msg))
-    return
-
 def ife(test, if_result, else_result):
     """ Utility if-then-else syntactic sugar
     """
@@ -101,12 +94,12 @@ def ife(test, if_result, else_result):
 args = parser.parse_args()
 
 if(args.pdfOnly or (not args.fast)):
-    print ("PDF generation is currently not available from command line, but SLA is. Simply add the '--noPdf' option to your command and it will run just fine. ")
+    print("\nPDF generation is currently not available from command line, but SLA is. \nSimply add the '--noPdf' option to your command and it will run just fine.\n")
     sys.exit()
 
 # create outDir if needed
 if ((not(args.outDir is None)) and (not os.path.exists(args.outDir))):
-    message('creating output directory: '+args.outDir)
+    #print('creating output directory: '+args.outDir)
     os.makedirs(args.outDir)
 
 #generate
@@ -123,30 +116,30 @@ dataObject = GeneratorDataObject(
     lastRow = args.lastRow)
 
 generator = ScribusGenerator(dataObject)
-message('ScribusGenerator is starting generation for '+str(len(args.infiles))+' template(s).')
+log = generator.getLog()
+log.info('ScribusGenerator is starting generation for '+str(len(args.infiles))+' template(s).')
 
 for infile in args.infiles: 
     dataObject.setScribusSourceFile(infile)
     if(args.csvFile is None): # default data file is template-sla+csv
         dataObject.setDataSourceFile(os.path.splitext(infile)[0]+".csv") 
     if not(os.path.exists(dataObject.getDataSourceFile()) and os.path.isfile(dataObject.getDataSourceFile())):
-        message('found no data file for '+os.path.split(infile)[1]+'. skipped.   was looking for '+dataObject.getDataSourceFile())
+        log.info('found no data file for '+os.path.split(infile)[1]+'. skipped.   was looking for '+dataObject.getDataSourceFile())
         continue #skip current template for lack of matching data.
     if(args.outDir is None): # default outDir is template dir
         dataObject.setOutputDirectory(os.path.split(infile)[0])
         if not os.path.exists(dataObject.getOutputDirectory()):
-            message('creating output directory: '+dataObject.getOutputDirectory())
+            log.info('creating output directory: '+dataObject.getOutputDirectory())
             os.makedirs(dataObject.getOutputDirectory())
     if(args.single and (len(args.infiles)>1)):
         dataObject.setOutputFileName(args.outName+'__'+os.path.split(infile)[1])
-    message('generating all files for '+os.path.split(infile)[1]+' in directory '+dataObject.getOutputDirectory())
+    log.info('generating all files for '+os.path.split(infile)[1]+' in directory '+dataObject.getOutputDirectory())
     try:
         generator.run()
-        message('... done')
-        message('Scribus Generation completed. Congrats!')
+        log.info("Scribus Generation completed. Congrats!")
     except ValueError as e:
-        print ("\nerror: could likely not replace a variable with its value.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n")
+        log.error("\nerror: could likely not replace a variable with its value.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n")
     except IndexError as e:
-        print ("\nerror: could likely not find the value for one variable.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n")
+        log.error("\nerror: could likely not find the value for one variable.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n")
     except Exception:
-        print ("\nerror: "+traceback.format_exc())
+        log.error("\nerror: "+traceback.format_exc())
