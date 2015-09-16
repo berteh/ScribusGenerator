@@ -196,14 +196,16 @@ class GeneratorDialog:
         scribusSourceFileLabel.grid(column=0, row=0, padx=5, pady=5, sticky='w')
         scribusSourceFileEntry = Entry(inputFrame, textvariable=self.__ctrl.getScribusSourceFileEntryVariable())
         scribusSourceFileEntry.grid(column=1, columnspan=4, row=0, padx=5, pady=5, sticky='ew')
-        scribusSourceFileButton = Button(inputFrame, text='...', command=self.__ctrl.scribusSourceFileEntryVariableHandler)
+        scribusSourceFileButton = Button(inputFrame, text='...', 
+            command=self.__ctrl.scribusSourceFileEntryVariableHandler)
         scribusSourceFileButton.grid(column=5, row=0, padx=5, pady=5, sticky='e')
         
         dataSourceFileLabel = Label(inputFrame, text='Data File:', width=15, anchor='w')
         dataSourceFileLabel.grid(column=0, row=1, padx=5, pady=5, sticky='w')
         dataSourceFileEntry = Entry(inputFrame, textvariable=self.__ctrl.getDataSourceFileEntryVariable())
         dataSourceFileEntry.grid(column=1, columnspan=4, row=1, padx=5, pady=5, sticky='ew')
-        dataSourceFileButton = Button(inputFrame, text='...', command=self.__ctrl.dataSourceFileEntryVariableHandler)
+        dataSourceFileButton = Button(inputFrame, text='...', 
+            command=self.__ctrl.dataSourceFileEntryVariableHandler)
         dataSourceFileButton.grid(column=5, row=1, padx=5, pady=5, sticky='e')
         
         dataSeparatorLabel = Label(inputFrame, text='Data Field Separator:', width=15, anchor='w')
@@ -228,7 +230,8 @@ class GeneratorDialog:
         outputDirectoryLabel.grid(column=0, row=0, padx=5, pady=5, sticky='w')
         outputDirectoryEntry = Entry(outputFrame, textvariable=self.__ctrl.getOutputDirectoryEntryVariable())
         outputDirectoryEntry.grid(column=1, columnspan=4, row=0, padx=5, pady=5, sticky='ew')
-        outputDirectoryButton = Button(outputFrame, text='...', command=self.__ctrl.outputDirectoryEntryVariableHandler)
+        outputDirectoryButton = Button(outputFrame, text='...', 
+            command=self.__ctrl.outputDirectoryEntryVariableHandler)
         outputDirectoryButton.grid(column=5, row=0, padx=5, pady=5, sticky='e')
         
         outputFileNameLabel = Label(outputFrame, text='Output File Name:', width=15, anchor='w')
@@ -237,20 +240,20 @@ class GeneratorDialog:
         outputFileNameEntry.grid(column=1, columnspan=4, row=1, padx=5, pady=5, sticky='ew')
          
 
-        keepGeneratedScribusFilesLabel = Label(outputFrame, text='Keep Scribus Files:', width=15, anchor='e')
-        keepGeneratedScribusFilesLabel.grid(column=4, row=2, padx=5, pady=5, sticky='e')
-        keepGeneratedScribusFilesCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getKeepGeneratedScribusFilesCheckboxVariable(), anchor='w')
-        keepGeneratedScribusFilesCheckbox.grid(column=5, row=2, padx=5, pady=5, sticky='w')
+        self.keepGeneratedScribusFilesLabel = Label(outputFrame, text='Keep Scribus Files:', width=15, anchor='e')
+        self.keepGeneratedScribusFilesLabel.grid(column=4, row=2, padx=5, pady=5, sticky='e')
+        self.keepGeneratedScribusFilesCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getKeepGeneratedScribusFilesCheckboxVariable(), anchor='w')
+        self.keepGeneratedScribusFilesCheckbox.grid(column=5, row=2, padx=5, pady=5, sticky='w')
 
         mergeOutputLabel = Label(outputFrame, text='Merge in Single File:', width=15, anchor='w')
         mergeOutputLabel.grid(column=0, row=2, padx=5, pady=5, sticky='w')
         mergeOutputCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getMergeOutputCheckboxVariable())
         mergeOutputCheckbox.grid(column=1, row=2, padx=5, pady=5, sticky='w')  
-
+        
         outputFormatLabel = Label(outputFrame, text='Output Format:', anchor='e')
         outputFormatLabel.grid(column=2, row=2, padx=5, pady=5, sticky='e')
         outputFormatListBox = OptionMenu(outputFrame, self.__ctrl.getSelectedOutputFormat(), *self.__ctrl.getOutputFormatList(),
-            command=lambda l=keepGeneratedScribusFilesLabel, c=keepGeneratedScribusFilesCheckbox, v=self.__ctrl.getSelectedOutputFormat(): self.updateState(v, l, c))
+            command=lambda v=self.__ctrl.getSelectedOutputFormat(): self.updateState(v))
         outputFormatListBox.grid(column=3, row=2, padx=5, pady=5, sticky='w')            
        
 
@@ -267,17 +270,13 @@ class GeneratorDialog:
         self.__root.grid()
         self.__root.mainloop()
 
-    def updateState(self, value, label, entry):
-        if(value.get()==CONST.FORMAT_PDF): # test works, from the dialog below
-            tkMessageBox.showinfo('Info', message="enabling checkbox")
-            label.configure(state=NORMAL)
-            entry.configure(state=NORMAL)
+    def updateState(self, value):
+        if(value == CONST.FORMAT_PDF):
+            self.keepGeneratedScribusFilesLabel.configure(state=NORMAL)
+            self.keepGeneratedScribusFilesCheckbox.configure(state=NORMAL)
         else:            
-            tkMessageBox.showinfo('Info', message="disabling the checkbox")
-            label.configure(state=DISABLED)
-            entry.configure(state=DISABLED)
-        #self.__root.update_idletasks() # how to force "redraw" with grid() manager?
-
+            self.keepGeneratedScribusFilesLabel.configure(state=DISABLED)
+            self.keepGeneratedScribusFilesCheckbox.configure(state=DISABLED)
 
 def main(argv):
     root = Tkinter.Tk()
