@@ -121,7 +121,7 @@ class ScribusGenerator:
                         storageElt = ET.Element("JAVA", {"NAME":CONST.STORAGE_NAME})
                         docElt.insert(scriptPos, storageElt)
                     storageElt.set("SCRIPT",serial)
-                    tree.write(self.__dataObject.getScribusSourceFile()) #todo check if scribus reloads (or overwrites :/ ) when doc is opened
+                    tree.write(self.__dataObject.getScribusSourceFile()) #todo check if scribus reloads (or overwrites :/ ) when doc is opened, opt use API to add a script if there's an open doc.
 
                 templateElt = self.overwriteAttributesFromSGAttributes(root)                 
                
@@ -359,8 +359,18 @@ class ScribusGenerator:
     def getLog(self):
         return logging
 
-    
-
+    def getSavedSettings(self):
+        logging.debug("parsing scribus source file %s for user settings"%(self.__dataObject.getScribusSourceFile()))
+        try:
+            t = ET.parse(self.__dataObject.getScribusSourceFile())
+            r = t.getroot()        
+            doc = r.find('DOCUMENT')
+            storage = doc.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')                    
+            return storage.get("SCRIPT")
+        except Exception, e:
+            logging.debug("could not load the user settings for Scribus Generator, skipping. more info:\n%s"%e.message)  
+            return None
+        
 
 class GeneratorDataObject:
     # Data Object for transfering the settings made by the user on the UI / CLI
@@ -456,11 +466,11 @@ class GeneratorDataObject:
     def setSaveSettings(self, value):
         self.__saveSettings = value
 
-    # (de)Serialize
+    # (de)Serialize all options but scribusSourceFile and saveSettings
     def toString(self):
         return json.dumps({
             '_comment':"this is an automated placeholder for ScribusGenerator default settings. more info at https://github.com/berteh/ScribusGenerator/. modify at your own risks.",
-            'scribusfile':self.__scribusSourceFile,
+            #'scribusfile':self.__scribusSourceFile NOT saved
             'csvfile':self.__dataSourceFile,
             'outdir':self.__outputDirectory,
             'outname':self.__outputFileName,
@@ -470,7 +480,7 @@ class GeneratorDataObject:
             'single':self.__singleOutput,
             'from':self.__firstRow,
             'to':self.__lastRow,
-            'savesettings':self.__saveSettings
+            #'savesettings':self.__saveSettings NOT saved
         }, sort_keys=True)
 
     def loadFromString(self, string): #todo add validity/plausibility checks on all values? 
@@ -478,7 +488,7 @@ class GeneratorDataObject:
         for k,v in j.iteritems():
             if v == None:
                 j[k] = CONST.EMPTY
-        self.__scribusSourceFile = j['scribusfile']
+        #self.__scribusSourceFile NOT loaded
         self.__dataSourceFile = j['csvfile']
         self.__outputDirectory = j['outdir']
         self.__outputFileName = j['outname']
@@ -488,5 +498,5 @@ class GeneratorDataObject:
         self.__singleOutput = j["single"]
         self.__firstRow = j["from"]
         self.__lastRow = j["to"]
-        # self.__saveSettings is NOT loaded on purpose, to not be continuously rewritten
+        # self.__saveSettings NOT loaded
         return j
