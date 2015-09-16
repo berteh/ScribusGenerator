@@ -111,17 +111,14 @@ class ScribusGenerator:
                 #save settings
                 if (self.__dataObject.getSaveSettings()):                                    
                     serial=self.__dataObject.toString()
-                    logging.debug("saving settings as: %s"%serial)
+                    logging.debug("saving current Scribus Generator settings in your source file")# as: %s"%serial)
                     docElt = root.find('DOCUMENT')
-                    if (docElt is None):
-                        logging.error("could not find DOC element")
-                        sys.exit()
-                    storageElt = docElt.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')  
+                    storageElt = docElt.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')
                     if (storageElt is None):
-                        colorElt = docElt.find('./COLOR')                     
-                        scriptPos = docElt.getchildren().index(colorElt) - 1
+                        colorElt = docElt.find('./COLOR[1]')                     
+                        scriptPos = docElt.getchildren().index(colorElt)
                         logging.debug("creating new storage element in SLA template at position %s"%scriptPos)
-                        storageElt = ET.Element("SCRIPT", {"NAME":CONST.STORAGE_NAME})
+                        storageElt = ET.Element("JAVA", {"NAME":CONST.STORAGE_NAME})
                         docElt.insert(scriptPos, storageElt)
                     storageElt.set("SCRIPT",serial)
                     tree.write(self.__dataObject.getScribusSourceFile()) #todo check if scribus reloads (or overwrites :/ ) when doc is opened
@@ -462,7 +459,7 @@ class GeneratorDataObject:
     # (de)Serialize
     def toString(self):
         return json.dumps({
-            '_comment':"this is only a placeholder for ScribusGenerator default settings. more info at https://github.com/berteh/ScribusGenerator/. modify at your own risks.",
+            '_comment':"this is an automated placeholder for ScribusGenerator default settings. more info at https://github.com/berteh/ScribusGenerator/. modify at your own risks.",
             'scribusfile':self.__scribusSourceFile,
             'csvfile':self.__dataSourceFile,
             'outdir':self.__outputDirectory,
@@ -487,9 +484,9 @@ class GeneratorDataObject:
         self.__outputFileName = j['outname']
         self.__outputFormat = j['outformat']
         self.__keepGeneratedScribusFiles = j['keepsla']
-        self.__csvSeparator = str(j['separator']) #str()to prevent TypeError: : "delimiter" must be string, not unicode; on csv.reader()
+        self.__csvSeparator = str(j['separator']) #str()to prevent TypeError: : "delimiter" must be string, not unicode, in csv.reader() call
         self.__singleOutput = j["single"]
         self.__firstRow = j["from"]
         self.__lastRow = j["to"]
-        # self.__saveSettings is NOT loaded on purpose
+        # self.__saveSettings is NOT loaded on purpose, to not be continuously rewritten
         return j
