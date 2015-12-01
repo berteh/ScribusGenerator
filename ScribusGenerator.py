@@ -27,7 +27,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import ScribusGeneratorBackend
 from ScribusGeneratorBackend import CONST, ScribusGenerator, GeneratorDataObject
 import Tkinter
-from Tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar
+from Tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar, DISABLED, NORMAL
 import os
 import traceback
 import scribus
@@ -270,8 +270,8 @@ class GeneratorDialog:
         outputFileNameLabel = Label(outputFrame, text='Output File Name:', width=15, anchor='w')
         outputFileNameLabel.grid(column=0, row=1, padx=5, pady=5, sticky='w')
         outputFileNameEntry = Entry(outputFrame, textvariable=self.__ctrl.getOutputFileNameEntryVariable())
-        outputFileNameEntry.grid(column=1, columnspan=3, row=1, padx=5, pady=5, sticky='ew')         
-        
+        outputFileNameEntry.grid(column=1, columnspan=3, row=1, padx=5, pady=5, sticky='ew')
+
         saveLabel = Label(outputFrame, text='Save Settings:', width=15, anchor='w')
         saveLabel.grid(column=4, row=1, padx=5, pady=5, sticky='w')
         saveCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getSaveCheckboxVariable())
@@ -282,17 +282,17 @@ class GeneratorDialog:
         mergeOutputCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getMergeOutputCheckboxVariable())
         mergeOutputCheckbox.grid(column=1, row=2, padx=5, pady=5, sticky='w')  
 
+        self.keepGeneratedScribusFilesLabel = Label(outputFrame, text='Keep Scribus Files:', width=15, anchor='e')
+        self.keepGeneratedScribusFilesLabel.grid(column=4, row=2, padx=5, pady=5, sticky='e')
+        self.keepGeneratedScribusFilesCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getKeepGeneratedScribusFilesCheckboxVariable(), anchor='w')
+        self.keepGeneratedScribusFilesCheckbox.grid(column=5, row=2, padx=5, pady=5, sticky='w')
+
         outputFormatLabel = Label(outputFrame, text='Output Format:', anchor='e')
         outputFormatLabel.grid(column=2, row=2, padx=5, pady=5, sticky='e')
-        outputFormatListBox = OptionMenu(outputFrame, self.__ctrl.getSelectedOutputFormat(), *self.__ctrl.getOutputFormatList()) #,
-            #command=lambda l=keepGeneratedScribusFilesLabel, c=keepGeneratedScribusFilesCheckbox, v=self.__ctrl.getSelectedOutputFormat(): self.updateDisabled(v, l,c))
+        outputFormatListBox = OptionMenu(outputFrame, self.__ctrl.getSelectedOutputFormat(), *self.__ctrl.getOutputFormatList(),
+            command=lambda v=self.__ctrl.getSelectedOutputFormat(): self.updateState(v))
         outputFormatListBox.grid(column=3, row=2, padx=5, pady=5, sticky='w')
-      
-        keepGeneratedScribusFilesLabel = Label(outputFrame, text='Keep Scribus Files:', width=15, anchor='e')
-        keepGeneratedScribusFilesLabel.grid(column=4, row=2, padx=5, pady=5, sticky='e')
-        keepGeneratedScribusFilesCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getKeepGeneratedScribusFilesCheckboxVariable(), anchor='w')
-        keepGeneratedScribusFilesCheckbox.grid(column=5, row=2, padx=5, pady=5, sticky='w')
-       
+
 
         # Bottom Buttons
         generateButton = Button(buttonFrame, text='✔\nGenerate', width=10, command=self.__ctrl.buttonOkHandler)
@@ -301,12 +301,20 @@ class GeneratorDialog:
         cancelButton.grid(column=1, row=0, padx=5, pady=5, sticky='e')
         helpButton = Button(buttonFrame, text='❓\nHelp', width=7, command=self.__ctrl.helpButtonHandler)
         helpButton.grid(column=3, row=0, padx=5, pady=5, sticky='e')
-        
-                
+
+
         # Finally show the Generator Dialog
         mainFrame.grid()
         self.__root.grid()
         self.__root.mainloop()
+
+    def updateState(self, value):
+        if(value == CONST.FORMAT_PDF):
+            self.keepGeneratedScribusFilesLabel.configure(state=NORMAL)
+            self.keepGeneratedScribusFilesCheckbox.configure(state=NORMAL)
+        else:
+            self.keepGeneratedScribusFilesLabel.configure(state=DISABLED)
+            self.keepGeneratedScribusFilesCheckbox.configure(state=DISABLED)
 
 def main(argv):
     root = Tkinter.Tk()
