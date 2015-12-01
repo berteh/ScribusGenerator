@@ -32,6 +32,7 @@ import sys
 import xml.etree.ElementTree as ET  # common Python xml implementation
 #import tempfile
 import json
+import re
 
 class CONST:
     # Constants for general usage
@@ -48,6 +49,12 @@ class CONST:
     CSV_SEP = "," # CSV entry separator, comma by default
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
+    REMOVE_EMPTY_LINES = 1
+    # 1. clean text in which some variable-like text is not substituted (ie: known or unknown variable):
+    #   <ITEXT CH="empty %VAR_empty% variable should not show" FONT="Arial Regular" />
+    # 2. removing <ITEXT> with empty @CH after step 1
+    # 3. remove any <PAGEOBJECT> that has no <ITEXT> child left
+
     
 class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
@@ -147,6 +154,7 @@ class ScribusGenerator:
                         logging.debug("merging content from row #%s"%(index))
                         tmpElt = ET.fromstring(outContent).find('DOCUMENT')
                         shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, objscount, version)
+                        #todo remove empties from shiftedElts
                         docElt.extend(shiftedElts)                                                
                 else:
                     outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
@@ -159,7 +167,8 @@ class ScribusGenerator:
         # write single sla
         if (self.__dataObject.getSingleOutput()):            
             scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), self.__dataObject.getOutputFileName(), CONST.FILE_EXTENSION_SCRIBUS)
-            outTree = ET.ElementTree(outputElt)            
+            outTree = ET.ElementTree(outputElt) 
+            #todo remove empties from tree
             outTree.write(scribusOutputFilePath, encoding="UTF-8")
             outputFileNames.append(self.__dataObject.getOutputFileName())
             logging.info("scribus file created: %s"%(scribusOutputFilePath)) 
@@ -213,7 +222,7 @@ class ScribusGenerator:
         # modifies root such that
         # attributes have been rewritten from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
         #
-        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FCOLOR)   
+        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FONT)   
 
         for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):
             sga = pageobject.find(".//ItemAttribute[@Type='SGAttribute']")            
@@ -332,7 +341,7 @@ class ScribusGenerator:
         return result
     
     
-    def replaceVariablesWithCsvData(self, headerRow, row, lines): # lines as list of strings
+    def replaceVariablesWithCsvData(self, headerRow, row, lines, clean=CONST.REMOVE_EMPTY_LINES): # lines as list of strings
         result = ''
         for line in lines: # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
             i = 0
@@ -342,6 +351,9 @@ class ScribusGenerator:
                 if (not(line.strip().startswith('<COLOR '))): # TODO fix this detection does not work on 1.5.1svn SLA file
                     line = line.replace(tmp, cell) # string.replace(old, new)
                 i = i + 1
+            if (clean):
+                #remove & trim any %VAR_% like string.
+                line = re.sub(r"\s*%VAR_\w*%\s*", "", line)
             result = result + line
         return result
          
