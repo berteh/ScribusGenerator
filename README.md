@@ -166,6 +166,8 @@ Note only the SLA generation works from the command line. PDF generation is at t
 
 Find all needed information from the script help: ``./ScribusGeneratorCLI.py --help``
 
+**WARNING!** The short option for a single output has changed to ``-m`` (merge). The former ``-s`` option is now used to save your settings from the command line, as explained below.
+
     positional arguments:
       infiles               SLA file(s) to use as template(s) for the generation,
                             wildcards are supported
@@ -191,17 +193,19 @@ Find all needed information from the script help: ``./ScribusGeneratorCLI.py --h
       -p, --pdfOnly, --noSla
                             discard Scribus SLA, generate PDF only. This option is
                             not used when --fast or --noPdf is used.
-      -s, --single          generate a single output (SLA and/or PDF) file that
+      -m, --merge, --single
+                            generate a single output (SLA and/or PDF) file that
                             combines all data rows, for each source file.
-      -v, --verbose         print detailed progress information on the command
-                            line.
       -from FIRSTROW, --firstrow FIRSTROW
                             Starting row of data to merge (not counting the header
                             row), first row by default.
       -to LASTROW, --lastrow LASTROW
                             Last row of data to merge (not counting the header
                             row), last row by default.
-
+      -s, --save            Save current generator settings in (each) Scribus
+                            input file(s).
+      -l, --load            Load generator settings from (each) Scribus input
+                            file(s). Overloads all options (but -h).
 
 
     requirements
@@ -209,26 +213,28 @@ Find all needed information from the script help: ``./ScribusGeneratorCLI.py --h
 
     examples:
       
-      ScribusGeneratorCLI.py my-template.sla --noPdf
-        generates Scribus files for each line of 'my-template.csv'
-        by subsituting the provides values into 'my-template.sla' to the 
-        current directory.
+    ScribusGeneratorCLI.py my-template.sla --noPdf
+      generates Scribus (and no PDF) files for each line of 'my-template.csv'
+      by subsituting the provides values into 'my-template.sla' to the 
+      current directory.
 
-      ScribusGeneratorCLI.py --verbose --fast --outDir "/home/user/tmp" example/Business_Card.sla 
-        generates Scribus files for each line of example/Business_Card.csv
-        in the "/home/user/tmp" subdirectory.
+    ScribusGeneratorCLI.py --fast --outDir "/home/user/tmp" example/Business_Card.sla 
+      generates Scribus files for each line of example/Business_Card.csv
+      in the "/home/user/tmp" subdirectory.
 
-      ScribusGeneratorCLI.py --verbose --fast --outName "card_%VAR_email%"  */*.sla 
-        generates Scribus files for each csv line of each sla file in any subdirectory
-        that has a csv file with a similar name in the same directory.
-        Generated files will have a name constructed from the "email" field
-        data, and are stored in their respective sla file directory.
+    ScribusGeneratorCLI.py --fast --outName "card_%VAR_email%"  */*.sla 
+      generates Scribus files for each sla file in any subdirectory
+      that has a csv file with a similar name in the same directory.
+      Generated files will have a name constructed from the "email" field
+      data, and are stored in their respective sla file directory.
 
-      ScribusGeneratorCLI.py --single -c translations.csv -vfn doc_  lang/*.sla 
-        generates a single Scribus file for each sla file in the lang/ subdirectory
-        using all rows of the translations.csv data file.
-        Generated files will have a name constructed from the "doc_" prefix
-        and the input sla file name.
+    ScribusGeneratorCLI.py --single -c translations.csv -vfn doc_  lang/*.sla 
+      generates a single Scribus file for each sla file in the lang/ subdirectory
+      using all rows of the translations.csv data file.
+      Generated files will have a name constructed from the "doc_" prefix
+      and the input sla file name.
+
+
 
 
 Known Issues
