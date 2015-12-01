@@ -60,8 +60,7 @@ class GeneratorControl:
             doc = scribus.getDocName()
             self.__scribusSourceFileEntryVariable.set(doc)
             self.__outputDirectoryEntryVariable.set(os.path.split(doc)[0])
-            self.__dataSourceFileEntryVariable.set(os.path.splitext(doc)[0]+".csv")
-            # + load settings from file
+            self.__dataSourceFileEntryVariable.set(os.path.splitext(doc)[0]+".csv")           
         
     
     def getDataSourceFileEntryVariable(self):
@@ -70,9 +69,7 @@ class GeneratorControl:
     def dataSourceFileEntryVariableHandler(self):
         result = tkFileDialog.askopenfilename(title='Choose...', defaultextension='.csv', filetypes=[('CSV', '*.csv *.CSV')])
         if result:
-            self.__dataSourceFileEntryVariable.set(result)
-            #load settings on file open:
-            self.scribusLoadSettingsHandler()
+            self.__dataSourceFileEntryVariable.set(result)            
         
     def getScribusSourceFileEntryVariable(self):
         return self.__scribusSourceFileEntryVariable
@@ -174,7 +171,7 @@ class GeneratorControl:
     def scribusLoadSettingsHandler(self):
         slaFile = self.__scribusSourceFileEntryVariable.get()
 
-        if(slaFile is CONST.EMPTY): # or file does not exist... or better: get error from GeneratorDataObject
+        if(slaFile is CONST.EMPTY):
             tkMessageBox.showinfo('Choose a file', message="Set a valid scribus input file prior to loading its settings.")
             return
         dataObject = GeneratorDataObject(   
@@ -183,8 +180,7 @@ class GeneratorControl:
         generator = ScribusGenerator(dataObject)    
         saved = generator.getSavedSettings()
         if (saved):
-            dataObject.loadFromString(saved)
-            #load 
+            dataObject.loadFromString(saved)            
             #self.__scribusSourceFileEntryVariable = StringVar() #not loaded
             self.__dataSourceFileEntryVariable.set(dataObject.getDataSourceFile())
             self.__dataSeparatorEntryVariable.set(dataObject.getCsvSeparator())
@@ -217,7 +213,7 @@ class GeneratorDialog:
     def show(self):
         self.__root.title(CONST.APP_NAME)
         mainFrame = Frame(self.__root)
-        # Make Dialog stretchable (to EAST and WEST)
+        
         top = mainFrame.winfo_toplevel()
         top.rowconfigure(0, weight=1)
         top.columnconfigure(0, weight=1)
@@ -246,7 +242,6 @@ class GeneratorDialog:
         scribusSourceFileButton.grid(column=4, row=0, padx=5, pady=5, sticky='e')
         scribusLoadSettingsButton = Button(inputFrame, text='↺', command=self.__ctrl.scribusLoadSettingsHandler) # ⟲ ⟳ ↻ ↺ ⌂ ⌘ ⎗
         scribusLoadSettingsButton.grid(column=5, row=0, padx=5, pady=5, sticky='e')
-        
 
         dataSourceFileLabel = Label(inputFrame, text='Data File:', width=15, anchor='w')
         dataSourceFileLabel.grid(column=0, row=1, padx=5, pady=5, sticky='w')
@@ -305,10 +300,9 @@ class GeneratorDialog:
         keepGeneratedScribusFilesLabel.grid(column=4, row=2, padx=5, pady=5, sticky='e')
         keepGeneratedScribusFilesCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getKeepGeneratedScribusFilesCheckboxVariable(), anchor='w')
         keepGeneratedScribusFilesCheckbox.grid(column=5, row=2, padx=5, pady=5, sticky='w')
-
        
 
-        # Buttons to Cancel or to Run the Generator with the given Settings
+        # Bottom Buttons
         generateButton = Button(buttonFrame, text='✔\nGenerate', width=10, command=self.__ctrl.buttonOkHandler)
         generateButton.grid(column=0, row=0, padx=5, pady=5, sticky='w')
         cancelButton = Button(buttonFrame, text='✘\nCancel', width=10, command=self.__ctrl.buttonCancelHandler)
@@ -316,8 +310,7 @@ class GeneratorDialog:
         helpButton = Button(buttonFrame, text='❓\nHelp', width=7, command=self.__ctrl.helpButtonHandler)
         helpButton.grid(column=3, row=0, padx=5, pady=5, sticky='e')
         
-        
-        
+                
         # Finally show the Generator Dialog
         mainFrame.grid()
         self.__root.grid()

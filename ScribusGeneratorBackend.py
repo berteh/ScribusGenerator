@@ -500,5 +500,5 @@ class GeneratorDataObject:
         self.__firstRow = j["from"]
         self.__lastRow = j["to"]
         # self.__saveSettings NOT loaded
-        logging.debug("loaded %d user settings"%(len(j)))
+        logging.debug("loaded %d user settings"%(len(j)-1)) #-1 for the artificial "comment"
         return j
