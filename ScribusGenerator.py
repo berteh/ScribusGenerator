@@ -27,8 +27,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import ScribusGeneratorBackend
 from ScribusGeneratorBackend import CONST, ScribusGenerator, GeneratorDataObject
 import Tkinter
-from Tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar, DISABLED, NORMAL
-import os
+from Tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar, DISABLED, NORMAL, PhotoImage
 import traceback
 import scribus
 import sys
@@ -200,6 +199,8 @@ class GeneratorDialog:
     def __init__(self, root, ctrl):
         self.__root = root
         self.__ctrl = ctrl
+        self.__ico=PhotoImage(file='./pic/ScribusGenerator_logo.png')
+        root.tk.call('wm', 'iconphoto', root._w, '-default', self.__ico)
 
      
     def show(self):
@@ -303,10 +304,10 @@ class GeneratorDialog:
         helpButton.grid(column=3, row=0, padx=5, pady=5, sticky='e')
 
 
-        # Finally show the Generator Dialog
+        # general layout
         mainFrame.grid()
         self.__root.grid()
-        self.__root.mainloop()
+       
 
     def updateState(self, value):
         if(value == CONST.FORMAT_PDF):
@@ -319,8 +320,9 @@ class GeneratorDialog:
 def main(argv):
     root = Tkinter.Tk()
     ctrl = GeneratorControl(root)
-    dlg = GeneratorDialog(root, ctrl)
+    dlg = GeneratorDialog(root, ctrl)    
     dlg.show()
+    root.mainloop()
     
 
 def main_wrapper(argv):
@@ -329,7 +331,8 @@ def main_wrapper(argv):
             scribus.setRedraw(False)
         scribus.statusMessage(CONST.APP_NAME)
         scribus.progressReset()
-        main(argv)
+        main(argv)        
+
     finally:
         # Exit neatly even if the script terminated with an exception,
         # so we leave the progress bar and status bar blank and make sure
