@@ -50,6 +50,7 @@ class GeneratorControl:
         self.__selectedOutputFormat.set(CONST.FORMAT_PDF)
         self.__keepGeneratedScribusFilesCheckboxVariable = IntVar()
         self.__mergeOutputCheckboxVariable = IntVar()
+        self.__saveCheckboxVariable = IntVar()
         self.__fromVariable = StringVar()
         self.__fromVariable.set(CONST.EMPTY)
         self.__toVariable = StringVar()
@@ -60,6 +61,7 @@ class GeneratorControl:
             self.__scribusSourceFileEntryVariable.set(doc)
             self.__outputDirectoryEntryVariable.set(os.path.split(doc)[0])
             self.__dataSourceFileEntryVariable.set(os.path.splitext(doc)[0]+".csv")
+            # + load settings from file
         
     
     def getDataSourceFileEntryVariable(self):
@@ -69,6 +71,8 @@ class GeneratorControl:
         result = tkFileDialog.askopenfilename(title='Choose...', defaultextension='.csv', filetypes=[('CSV', '*.csv *.CSV')])
         if result:
             self.__dataSourceFileEntryVariable.set(result)
+            #load settings on file open:
+            self.scribusLoadSettingsHandler()
         
     def getScribusSourceFileEntryVariable(self):
         return self.__scribusSourceFileEntryVariable
@@ -107,6 +111,9 @@ class GeneratorControl:
     def getMergeOutputCheckboxVariable(self):
         return self.__mergeOutputCheckboxVariable
   
+    def getSaveCheckboxVariable(self):
+        return self.__saveCheckboxVariable
+
     def getFromVariable(self):
         return self.__fromVariable
   
@@ -136,7 +143,8 @@ class GeneratorControl:
             csvSeparator = self.__dataSeparatorEntryVariable.get(), 
             singleOutput = self.__mergeOutputCheckboxVariable.get(),
             firstRow = self.__fromVariable.get(),
-            lastRow = self.__toVariable.get()
+            lastRow = self.__toVariable.get(),
+            saveSettings = self.__saveCheckboxVariable.get()
             )
         return result
     
@@ -162,6 +170,34 @@ class GeneratorControl:
     
     def helpButtonHandler(self):
         tkMessageBox.showinfo('Help', message="More information at :\nhttps://github.com/berteh/ScribusGenerator/")
+        
+    def scribusLoadSettingsHandler(self):
+        slaFile = self.__scribusSourceFileEntryVariable.get()
+
+        if(slaFile is CONST.EMPTY): # or file does not exist... or better: get error from GeneratorDataObject
+            tkMessageBox.showinfo('Choose a file', message="Set a valid scribus input file prior to loading its settings.")
+            return
+        dataObject = GeneratorDataObject(   
+            scribusSourceFile = slaFile
+        )
+        generator = ScribusGenerator(dataObject)    
+        saved = generator.getSavedSettings()
+        if (saved):
+            dataObject.loadFromString(saved)
+            #load 
+            #self.__scribusSourceFileEntryVariable = StringVar() #not loaded
+            self.__dataSourceFileEntryVariable.set(dataObject.getDataSourceFile())
+            self.__dataSeparatorEntryVariable.set(dataObject.getCsvSeparator())
+            self.__outputDirectoryEntryVariable.set(dataObject.getOutputDirectory())
+            self.__outputFileNameEntryVariable.set(dataObject.getOutputFileName())
+            self.__selectedOutputFormat.set(dataObject.getOutputFormat())
+            self.__keepGeneratedScribusFilesCheckboxVariable.set(dataObject.getKeepGeneratedScribusFiles())
+            self.__mergeOutputCheckboxVariable.set(dataObject.getSingleOutput())
+            #self.__saveCheckboxVariable = IntVar() #not loaded
+            self.__fromVariable.set(dataObject.getFirstRow())
+            self.__toVariable.set(dataObject.getLastRow())
+        else:
+            tkMessageBox.showinfo('No Settings', message="Input scribus file contains no former saved settings.")
  
 class GeneratorDialog:
     # The UI to configure the settings by the user
@@ -191,27 +227,32 @@ class GeneratorDialog:
         
         # Three Sections: Input-Settings, Output-Settings and Buttons
         inputFrame = LabelFrame(mainFrame, text='Input Settings')
-        inputFrame.columnconfigure(1, weight=1)
-        inputFrame.grid(column=0, row=0, padx=5, pady=5, sticky='ew')
+        inputFrame.columnconfigure(2, weight=1)
+        inputFrame.grid(column=0, row=0, padx=5, pady=5, sticky='ew')        
         outputFrame = LabelFrame(mainFrame, text='Output Settings')
-        outputFrame.columnconfigure(1, weight=1)
+        outputFrame.columnconfigure(2, weight=1)
         outputFrame.grid(column=0, row=1, padx=5, pady=5, sticky='ew')
         buttonFrame = Frame(mainFrame)
-        buttonFrame.grid(column=0, row=2, padx=5, pady=5, sticky='e')
+        buttonFrame.columnconfigure(3, weight=1)
+        buttonFrame.grid(column=0, row=2, padx=5, pady=5, sticky='ew')        
+
         
         # Input-Settings
         scribusSourceFileLabel = Label(inputFrame, text='Scribus File:', width=15, anchor='w')
         scribusSourceFileLabel.grid(column=0, row=0, padx=5, pady=5, sticky='w')
         scribusSourceFileEntry = Entry(inputFrame, textvariable=self.__ctrl.getScribusSourceFileEntryVariable())
-        scribusSourceFileEntry.grid(column=1, columnspan=4, row=0, padx=5, pady=5, sticky='ew')
-        scribusSourceFileButton = Button(inputFrame, text='...', command=self.__ctrl.scribusSourceFileEntryVariableHandler)
-        scribusSourceFileButton.grid(column=5, row=0, padx=5, pady=5, sticky='e')
+        scribusSourceFileEntry.grid(column=1, columnspan=3, row=0, padx=5, pady=5, sticky='ew')
+        scribusSourceFileButton = Button(inputFrame, text='⏏', command=self.__ctrl.scribusSourceFileEntryVariableHandler)
+        scribusSourceFileButton.grid(column=4, row=0, padx=5, pady=5, sticky='e')
+        scribusLoadSettingsButton = Button(inputFrame, text='↺', command=self.__ctrl.scribusLoadSettingsHandler) # ⟲ ⟳ ↻ ↺ ⌂ ⌘ ⎗
+        scribusLoadSettingsButton.grid(column=5, row=0, padx=5, pady=5, sticky='e')
         
+
         dataSourceFileLabel = Label(inputFrame, text='Data File:', width=15, anchor='w')
         dataSourceFileLabel.grid(column=0, row=1, padx=5, pady=5, sticky='w')
         dataSourceFileEntry = Entry(inputFrame, textvariable=self.__ctrl.getDataSourceFileEntryVariable())
         dataSourceFileEntry.grid(column=1, columnspan=4, row=1, padx=5, pady=5, sticky='ew')
-        dataSourceFileButton = Button(inputFrame, text='...', command=self.__ctrl.dataSourceFileEntryVariableHandler)
+        dataSourceFileButton = Button(inputFrame, text='⏏', command=self.__ctrl.dataSourceFileEntryVariableHandler)
         dataSourceFileButton.grid(column=5, row=1, padx=5, pady=5, sticky='e')
         
         dataSeparatorLabel = Label(inputFrame, text='Data Field Separator:', width=15, anchor='w')
@@ -229,9 +270,6 @@ class GeneratorDialog:
         toEntry = Entry(inputFrame, width=3, textvariable=self.__ctrl.getToVariable())
         toEntry.grid(column=5, row=2, padx=5, pady=5, sticky='w')
 
-        #rangeHelp = Label(inputFrame, text='(set to 0 to neglect)', width=30, anchor='w')
-        #rangeHelp.grid(column=4, columnspan=2,  row=4, padx=5, pady=5, sticky='w')
-   
 
 
         # Output-Settings
@@ -239,14 +277,19 @@ class GeneratorDialog:
         outputDirectoryLabel.grid(column=0, row=0, padx=5, pady=5, sticky='w')
         outputDirectoryEntry = Entry(outputFrame, textvariable=self.__ctrl.getOutputDirectoryEntryVariable())
         outputDirectoryEntry.grid(column=1, columnspan=4, row=0, padx=5, pady=5, sticky='ew')
-        outputDirectoryButton = Button(outputFrame, text='...', command=self.__ctrl.outputDirectoryEntryVariableHandler)
+        outputDirectoryButton = Button(outputFrame, text='⏏', command=self.__ctrl.outputDirectoryEntryVariableHandler)
         outputDirectoryButton.grid(column=5, row=0, padx=5, pady=5, sticky='e')
         
         outputFileNameLabel = Label(outputFrame, text='Output File Name:', width=15, anchor='w')
         outputFileNameLabel.grid(column=0, row=1, padx=5, pady=5, sticky='w')
         outputFileNameEntry = Entry(outputFrame, textvariable=self.__ctrl.getOutputFileNameEntryVariable())
-        outputFileNameEntry.grid(column=1, columnspan=4, row=1, padx=5, pady=5, sticky='ew')
-         
+        outputFileNameEntry.grid(column=1, columnspan=3, row=1, padx=5, pady=5, sticky='ew')         
+        
+        saveLabel = Label(outputFrame, text='Save Settings:', width=15, anchor='w')
+        saveLabel.grid(column=4, row=1, padx=5, pady=5, sticky='w')
+        saveCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getSaveCheckboxVariable())
+        saveCheckbox.grid(column=5, row=1, padx=5, pady=5, sticky='w')  
+
         mergeOutputLabel = Label(outputFrame, text='Merge in Single File:', width=15, anchor='w')
         mergeOutputLabel.grid(column=0, row=2, padx=5, pady=5, sticky='w')
         mergeOutputCheckbox = Checkbutton(outputFrame, variable=self.__ctrl.getMergeOutputCheckboxVariable())
@@ -266,12 +309,14 @@ class GeneratorDialog:
        
 
         # Buttons to Cancel or to Run the Generator with the given Settings
-        helpButton = Button(buttonFrame, text='Help', width=10, command=self.__ctrl.helpButtonHandler)
-        helpButton.grid(column=0, row=0, padx=5, pady=5, sticky='e')
-        cancelButton = Button(buttonFrame, text='Cancel', width=10, command=self.__ctrl.buttonCancelHandler)
+        generateButton = Button(buttonFrame, text='✔\nGenerate', width=10, command=self.__ctrl.buttonOkHandler)
+        generateButton.grid(column=0, row=0, padx=5, pady=5, sticky='w')
+        cancelButton = Button(buttonFrame, text='✘\nCancel', width=10, command=self.__ctrl.buttonCancelHandler)
         cancelButton.grid(column=1, row=0, padx=5, pady=5, sticky='e')
-        generateButton = Button(buttonFrame, text='Generate', width=10, command=self.__ctrl.buttonOkHandler)
-        generateButton.grid(column=2, row=0, padx=5, pady=5, sticky='e')
+        helpButton = Button(buttonFrame, text='❓\nHelp', width=7, command=self.__ctrl.helpButtonHandler)
+        helpButton.grid(column=3, row=0, padx=5, pady=5, sticky='e')
+        
+        
         
         # Finally show the Generator Dialog
         mainFrame.grid()

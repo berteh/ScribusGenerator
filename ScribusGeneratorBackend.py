@@ -371,6 +371,7 @@ class ScribusGenerator:
             logging.debug("could not load the user settings for Scribus Generator, skipping. more info:\n%s"%e.message)  
             return None
         
+        
 
 class GeneratorDataObject:
     # Data Object for transfering the settings made by the user on the UI / CLI
@@ -499,4 +500,5 @@ class GeneratorDataObject:
         self.__firstRow = j["from"]
         self.__lastRow = j["to"]
         # self.__saveSettings NOT loaded
+        logging.debug("loaded %d user settings"%(len(j)))
         return j
