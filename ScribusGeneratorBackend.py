@@ -50,10 +50,7 @@ class CONST:
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
     REMOVE_EMPTY_LINES = 1
-    # 1. clean text in which some variable-like text is not substituted (ie: known or unknown variable):
-    #   <ITEXT CH="empty %VAR_empty% variable should not show" FONT="Arial Regular" />
-    # 2. removing <ITEXT> with empty @CH after step 1
-    # 3. remove any <PAGEOBJECT> that has no <ITEXT> child left
+
 
     
 class ScribusGenerator:
@@ -153,8 +150,9 @@ class ScribusGenerator:
                     else:
                         logging.debug("merging content from row #%s"%(index))
                         tmpElt = ET.fromstring(outContent).find('DOCUMENT')
-                        shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, objscount, version)
-                        #todo remove empties from shiftedElts
+                        if (CONST.REMOVE_EMPTY_LINES):
+                            self.removeEmptyTexts(tmpElt)
+                        shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, objscount, version)                        
                         docElt.extend(shiftedElts)                                                
                 else:
                     outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
@@ -168,7 +166,8 @@ class ScribusGenerator:
         if (self.__dataObject.getSingleOutput()):            
             scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), self.__dataObject.getOutputFileName(), CONST.FILE_EXTENSION_SCRIBUS)
             outTree = ET.ElementTree(outputElt) 
-            #todo remove empties from tree
+            if (CONST.REMOVE_EMPTY_LINES):
+                self.removeEmptyTexts(outTree.getroot())
             outTree.write(scribusOutputFilePath, encoding="UTF-8")
             outputFileNames.append(self.__dataObject.getOutputFileName())
             logging.info("scribus file created: %s"%(scribusOutputFilePath)) 
@@ -277,6 +276,21 @@ class ScribusGenerator:
         logging.debug("shifted page %s element of %s"%(index,voffset))
         return shifted
 
+    def removeEmptyTexts(self, root):
+        # *modifies* root ElementTree by removing empty text elements and their empty placeholders.
+        #   1. clean text in which some variable-like text is not substituted (ie: known or unknown variable):
+        #      <ITEXT CH="empty %VAR_empty% variable should not show" FONT="Arial Regular" />
+        #   2. remove <ITEXT> with empty @CH
+        #   3. remove any <PAGEOBJECT> that has no <ITEXT> child left
+        emptyXPath = "ITEXT[@CH='']"
+        for page in root.findall(".//%s/../.." %emptyXPath): #little obscure because its parent is needed to remove an element, and ElementTree has no parent() method.
+            for po in page.findall(".//%s/.." %emptyXPath):
+                for emptyItext in po.findall("./%s" %emptyXPath):
+                    logging.debug("cleaning 1 empty ITEXT")                    
+                    po.remove(emptyItext)
+                if (len(po.findall("ITEXT")) is 0):
+                    logging.debug("cleaning 1 empty PAGEOBJECT")
+                    page.remove(po)                 
     
     def deleteFile(self, outputFilePath):
         # Delete the temporarily generated files from off the file system
@@ -352,8 +366,9 @@ class ScribusGenerator:
                     line = line.replace(tmp, cell) # string.replace(old, new)
                 i = i + 1
             if (clean):
-                #remove & trim any %VAR_% like string.
+                #remove (& trim) any %VAR_\w*% like string.                
                 line = re.sub(r"\s*%VAR_\w*%\s*", "", line)
+                logging.debug("cleaning 1 empty variable")
             result = result + line
         return result
          
