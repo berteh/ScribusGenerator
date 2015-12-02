@@ -3,6 +3,8 @@ ScribusGenerator
 
 Mail-Merge-like extension to Scribus, to generate Scribus and pdf documents automatically from external data.
 
+[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://github.com/berteh/ScribusGenerator/raw/master/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source pdf template and mail-merge alternative.
+
 What is Scribus Generator?
 -------
 
@@ -17,8 +19,6 @@ What is Scribus Generator?
 - work directly in Scribus with a nice user interface, or from the command line
 - use any data source (Excel, OpenOffice, MySQL, Notepad, ...) that can export to CSV.
 - and much more...
-
-<img alt="Scribus Generator, open source pdf template and mail merge" src="pic/ScribusGenerator_logo.png" width="120px"/>
 
 Generally speaking, **Scribus Generator** replaces text with data to automatically generate files (e.g. SLA, PDF). It has been originally written by [Ekkehard Will](http://www.ekkehardwill.de/sg/) and further extended by [Berteh](https://github.com/berteh/).
 
