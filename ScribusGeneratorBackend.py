@@ -184,6 +184,10 @@ class ScribusGenerator:
     def exportPDF(self, scribusFilePath, pdfFilePath):
         import scribus
         
+        d = os.path.dirname(pdfFilePath)
+        if not os.path.exists(d):
+            os.makedirs(d)
+      
         # Export to PDF
         scribus.openDoc(scribusFilePath)
         listOfPages = []
@@ -202,6 +206,9 @@ class ScribusGenerator:
     def writeSLA(self, slaET, outFileName, clean=CONST.REMOVE_EMPTY_LINES):
         # write SLA to filepath computed from given elements, optionnaly cleaning empty ITEXT elements and their empty PAGEOBJECTS
         scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outFileName, CONST.FILE_EXTENSION_SCRIBUS)
+        d = os.path.dirname(scribusOutputFilePath)
+        if not os.path.exists(d):
+            os.makedirs(d)
         outTree = ET.ElementTree(slaET) 
         if (clean):
             self.removeEmptyTexts(outTree.getroot())
@@ -251,20 +258,24 @@ class ScribusGenerator:
             shifted.append(page)
         for obj in docElt.findall('PAGEOBJECT'):
             obj.set('YPOS', str(float(obj.get('YPOS')) + voffset))
-            obj.set('OwnPage', str(int(obj.get('OwnPage')) + pagescount))
+            obj.set('OwnPage', str(int(obj.get('OwnPage')) + pagescount))            
+            #update ID and links
             if version.startswith('1.4'):
 #                if not (int(obj.get('NUMGROUP')) == 0):
 #                    obj.set('NUMGROUP', str(int(obj.get('NUMGROUP')) + groupscount * index))
-                if not (str(obj.get('NEXTITEM')) == "-1"): # next linked frame by position                
-                    obj.set('NEXTITEM', str(int(obj.get('NEXTITEM')) + (objscount * index)))               
-                if not (str(obj.get('BACKITEM')) == "-1"): # previous linked frame  by position
+                if (obj.get('NEXTITEM') != None and (str(obj.get('NEXTITEM')) != "-1")): # next linked frame by position                
+                    obj.set('NEXTITEM', str(int(obj.get('NEXTITEM')) + (objscount * index)))
+                if (obj.get('BACKITEM') != None and (str(obj.get('BACKITEM')) != "-1")): # previous linked frame by position
                     obj.set('BACKITEM', str(int(obj.get('BACKITEM')) + (objscount * index)))
             else : #1.5, 1.6
+                logging.debug("shifting object %s (#%s)"%(obj.tag, obj.get('ItemID')))
+                
                 obj.set('ItemID', str(objscount * index) + str(int(obj.get('ItemID')))[3:] ) # update ID with something unlikely allocated, todo ensure unique ID.
-                if not (str(obj.get('NEXTITEM')) == "-1"): # next linked frame by ItemID   
+                if (obj.get('NEXTITEM') != None and (str(obj.get('NEXTITEM')) != "-1")): # next linked frame by ItemID                       
                     obj.set('NEXTITEM', str(objscount * index) + str(int(obj.get('NEXTITEM')))[3:] )
-                if not (str(obj.get('BACKITEM')) == "-1"): # previous linked frame by ItemID    
+                if (obj.get('BACKITEM') != None and (str(obj.get('BACKITEM')) != "-1")): # previous linked frame by ItemID    
                     obj.set('BACKITEM', str(objscount * index) + str(int(obj.get('BACKITEM')))[3:] )
+
             shifted.append(obj)
         logging.debug("shifted page %s element of %s"%(index,voffset))
         return shifted

@@ -32,7 +32,7 @@ import tkMessageBox
 import tkFileDialog
 
 import scribus
-import os, sys
+import os, sys, inspect
 import traceback
 
 class GeneratorControl:
@@ -199,7 +199,8 @@ class GeneratorDialog:
     def __init__(self, root, ctrl):
         self.__root = root
         self.__ctrl = ctrl
-        self.__ico=PhotoImage(file='./pic/ScribusGenerator_logo.png')
+        self.__pluginDir = os.path.dirname(os.path.abspath(inspect.stack()[0][1])) 
+        self.__ico=PhotoImage(file=self.__pluginDir+'/pic/ScribusGenerator_logo.png')
         root.tk.call('wm', 'iconphoto', root._w, '-default', self.__ico)
 
      
