@@ -19,7 +19,7 @@
 #
 """
 The MIT License
-Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014 Berteh (https://github.com/berteh/)
+Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2015 Berteh (https://github.com/berteh/)
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
@@ -30,8 +30,8 @@ import logging.config
 #import traceback
 import sys
 import xml.etree.ElementTree as ET  # common Python xml implementation
-#import tempfile
 import json
+import re
 
 class CONST:
     # Constants for general usage
@@ -48,6 +48,9 @@ class CONST:
     CSV_SEP = "," # CSV entry separator, comma by default
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
+    REMOVE_EMPTY_LINES = 1 # set to 0 to preserve un-subsituted variables to be removed, along with their empty containing itext and pageobject
+
+
     
 class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
@@ -107,7 +110,9 @@ class ScribusGenerator:
                 # overwrite attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
                 logging.debug("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
                 tree = ET.parse(self.__dataObject.getScribusSourceFile())
-                root = tree.getroot()
+                root = tree.getroot()                
+                templateElt = self.overwriteAttributesFromSGAttributes(root)                 
+
                 #save settings
                 if (self.__dataObject.getSaveSettings()):                                    
                     serial=self.__dataObject.toString()
@@ -123,13 +128,12 @@ class ScribusGenerator:
                     storageElt.set("SCRIPT",serial)
                     tree.write(self.__dataObject.getScribusSourceFile()) #todo check if scribus reloads (or overwrites :/ ) when doc is opened, opt use API to add a script if there's an open doc.
 
-                templateElt = self.overwriteAttributesFromSGAttributes(root)                 
                
             else:
-                outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt))
+                outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt))                
                 if (self.__dataObject.getSingleOutput()):
                     if (index == 1):
-                        logging.debug("generating reference content from row #1")
+                        logging.debug("generating reference content from row #1")                        
                         outputElt = ET.fromstring(outContent)
                         docElt = outputElt.find('DOCUMENT')  
                         pagescount = int(docElt.get('ANZPAGES'))
@@ -146,23 +150,18 @@ class ScribusGenerator:
                     else:
                         logging.debug("merging content from row #%s"%(index))
                         tmpElt = ET.fromstring(outContent).find('DOCUMENT')
-                        shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, objscount, version)
+                        shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, objscount, version)                        
                         docElt.extend(shiftedElts)                                                
-                else:
-                    outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)
-                    scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outputFileName, CONST.FILE_EXTENSION_SCRIBUS)
-                    self.exportSLA(scribusOutputFilePath, outContent)
-                    outputFileNames.append(outputFileName)
-                    logging.info("scribus file created: %s"%(scribusOutputFilePath))                        
+                else: # write one of multiple sla
+                    outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)                    
+                    self.writeSLA(ET.fromstring(outContent), outputFileName)
+                    outputFileNames.append(outputFileName)                    
             index = index + 1
         
-        # write single sla
+        # clean & write single sla
         if (self.__dataObject.getSingleOutput()):            
-            scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), self.__dataObject.getOutputFileName(), CONST.FILE_EXTENSION_SCRIBUS)
-            outTree = ET.ElementTree(outputElt)            
-            outTree.write(scribusOutputFilePath, encoding="UTF-8")
-            outputFileNames.append(self.__dataObject.getOutputFileName())
-            logging.info("scribus file created: %s"%(scribusOutputFilePath)) 
+            self.writeSLA(outputElt, self.__dataObject.getOutputFileName())
+            outputFileNames.append(self.__dataObject.getOutputFileName())        
 
         # Export the generated Scribus Files as PDF
         if(CONST.FORMAT_PDF == self.__dataObject.getOutputFormat()):
@@ -200,20 +199,22 @@ class ScribusGenerator:
         pdfExport.save()
         scribus.closeDoc()
 
+    def writeSLA(self, slaET, outFileName, clean=CONST.REMOVE_EMPTY_LINES):
+        # write SLA to filepath computed from given elements, optionnaly cleaning empty ITEXT elements and their empty PAGEOBJECTS
+        scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outFileName, CONST.FILE_EXTENSION_SCRIBUS)
+        outTree = ET.ElementTree(slaET) 
+        if (clean):
+            self.removeEmptyTexts(outTree.getroot())
+        outTree.write(scribusOutputFilePath, encoding="UTF-8")
+        logging.info("scribus file created: %s"%(scribusOutputFilePath)) 
+        return scribusOutputFilePath
 
-    def exportSLA(self, outputFilePath, content):
-        # Export to SLA (Scribus Format)
-        result = open(outputFilePath, 'w')
-        result.writelines(content)
-        result.flush()
-        os.fsync(result.fileno())
-        result.close()
 
     def overwriteAttributesFromSGAttributes(self, root):
         # modifies root such that
         # attributes have been rewritten from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
         #
-        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FCOLOR)   
+        # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FONT)   
 
         for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):
             sga = pageobject.find(".//ItemAttribute[@Type='SGAttribute']")            
@@ -268,6 +269,25 @@ class ScribusGenerator:
         logging.debug("shifted page %s element of %s"%(index,voffset))
         return shifted
 
+    def removeEmptyTexts(self, root):
+        # *modifies* root ElementTree by removing empty text elements and their empty placeholders.
+        # returns number of ITEXT elements deleted.
+        #   1. clean text in which some variable-like text is not substituted (ie: known or unknown variable):
+        #      <ITEXT CH="empty %VAR_empty% variable should not show" FONT="Arial Regular" />
+        #   2. remove <ITEXT> with empty @CH
+        #   3. remove any <PAGEOBJECT> that has no <ITEXT> child left
+        emptyXPath = "ITEXT[@CH='']"
+        d = 0
+        for page in root.findall(".//%s/../.." %emptyXPath): #little obscure because its parent is needed to remove an element, and ElementTree has no parent() method.
+            for po in page.findall(".//%s/.." %emptyXPath):
+                for emptyItext in po.findall("./%s" %emptyXPath):
+                    logging.debug("cleaning 1 empty ITEXT")                    
+                    po.remove(emptyItext)
+                    d += 1
+                if (len(po.findall("ITEXT")) is 0):
+                    logging.debug("cleaning 1 empty PAGEOBJECT")
+                    page.remove(po)                 
+        logging.debug("removed %d empty ITEXTs from element %s"%(d, root.tag))
     
     def deleteFile(self, outputFilePath):
         # Delete the temporarily generated files from off the file system
@@ -332,7 +352,7 @@ class ScribusGenerator:
         return result
     
     
-    def replaceVariablesWithCsvData(self, headerRow, row, lines): # lines as list of strings
+    def replaceVariablesWithCsvData(self, headerRow, row, lines, clean=CONST.REMOVE_EMPTY_LINES): # lines as list of strings
         result = ''
         for line in lines: # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
             i = 0
@@ -342,6 +362,11 @@ class ScribusGenerator:
                 if (not(line.strip().startswith('<COLOR '))): # TODO fix this detection does not work on 1.5.1svn SLA file
                     line = line.replace(tmp, cell) # string.replace(old, new)
                 i = i + 1
+            if (clean):
+                #remove (& trim) any %VAR_\w*% like string.                
+                (line, d) = re.subn(r"\s*%VAR_\w*%\s*", "", line)
+                if (d>0):
+                    logging.debug("cleaned %d empty variable"%d)
             result = result + line
         return result
          

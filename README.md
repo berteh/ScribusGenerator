@@ -140,11 +140,11 @@ More advanced uses
 -----------
 Scribus Generator allows more tech-savvy users you to customize the generated documents even more, changing virtually any attribute of any object, such as the fill or outline color of a line, the color of some text, a line thickness, an object position,... See the [screencast video @13:13](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=793).
 
-To change the color of an object, add an *attribute* to it (_«righ-click on object → Attributes → Add »_). The **type** attribute must be set to [``SGAttribute``][1], it's **name** to the [object property][2] you want to change and its **value** to the desired dynamic value (typically ``%VAR_name%``).
+For instance, to change dynamically the *font* of an object, add an *attribute* to it (_«righ-click on object → Attributes → Add »_). The **type** attribute must be set to [``SGAttribute``][1], it's **name** to the [object property][2] you want to change (in this case ``FONT``) and its **value** to the desired dynamic value (typically some ``%VAR_name%``).  Your data (CSV) file should then contain the font name to use in the column of the given variable, such as "Arial Regular" or "Courier New Bold".
 
 ![Illustration: Use Attributes to modify advanced object properties](pic/SG-20.png "Use Attributes to modify advanced object properties")
 
-To change the properties of a sub-element (such as the text lines in a text frame), you may use the **parameter** field to define which sub-elements should receive the new property. Use ``*`` to modify all direct children, or any other [simplified XPATH expression][3] to modify only a subset.
+To change the properties of a sub-element (such as one particular text line in a text frame), you may use the **parameter** field to define which sub-elements should receive the new property. Use ``*`` to modify all direct children, or any other [simplified XPATH expression][3] to modify only a subset.
 
 ### Selected examples of SGAttributes:
 
@@ -158,16 +158,16 @@ To change the properties of a sub-element (such as the text lines in a text fram
 [1]: # "SGAttribute is short for 'Scribus Generator Attribute'"
 [2]: http://wiki.scribus.net/canvas/File_Format_Specification_for_Scribus_1.4#Tags "Object property is expressed in the exact SLA syntax"
 [3]: https://docs.python.org/2/library/xml.etree.elementtree.html#supported-xpath-syntax "The reduced set of XPATH expressions valid in the 'parameter' field is defined in the ElementTree XPath support documentation."
-[4]: simply use the color name as defined in your Scribus file colours (``edit > Colours``).
 
 Running Scribus Generator from the command line
 ---------
 It is possible to run Scribus Generator from the command line. Great to automate your workflow or integrate with other tools!
-Note only the SLA generation works from the command line. PDF generation is at the moment impossible (from the Scribus Generator command line) due to Scribus limitations.
+Note only the SLA generation works from the command line. PDF generation is at the moment impossible (from the Scribus Generator command line) due to Scribus 1.4 limitations.
 
 Find all needed information from the script help: ``./ScribusGeneratorCLI.py --help``
 
 **WARNING!** The short option for a single output has changed to ``-m`` (merge). The former ``-s`` option is now used to save your settings from the command line, as explained below.
+
 
     positional arguments:
       infiles               SLA file(s) to use as template(s) for the generation,
@@ -235,6 +235,15 @@ Find all needed information from the script help: ``./ScribusGeneratorCLI.py --h
       Generated files will have a name constructed from the "doc_" prefix
       and the input sla file name.
 
+
+More details
+-------
+
+### Clean output
+
+Scribus Generator will remove unused variables from the generated documents, along with their containing text frame if that text frame contained nothing but variable(s).
+
+![Illustration: Variables not substituted are removed](pic/SG_unusedVariables.png)
 
 
 
