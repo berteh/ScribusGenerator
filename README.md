@@ -76,15 +76,16 @@ In the script dialog you can configure the input and output settings for **Scrib
 
 | Input Setting | explanation |
 | ---- | ---- |
-| **Scribus File** | Choose the Scribus File containing the variables to replace. |
-| **Data File** | Choose the Data File containing the comma separated values. |
+| **Scribus File** | Choose the Scribus File containing the variables to replace. Click ⏏ to open a file explorer, and ↺ to load the Scribus Generator settings from that file. |
+| **Data File** | Choose the Data File containing the comma separated values. Click ⏏ to open a file explorer. |
 | **Data Field Separator** | Character that delimitates data field in your CSV file, comma (,) by default. |
 | **From - To** | To run Scribus Generator on a subset of your data mention the starting and/or last lines of this subset, not counting the header line. Simply leave empty to generate from the beginning (or to the last) data entry.|
 
 | Output Setting | explanation |
 | ---- | ---- |
-| **Output Directory** | Choose the path to an existing directory where to save the result. |
+| **Output Directory** | Choose the path to an existing directory where to save the result. Click ⏏ to open a file explorer. |
 | **Output File Name** | You can use the same variables as defined in the Scribus File/Data File. You can also mix the variables with other characters. If you leave the field empty an index will be used. The index/resulting files will be sorted according to the occurrence of rows in the Data File. |
+| **Save Settings** | Store the current Scribus Generator settings in the source SLA file, for future use. |
 | **Merge in Single File** | Select to  generate a single output (SLA and/or PDF) file that combines all data rows. |
 | **Ouput Format** | Choose the Output Format of the generated files, either PDF or Scribus. |
 | **Keep Scribus Files** | Select to keep the generated Scribus Files. Otherwise they will be deleted after pdf generation. This option has no effect if you choose Scribus output format.|
@@ -274,7 +275,7 @@ Licence
 The MIT License<br/>
 Copyright <br/>
 (c) 2011, Ekkehard Will (www.ekkehardwill.de)<br/>
-(c) 2014, Berteh (https://github.com/berteh/)
+(c) 2014-2015, Berteh (https://github.com/berteh/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: 
 
