@@ -20,7 +20,7 @@ What is Scribus Generator?
 - use any data source (Excel, OpenOffice, MySQL, Notepad, ...) that can export to CSV.
 - and much more...
 
-Generally speaking, **Scribus Generator** replaces text with data to automatically generate files (e.g. SLA, PDF). It has been originally written by [Ekkehard Will](http://www.ekkehardwill.de/sg/) and further extended by [Berteh](https://github.com/berteh/).
+    Generally speaking, **Scribus Generator** replaces text with data to automatically generate files (e.g. SLA, PDF). It has been originally written by [Ekkehard Will](http://www.ekkehardwill.de/sg/) and further extended by [Berteh](https://github.com/berteh/).
 
 A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces this Scribus Generator. 6 first minutes for the basic overview, 12 last for some more advanced features.
 
@@ -163,79 +163,81 @@ To change the properties of a sub-element (such as one particular text line in a
 Running Scribus Generator from the command line
 ---------
 It is possible to run Scribus Generator from the command line. Great to automate your workflow or integrate with other tools!
-Note only the SLA generation works from the command line. PDF generation is at the moment impossible (from the Scribus Generator command line) due to Scribus 1.4 limitations.
+
+Note only the SLA generation works from the command line. PDF generation is at the moment impossible from the Scribus Generator command line due to Scribus 1.4 limitations.
 
 Find all needed information from the script help: ``./ScribusGeneratorCLI.py --help``
 
-**WARNING!** The short option for a single output has changed to ``-m`` (merge). The former ``-s`` option is now used to save your settings from the command line, as explained below.
+###WARNING!
+
+- The short option for a *single output* has changed to ``-m`` (merge). The former ``-s`` option is now used to *save* your settings from the command line, as explained below.
+- All pdf-related options (--fast, --noPdf, --pdfOnly, --noSla) have been removed from Scribus Generator CLI v2, as the CLI can only generate SLA files.
 
 
-    positional arguments:
-      infiles               SLA file(s) to use as template(s) for the generation,
-                            wildcards are supported
+```
+positional arguments:
+  infiles               SLA file(s) to use as template(s) for the generation,
+                        wildcards are supported
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      -c CSVFILE, --csvFile CSVFILE
-                            CSV file containing the data to substitute in each
-                            template during generation. Default is scribus source
-                            file(s) name with "csv" extension instead of "sla". If
-                            csv file is not found, generation from this particular
-                            template is skipped.
-      -d CSVDELIMITER, --csvDelimiter CSVDELIMITER
-                            CSV field delimiter character. Default is comma: ","
-      -f, --fast, --noPdf   no PDF generation, scribus SLA only (much faster)
-      -n OUTNAME, --outName OUTNAME
-                            name of the generated files, with no extension.
-                            Default is a simple incremental index.
-      -o OUTDIR, --outDir OUTDIR
-                            directory were generated files are stored. Default is
-                            the directory of the scribus source file. outputDir
-                            will be created if it does not exist.
-      -p, --pdfOnly, --noSla
-                            discard Scribus SLA, generate PDF only. This option is
-                            not used when --fast or --noPdf is used.
-      -m, --merge, --single
-                            generate a single output (SLA and/or PDF) file that
-                            combines all data rows, for each source file.
-      -from FIRSTROW, --firstrow FIRSTROW
-                            Starting row of data to merge (not counting the header
-                            row), first row by default.
-      -to LASTROW, --lastrow LASTROW
-                            Last row of data to merge (not counting the header
-                            row), last row by default.
-      -s, --save            Save current generator settings in (each) Scribus
-                            input file(s).
-      -l, --load            Load generator settings from (each) Scribus input
-                            file(s). Overloads all options (but -h).
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CSVFILE, --csvFile CSVFILE
+                        CSV file containing the data to substitute in each
+                        template during generation. Default is scribus source
+                        file(s) name with "csv" extension instead of "sla". If
+                        csv file is not found, generation from this particular
+                        template is skipped.
+  -d CSVDELIMITER, --csvDelimiter CSVDELIMITER
+                        CSV field delimiter character. Default is comma: ","
+  -n OUTNAME, --outName OUTNAME
+                        name of the generated files, with no extension.
+                        Default is a simple incremental index.
+  -o OUTDIR, --outDir OUTDIR
+                        directory were generated files are stored. Default is
+                        the directory of the scribus source file. outputDir
+                        will be created if it does not exist.
+  -m, --merge, --single
+                        generate a single output (SLA) file that combines all
+                        data rows, for each source file.
+  -from FIRSTROW, --firstrow FIRSTROW
+                        Starting row of data to merge (not counting the header
+                        row), first row by default.
+  -to LASTROW, --lastrow LASTROW
+                        Last row of data to merge (not counting the header
+                        row), last row by default.
+  -s, --save            Save current generator settings in (each) Scribus
+                        input file(s).
+  -l, --load            Load generator settings from (each) Scribus input
+                        file(s). Overloads all options (but -h).
 
+requirements
+    This program requires Python 2.7+
 
-    requirements
-      This program requires Python 2.7+
+examples:
+    
+  ScribusGeneratorCLI.py my-template.sla
+    generates Scribus (SLA) files for each line of 'my-template.csv'
+    by subsituting the provides values into 'my-template.sla' to the 
+    current directory.
 
-    examples:
-      
-    ScribusGeneratorCLI.py my-template.sla --noPdf
-      generates Scribus (and no PDF) files for each line of 'my-template.csv'
-      by subsituting the provides values into 'my-template.sla' to the 
-      current directory.
+  ScribusGeneratorCLI.py --outDir "/home/user/tmp" example/Business_Card.sla 
+    generates Scribus files for each line of example/Business_Card.csv
+    in the "/home/user/tmp" subdirectory.
 
-    ScribusGeneratorCLI.py --fast --outDir "/home/user/tmp" example/Business_Card.sla 
-      generates Scribus files for each line of example/Business_Card.csv
-      in the "/home/user/tmp" subdirectory.
+  ScribusGeneratorCLI.py --outName "card_%VAR_email%"  */*.sla 
+    generates Scribus files for each sla file in any subdirectory
+    that has a csv file with a similar name in the same directory.
+    Generated files will have a name constructed from the "email" field
+    data, and are stored in their respective sla file directory.
 
-    ScribusGeneratorCLI.py --fast --outName "card_%VAR_email%"  */*.sla 
-      generates Scribus files for each sla file in any subdirectory
-      that has a csv file with a similar name in the same directory.
-      Generated files will have a name constructed from the "email" field
-      data, and are stored in their respective sla file directory.
+  ScribusGeneratorCLI.py --single -c translations.csv -n doc_  lang/*.sla 
+    generates a single Scribus file for each sla file in the lang/ subdirectory
+    using all rows of the translations.csv data file.
+    Generated files will have a name constructed from the "doc_" prefix
+    and the input sla file name.
 
-    ScribusGeneratorCLI.py --single -c translations.csv -vfn doc_  lang/*.sla 
-      generates a single Scribus file for each sla file in the lang/ subdirectory
-      using all rows of the translations.csv data file.
-      Generated files will have a name constructed from the "doc_" prefix
-      and the input sla file name.
-
+ more information: https://github.com/berteh/ScribusGenerator/
+```
 
 More details
 -------

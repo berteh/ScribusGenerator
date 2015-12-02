@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Scribus Generator will
-# - read CSV Data
-# - convert a given Scribus File to a
-# - specified Output Format (for each row of data) and
-# - save the Output File as well as the generated Scribus File (which optional)
+# Mail-Merge for Scribus.
 #
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
-# v1.9 (2015-08-03): command-line support, missing pdf (how to launch + init scribus?)
+# v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
+# v2.0 (2015-12-02): added features (merge, range, clean, save/load)
 #
 """
 The MIT License
@@ -27,7 +24,7 @@ outDir = os.getcwd()
 
 #parse options
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
-    description=''' Generate Scribus and pdf documents automatically from external (csv) data.
+    description=''' Generate Scribus (SLA) documents automatically from external (csv) data.
  Mail-Merge-like extension to Scribus.''',  
     usage="%(prog)s [options] infiles+",
     epilog='''requirements
@@ -35,22 +32,22 @@ parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpForm
 
 examples:
     
-  %(prog)s my-template.sla  --noPdf
-    generates Scribus and PDF files for each line of 'my-template.csv'
+  %(prog)s my-template.sla
+    generates Scribus (SLA) files for each line of 'my-template.csv'
     by subsituting the provides values into 'my-template.sla' to the 
     current directory.
 
-  %(prog)s --fast --outDir "/home/user/tmp" example/Business_Card.sla 
+  %(prog)s --outDir "/home/user/tmp" example/Business_Card.sla 
     generates Scribus files for each line of example/Business_Card.csv
     in the "/home/user/tmp" subdirectory.
 
-  %(prog)s --fast --outName "card_%%VAR_email%%"  */*.sla 
+  %(prog)s --outName "card_%%VAR_email%%"  */*.sla 
     generates Scribus files for each sla file in any subdirectory
     that has a csv file with a similar name in the same directory.
     Generated files will have a name constructed from the "email" field
     data, and are stored in their respective sla file directory.
 
-  %(prog)s --single -c translations.csv -vfn doc_  lang/*.sla 
+  %(prog)s --single -c translations.csv -n doc_  lang/*.sla 
     generates a single Scribus file for each sla file in the lang/ subdirectory
     using all rows of the translations.csv data file.
     Generated files will have a name constructed from the "doc_" prefix
@@ -65,16 +62,16 @@ parser.add_argument('-c', '--csvFile', default=None,
     help='CSV file containing the data to substitute in each template during generation. Default is scribus source file(s) name with "csv" extension instead of "sla". If csv file is not found, generation from this particular template is skipped.')
 parser.add_argument('-d', '--csvDelimiter', default=CONST.CSV_SEP, 
     help='CSV field delimiter character. Default is comma: ","')
-parser.add_argument('-f', '--fast', '--noPdf', action='store_true', default=False,
-    help='no PDF generation, scribus SLA only (much faster)')
+#parser.add_argument('-f', '--fast', '--noPdf', action='store_true', default=False, # commented utile Scribus allows pdf generation from command line
+#    help='no PDF generation, scribus SLA only (much faster)')
 parser.add_argument('-n', '--outName', default=CONST.EMPTY, 
     help='name of the generated files, with no extension. Default is a simple incremental index.')
 parser.add_argument('-o', '--outDir', default=None, 
     help='directory were generated files are stored. Default is the directory of the scribus source file. outputDir will be created if it does not exist.')
-parser.add_argument('-p', '--pdfOnly', '--noSla', action='store_true', default=False,
-    help='discard Scribus SLA, generate PDF only. This option is not used when --fast or --noPdf is used.')
+#parser.add_argument('-p', '--pdfOnly', '--noSla', action='store_true', default=False, # for pdf from CLI
+#    help='discard Scribus SLA, generate PDF only. This option is not used when --fast or --noPdf is used.')
 parser.add_argument('-m', '--merge', '--single', action='store_true', default=False,
-    help='generate a single output (SLA and/or PDF) file that combines all data rows, for each source file.')
+    help='generate a single output (SLA) file that combines all data rows, for each source file.')
 parser.add_argument('-from', '--firstrow', default=CONST.EMPTY, dest='firstRow',
     help='Starting row of data to merge (not counting the header row), first row by default.')
 parser.add_argument('-to', '--lastrow', default=CONST.EMPTY, dest='lastRow',
@@ -96,9 +93,9 @@ def ife(test, if_result, else_result):
 #handle arguments
 args = parser.parse_args()
 
-if(args.pdfOnly or (not args.fast)):
-    print("\nPDF generation is currently not available from command line, but SLA is. \nSimply add the '--noPdf' option to your command and it will run just fine.\n")
-    sys.exit()
+# if(args.pdfOnly or (not args.fast)): # for pdf from CLI
+#     print("\nPDF generation is currently not available from command line, but SLA is. \nSimply add the '--noPdf' option to your command and it will run just fine.\n")
+#    sys.exit()
 
 # create outDir if needed
 if ((not(args.outDir is None)) and (not os.path.exists(args.outDir))):
@@ -111,8 +108,8 @@ dataObject = GeneratorDataObject(
     dataSourceFile = ife(not(args.csvFile is None), args.csvFile, CONST.EMPTY),
     outputDirectory = ife(not(args.outDir is None), args.outDir, CONST.EMPTY),
     outputFileName = args.outName,                                          # is CONST.EMPTY by default
-    outputFormat = ife(args.fast, CONST.FORMAT_SLA, CONST.FORMAT_PDF),
-    keepGeneratedScribusFiles = ife(args.pdfOnly, CONST.FALSE, CONST.TRUE), # not used if outputFormat is sla.
+    outputFormat = CONST.FORMAT_SLA, # ife(args.fast, CONST.FORMAT_SLA, CONST.FORMAT_PDF),
+    keepGeneratedScribusFiles = CONST.TRUE, # ife(args.pdfOnly, CONST.FALSE, CONST.TRUE), # not used if outputFormat is sla.
     csvSeparator = args.csvDelimiter,                                       # is CONST.CSV_SEP by default
     singleOutput = args.merge,
     firstRow = args.firstRow,

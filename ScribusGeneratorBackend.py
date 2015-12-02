@@ -1,19 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Scribus Generator will
-# - read CSV Data
-# - convert a given Scribus File to a
-# - specified Output Format (for each row of data) and
-# - save the Output File as well as the generated Scribus File (which optional)
+# Mail-Merge for Scribus.
 #
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
-# v1.9(2015-08-03): command-line support
+# v2.0 (2015-12-02): added features (merge, range, clean, save/load)
+# v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
 # v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
 # v1.0 (2012-01-07): Fixed problems when using an ampersand as values within CSV-data.
-# v2011-01-18: Changed run() so that scribus- and pdf file creation an deletion works without problems.
+# v2011-01-18: Changed run() so that scribus- and pdf file creation and deletion works without problems.
 # v2011-01-17: Fixed the ampersand ('&') problem. It now can be used within variables.
 # v2011-01-01: Initial Release.
 #
