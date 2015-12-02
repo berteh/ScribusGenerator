@@ -28,12 +28,12 @@ import ScribusGeneratorBackend
 from ScribusGeneratorBackend import CONST, ScribusGenerator, GeneratorDataObject
 import Tkinter
 from Tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar, DISABLED, NORMAL, PhotoImage
-import traceback
-import scribus
-import sys
 import tkMessageBox
 import tkFileDialog
 
+import scribus
+import os, sys
+import traceback
 
 class GeneratorControl:
     # Controler being the bridge between UI and Logic.
