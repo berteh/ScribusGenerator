@@ -287,7 +287,8 @@ class ScribusGenerator:
                 if (len(po.findall("ITEXT")) is 0):
                     logging.debug("cleaning 1 empty PAGEOBJECT")
                     page.remove(po)                 
-        logging.debug("removed %d empty ITEXTs from element %s"%(d, root.tag))
+        logging.debug("removed %d empty ITEXTs"%d)
+        return d
     
     def deleteFile(self, outputFilePath):
         # Delete the temporarily generated files from off the file system
