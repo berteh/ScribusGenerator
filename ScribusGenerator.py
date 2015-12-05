@@ -194,7 +194,7 @@ class GeneratorDialog:
         self.__root = root
         self.__ctrl = ctrl
         self.__pluginDir = os.path.dirname(os.path.abspath(inspect.stack()[0][1])) 
-        self.__ico=PhotoImage(file=self.__pluginDir+'/pic/ScribusGenerator_logo.png')
+        self.__ico=PhotoImage(file=self.__pluginDir+'/pic/ScribusGenerator_logo.gif')
         root.tk.call('wm', 'iconphoto', root._w, '-default', self.__ico)
 
      
