@@ -248,6 +248,12 @@ Scribus Generator will remove unused variables from the generated documents, alo
 
 ![Illustration: Variables not substituted are removed](pic/SG_unusedVariables.png)
 
+### Logging and debug
+
+ScribusGenerator records all its actions in a log file located (by default) in its own directory. If you encounter an unexpected behaviour check out the content of scribusGenerator.log to find out more. You can change the logging settings in logging.conf (see [Python log configuration](https://docs.python.org/2/howto/logging.html#configuring-logging) for more options).
+
+Kindly copy-paste the relevant (usually last) lines of your scribusGenerator.log if you want to [report an issue](https://github.com/berteh/ScribusGenerator/issues).
+
 ### Variable Names
 
 Try to use plain word characters (``A-Za-a0-9_``) for variable names, with no whitespaces or other special characters (like '&'). E.g. use ``%VAR_first_name%`` and ``%VAR_zip_code%`` instead of ``%VAR_first name%`` and ``%VAR_&zip#code%``. The columns of the data file (CSV) then would be ``first_name`` and ``zip_code``.  
