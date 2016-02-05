@@ -28,7 +28,7 @@ A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces t
 
 
 
-[Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. It can be placed with the standard extension scripts. On Windows platform this location would be ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\``, on Ubuntu ``/usr/share/scribus/scripts/``.
+[Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. It can be placed with the standard extension scripts. On Windows platform this location would be ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\``, on Ubuntu ``/usr/share/scribus/scripts/``. We recommand to make this directory  writeable to your user, to allow the loging of Scribus Generator actions, or see the [configuration](#run-the-generator-script-settings) section to move the loging file elsewhere.
 
 **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line). It is implemented as a Python script. 
 
@@ -89,6 +89,8 @@ In the script dialog you can configure the input and output settings for **Scrib
 | **Merge in Single File** | Select to  generate a single output (SLA and/or PDF) file that combines all data rows. |
 | **Ouput Format** | Choose the Output Format of the generated files, either PDF or Scribus. |
 | **Keep Scribus Files** | Select to keep the generated Scribus Files. Otherwise they will be deleted after pdf generation. This option has no effect if you choose Scribus output format.|
+
+Additional (more technical) options can be set to tailor the automatic recording of Scribus Generators actions in your system by editing the ```logging.conf``` file. You may, for instance, want to move the location of the log file (```scribusGenerator.log``` by default) to a directory that does not need admin rights to edit in Windows  (```C:\tmp\scribusGenerator.log```), or replace file-logging with your default system logger (SysLogHandler in Linux, NTEventLogHandler on Windows). All settings (and more) are described in the [Python logging documentation](https://docs.python.org/2/howto/logging.html).
 
 
 Dynamic Images
@@ -263,6 +265,13 @@ This is only important for variable *names* in the scribus file and *column name
 
 Known Issues
 -------
+### Nothing happens
+
+> I get the script GUI and press 'generate' and nothing happens. 
+
+Is the directory of Scribus Generator writeable? It needs to be so we can record (log) all actions of the script. Simply move the whole Scribus Generator directory to a directory that does not need admin rights (such as your desktop) and try again. If that works you can simply consider changing the location of the logging file (see [configuration](#run-the-generator-script-settings) ), and move the script back where it belongs.
+
+If that is still not enough, kindly report an [issue](https://github.com/berteh/ScribusGenerator/issues) online, and copy there the few last lines of your log file (it's ```scribusGenerator.log```, inside your Scribus Generator plugin directory) to help find the reason of this bad behaviour, along with a short explanation of your problem.
 
 ### Mac OSX troubleshooting
 
