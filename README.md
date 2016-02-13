@@ -262,6 +262,30 @@ Try to use plain word characters (``A-Za-a0-9_``) for variable names, with no wh
 
 This is only important for variable *names* in the scribus file and *column names* of the data file. The data FIELDS (the rows of the CVS) of course may contain ANY characters.
 
+### Database source
+
+To use data from a database instead a (manual) spreadsheet you can simply export the related query result to a csv file. Some examples below for common database engines:
+
+#### Mysql:
+
+```mysql --delimiter="," -u myuser -p mydb -e "select f1,f2 from mytable" > /tmp/mydata.txt```
+
+or
+
+    mysql  -u myuser -p  mydatabase -e 
+    "select field1 , field2 FROM mytable INTO OUTFILE 
+    '/tmp/myfilename.csv' FIELDS TERMINATED BY ','
+    ENCLOSED BY '\"' LINES TERMINATED BY '\n' "
+    
+More over INTO OUTFILE at http://dev.mysql.com/doc/refman/5.1/en/select.html
+
+#### Postgresql
+
+toggle unaligned output with the ```\a``` switch, activate a comma as a separator with ```\f ,```. Send output to a file with ```\o myfile.csv```, then query your database.
+ 
+#### Sqlite3
+
+You can use ```sqlite3 -csv``` in command line or ```.mode csv``` in sqlite's interactive shell
 
 Known Issues
 -------
