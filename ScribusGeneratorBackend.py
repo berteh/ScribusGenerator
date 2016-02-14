@@ -6,6 +6,7 @@
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
+# v2.1 (2016-02-15): added support for repeating elements
 # v2.0 (2015-12-02): added features (merge, range, clean, save/load)
 # v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
 # v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
@@ -16,7 +17,7 @@
 #
 """
 The MIT License
-Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2015 Berteh (https://github.com/berteh/)
+Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2016 Berteh (https://github.com/berteh/)
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
@@ -24,7 +25,6 @@ import csv
 import os
 import logging
 import logging.config
-#import traceback
 import sys
 import xml.etree.ElementTree as ET  # common Python xml implementation
 import json
@@ -36,6 +36,7 @@ class CONST:
     FALSE = 0
     EMPTY = ''
     APP_NAME = 'Scribus Generator'
+    APP_VERSION = '2.1'
     FORMAT_PDF = 'PDF'
     FORMAT_SLA = 'Scribus'
     FILE_EXTENSION_PDF = 'pdf'
@@ -46,7 +47,7 @@ class CONST:
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
     REMOVE_EMPTY_LINES = 1 # set to 0 to preserve un-subsituted variables to be removed, along with their empty containing itext and pageobject
-
+    REPEAT_FIELDS = 1 # set to 0 to NOT duplicate objects named "SGrepeat_*" for each data entry in the same document.
 
     
 class ScribusGenerator:
@@ -54,7 +55,7 @@ class ScribusGenerator:
     def __init__(self, dataObject):
         self.__dataObject = dataObject
         logging.config.fileConfig("logging.conf")
-        logging.debug("ScribusGenerator initialized")
+        logging.debug("ScribusGenerator initialized, v%s"%(CONST.APP_VERSION))
 
     
     def run(self):
@@ -108,29 +109,46 @@ class ScribusGenerator:
                 logging.debug("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
                 tree = ET.parse(self.__dataObject.getScribusSourceFile())
                 root = tree.getroot()                
-                templateElt = self.overwriteAttributesFromSGAttributes(root)                 
+                templateElt = self.overwriteAttributesFromSGAttributes(root) # replace scribus xml attributes by dynamic variable name
 
                 #save settings
-                if (self.__dataObject.getSaveSettings()):                                    
-                    serial=self.__dataObject.toString()
-                    logging.debug("saving current Scribus Generator settings in your source file")# as: %s"%serial)
-                    docElt = root.find('DOCUMENT')
-                    storageElt = docElt.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')
-                    if (storageElt is None):
-                        colorElt = docElt.find('./COLOR[1]')                     
-                        scriptPos = docElt.getchildren().index(colorElt)
-                        logging.debug("creating new storage element in SLA template at position %s"%scriptPos)
-                        storageElt = ET.Element("JAVA", {"NAME":CONST.STORAGE_NAME})
-                        docElt.insert(scriptPos, storageElt)
-                    storageElt.set("SCRIPT",serial)
-                    tree.write(self.__dataObject.getScribusSourceFile()) #todo check if scribus reloads (or overwrites :/ ) when doc is opened, opt use API to add a script if there's an open doc.
-
-               
-            else:
-                outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt))                
+                if(self.__dataObject.getSaveSettings()):
+                	serial=self.__dataObject.toString()                    
+                	logging.debug("saving current Scribus Generator settings in your source file")# as: %s"%serial)                    
+                	docElt = root.find('DOCUMENT')                    
+                	storageElt = docElt.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')                    
+                	if(storageElt is None):
+                		colorElt = docElt.find('./COLOR[1]')                     
+                		scriptPos = docElt.getchildren().index(colorElt)
+                		logging.debug("creating new storage element in SLA template at position %s"%scriptPos)
+                		storageElt = ET.Element("JAVA", {"NAME":CONST.STORAGE_NAME})
+                		docElt.insert(scriptPos, storageElt)
+                	storageElt.set("SCRIPT",serial)
+                	tree.write(self.__dataObject.getScribusSourceFile()) #todo check if scribus reloads (or overwrites :/ ) when doc is opened, opt use API to add a script if there's an open doc.
+                
+                #detecting elements to be repeated (@ANNAME="SGrepeat_*")
+                # pattern is [Dx]D[_dm][_dm][_t]" with D=direction[RLUD] x= # of steps in preceding D, d = direction[rlud], m = margin in preceding d, t = trash (distinct objects need distinct names)
+                if(CONST.REPEAT_FIELDS == 1):
+                	logging.debug("detecting & generating repeating elements")
+                	pobjects = templateElt.findall('.//PAGEOBJECT[@ANNAME]') # ET does not support regexp
+                	p = re.compile('SGrepeat\_([RLUD])(\d+)?(\_([RLUD]))?(\_([rlud])(\d+))?(\_([rlud])(\d+))?(.+)')
+                	c = 0
+                	for po in pobjects:
+                		m = p.match(po.get('ANNAME'))
+	                	if m:
+	                		logging.debug("found 1 repeating element: %s"%(m.group(1,2,4,6,7,9,10),))
+	                		c += 1
+	                		(dir1, limit1, dir2, marginDir1, margin1, marginDir2, margin2) = m.group(1,2,4,6,7,9,10)	                		
+	                		self.expandRepeatingObject(headerRowForReplacingVariables, csvData, po, templateElt, dir1, limit1, dir2, marginDir1, margin1, marginDir2, margin2)
+	                
+	                logging.debug("expanded %d repeating elements, exiting prematurely."%c)	                
+	                return 1
+	                
+            else: # not the first (header) row -> replace variables with current data line
+                outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt))
                 if (self.__dataObject.getSingleOutput()):
                     if (index == 1):
-                        logging.debug("generating reference content from row #1")                        
+                        logging.debug("generating reference document from row #1")                        
                         outputElt = ET.fromstring(outContent)
                         docElt = outputElt.find('DOCUMENT')  
                         pagescount = int(docElt.get('ANZPAGES'))
@@ -297,6 +315,26 @@ class ScribusGenerator:
                     page.remove(po)                 
         logging.debug("removed %d empty ITEXTs"%d)
         return d
+
+    
+    # modifies root by appending copies of obj for each csvData row[1:], layout in grid per the various directions and margin parameters.
+    def expandRepeatingObject(self, headerRow, csvData, obj, root, dir1='D', limitDir1=None, dir2=None, marginDir1=None, margin1=None, marginDir2=None, margin2=None):
+	    #todo: make a string with all elements in po's group; substitute; shift; append; loop.
+		logging.debug("expanding one object in direction %s. \nNOT IMPLEMENTED YET"%dir1)
+		
+		# establish reference element(s)
+		template = ET.tostring(obj) #simple objects in v1.4, complete group in v1.5
+		
+		if(obj.get('isGroupControl') == "1"): #group in v1.4 #v1.4
+			groupN = obj.get('NUMGROUP')
+			logging.debug("collecting all objects of group %s" %groupN)
+			for o in root.findall(".//PAGEOBJECT[@NUMGROUP='%s']" %groupN):
+				template += ET.tostring(o)
+		#logging.debug("full template to be duplicated below:\n%s"%template)
+		
+		#todo HERE shift %index.mod(limit) & substitute		
+		#outContent = self.replaceVariablesWithCsvData(headerRow, self.handleAmpersand(row), ET.tostringlist(templateElt))
+
     
     def deleteFile(self, outputFilePath):
         # Delete the temporarily generated files from off the file system
