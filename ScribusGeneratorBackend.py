@@ -53,7 +53,7 @@ class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
     def __init__(self, dataObject):
         self.__dataObject = dataObject
-        logging.config.fileConfig("logging.conf")
+        logging.config.fileConfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))
         logging.debug("ScribusGenerator initialized")
 
     
