@@ -45,8 +45,8 @@ class CONST:
     CSV_SEP = "," # CSV entry separator, comma by default
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
-    REMOVE_EMPTY_LINES = 1 # set to 0 to preserve un-subsituted variables to be removed, along with their empty containing itext and pageobject
-
+    REMOVE_EMPTY_LINES = 1 # set to 0 to preserve un-subsituted variables to be removed, along with their empty containing itext and 
+    KEEP_TAB_LINEBREAK = 1 # set to 0 to replace all tabs and linebreaks in csv data by simple spaces.
 
     
 class ScribusGenerator:
@@ -104,10 +104,10 @@ class ScribusGenerator:
             if(index == 0): # first line is the Header-Row of the CSV-File                
                 headerRowForFileName = row
                 headerRowForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
-                # overwrite attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
                 logging.debug("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
                 tree = ET.parse(self.__dataObject.getScribusSourceFile())
                 root = tree.getroot()                
+                # overwrite attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
                 templateElt = self.overwriteAttributesFromSGAttributes(root)                 
 
                 #save settings
@@ -127,7 +127,7 @@ class ScribusGenerator:
 
                
             else:
-                outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt))                
+                outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
                 if (self.__dataObject.getSingleOutput()):
                     if (index == 1):
                         logging.debug("generating reference content from row #1")                        
@@ -361,21 +361,39 @@ class ScribusGenerator:
         return result
     
     
-    def replaceVariablesWithCsvData(self, headerRow, row, lines, clean=CONST.REMOVE_EMPTY_LINES): # lines as list of strings
+    def replaceVariablesWithCsvData(self, headerRow, row, lines, clean=CONST.REMOVE_EMPTY_LINES, keepTabsLF=0): # lines as list of strings
         result = ''
         for line in lines: # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
-            i = 0
+            
+            # skip un-needed computations
+            if (re.search('%VAR_',line)==None) or (line.strip().startswith('<COLOR ')): # do not substitute in colors definition, find something more efficient; TODO fix: this "color" detection does not work on 1.5.1svn SLA file
+                result = result + line
+                continue
+            
+            # replace with data
+            i = 0           
             for cell in row:
-                tmp = ('%VAR_' + headerRow[i] + '%')
-                #do not substitute in colors definition, find something more efficient
-                if (not(line.strip().startswith('<COLOR '))): # TODO fix this detection does not work on 1.5.1svn SLA file
-                    line = line.replace(tmp, cell) # string.replace(old, new)
+                tmp = ('%VAR_' + headerRow[i] + '%')                     
+                line = line.replace(tmp, cell)
                 i = i + 1
-            if (clean):
-                #remove (& trim) any %VAR_\w*% like string.                
-                (line, d) = re.subn(r"\s*%VAR_\w*%\s*", "", line)
+            
+            # remove (& trim) any (unused) %VAR_\w*% like string.                
+            if (clean):  
+                (line, d) = re.subn('\s*%VAR_\w*%\s*', '', line)
                 if (d>0):
                     logging.debug("cleaned %d empty variable"%d)
+            
+            # convert \t and \n into scribus <tab/> and <linebreak/>
+            if (keepTabsLF == 1) and (re.search('[\t\n]+', line, flags=re.MULTILINE)):
+                
+                # logging.debug("converting tabs and linebreaks in line: %s"%(line))   TODO why is line not the complete line but only @CH here?
+                # split = re.split('([\t\n]+)',line, flags=re.DOTALL)  TODO find better way to preserve style, maybe via XML parsing or full line duplicate?
+                line = re.sub('([\t\n]+)','\"/>\g<1><ITEXT CH=\"',line, flags=re.MULTILINE)
+                #replace \t and \n
+                line = re.sub('\t','<tab />',line)
+                line = re.sub('\n','<breakline />',line, flags=re.MULTILINE)
+                logging.debug("converted tabs and linebreaks in line: %s"%(line))
+                
             result = result + line
         return result
          

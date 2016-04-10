@@ -250,6 +250,10 @@ Scribus Generator will remove unused variables from the generated documents, alo
 
 ![Illustration: Variables not substituted are removed](pic/SG_unusedVariables.png)
 
+If you want to keep these unused variables and empty texts, simply change the default setting accordingly in ```ScribusGeneratorBackend.py```, setting ```REMOVE_EMPTY_LINES``` to 0.
+
+**Linebreaks** and **tabulations** in your csv data are replaced by the scribus equivalent (newlines and tabulations). To remove them and turning them to simple spaces set the setting ```KEEP_TAB_LINEBREAK``` to 0.
+
 ### Logging and debug
 
 ScribusGenerator records all its actions in a log file located (by default) in its own directory. If you encounter an unexpected behaviour check out the content of scribusGenerator.log to find out more. You can change the logging settings in logging.conf (see [Python log configuration](https://docs.python.org/2/howto/logging.html#configuring-logging) for more options).
