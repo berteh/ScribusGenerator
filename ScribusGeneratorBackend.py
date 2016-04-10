@@ -54,7 +54,7 @@ class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
     def __init__(self, dataObject):
         self.__dataObject = dataObject
-        logging.config.fileConfig("logging.conf")
+        logging.config.fileConfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))
         logging.debug("ScribusGenerator initialized, v%s"%(CONST.APP_VERSION))
 
     
@@ -109,7 +109,8 @@ class ScribusGenerator:
                 logging.debug("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
                 tree = ET.parse(self.__dataObject.getScribusSourceFile())
                 root = tree.getroot()                
-                templateElt = self.overwriteAttributesFromSGAttributes(root) # replace scribus xml attributes by dynamic variable name
+                # replace scribus xml attributes by dynamic variable name                
+                templateElt = self.overwriteAttributesFromSGAttributes(root) 
 
                 #save settings
                 if(self.__dataObject.getSaveSettings()):
