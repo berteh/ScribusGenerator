@@ -357,7 +357,7 @@ class ScribusGenerator:
         # CSV rows, so that you can have values like e.g. "A & B Company".
         result = []
         for i in row:
-            result.append(i.replace('&', '&amp;'))
+            result.append(i.replace('&', '&amp;').replace('"','&quot;'))
         return result
     
     
@@ -399,7 +399,7 @@ class ScribusGenerator:
          
     def getCsvData(self, csvfile):
         # Read CSV file and return  2-dimensional list containing the data
-        reader = csv.reader(file(csvfile), delimiter=self.__dataObject.getCsvSeparator())
+        reader = csv.reader(file(csvfile), delimiter=self.__dataObject.getCsvSeparator(), skipinitialspace=True, doublequote=True)
         result = []
         for row in reader:
             rowlist = []
