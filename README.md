@@ -64,6 +64,8 @@ The (csv) Data File
 
 As you can see, the columns have the same ``name`` as variables (``%VAR_name%``) referenced in the Sribus file you have designed.
 
+We recommend saving in UTF-8 encoding to enable the full set of accentuated characters, chinese, cyrillic, math symbols, arrows, braille, symbols and [many more](http://csbruce.com/software/utf-8.html). Simply copy-paste those for which you lack a keyboard combination.
+
 
 Run the Generator Script - Settings
 ---------
@@ -317,7 +319,7 @@ Licence
 The MIT License<br/>
 Copyright <br/>
 (c) 2011, Ekkehard Will (www.ekkehardwill.de)<br/>
-(c) 2014-2015, Berteh (https://github.com/berteh/)
+(c) 2014-2016, Berteh (https://github.com/berteh/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: 
 
