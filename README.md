@@ -66,6 +66,7 @@ As you can see, the columns have the same ``name`` as variables (``%VAR_name%``)
 
 We recommend saving in UTF-8 encoding to enable the full set of accentuated characters, chinese, cyrillic, math symbols, arrows, braille, symbols and [many more](http://csbruce.com/software/utf-8.html). Simply copy-paste those for which you lack a keyboard combination.
 
+To export well-formated CSV in UTF-8 encoding is easy as pie with OpenOffice or LibreOffice Calc, less so with Excel. If you are using excel you may be interested in this free add-in that provides good export/import features: http://www.csvio.net/
 
 Run the Generator Script - Settings
 ---------
