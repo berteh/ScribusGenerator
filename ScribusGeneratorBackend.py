@@ -390,15 +390,19 @@ class ScribusGenerator:
             
             # convert \t and \n into scribus <tab/> and <linebreak/>
             if (keepTabsLF == 1) and (re.search('[\t\n]+', line, flags=re.MULTILINE)):
-                
-                # logging.debug("converting tabs and linebreaks in line: %s"%(line))   TODO why is line not the complete line but only @CH here?
-                # split = re.split('([\t\n]+)',line, flags=re.DOTALL)  TODO find better way to preserve style, maybe via XML parsing or full line duplicate?
-                line = re.sub('([\t\n]+)','\"/>\g<1><ITEXT CH=\"',line, flags=re.MULTILINE)
-                #replace \t and \n
-                line = re.sub('\t','<tab />',line)
-                line = re.sub('\n','<breakline />',line, flags=re.MULTILINE)
-                logging.debug("converted tabs and linebreaks in line: %s"%(line))
-                
+                m = re.search('(<ITEXT.* CH=")([^"]+)(".*/>)', line, flags=re.MULTILINE|re.DOTALL)
+                if m:
+                    begm = m.group(1)
+                    endm = m.group(3)
+                    # logging.debug("converting tabs and linebreaks in line: %s"%(line))
+                    line = re.sub('([\t\n]+)', endm + '\g<1>' + begm, line, flags=re.MULTILINE)
+                    #replace \t and \n
+                    line = re.sub('\t','<tab />',line)
+                    line = re.sub('\n','<breakline />',line, flags=re.MULTILINE)
+                    logging.debug("converted tabs and linebreaks in line: %s"%line)
+                else:
+                    logging.warning("could not convert tabs and linebreaks in this line, kindly report this to the developppers: %s"%(line))
+                    
             result = result + line
         return result
          
