@@ -130,8 +130,8 @@ class ScribusGenerator:
 
                
             else:
-                outContent = self.replaceVariablesWithCsvData(varNamesForReplacingVariables, self.handleAmpersand(row), [ET.tostringlist(templateElt)], keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
-                # todo ET.tostringlist ne fonctionne pas pcq ne decoupe pas aux noeuds. changer d'approche l.133.
+                outContent = self.replaceVariablesWithCsvData(varNamesForReplacingVariables, self.handleAmpersand(row), ET.tostring(templateElt, method='xml').split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
+                # using capturing parenthesis in re.split pattern above to make sure the closing '>' is included in the splitted array.
                 if (self.__dataObject.getSingleOutput()):
                     if (index == 1):
                         logging.debug("generating reference content from row #1")                        
@@ -368,16 +368,16 @@ class ScribusGenerator:
     def replaceVariablesWithCsvData(self, varNames, row, lines, clean=CONST.REMOVE_EMPTY_LINES, keepTabsLF=0): # lines as list of strings
         result = ''
         for idx,line in enumerate(lines): # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
-            logging.debug("replacing in %s"%(line[:20]))
+            # logging.debug("replacing vars in (out of %s): %s"%(len(line), line[:25]))
 
             # skip un-needed computations
             if (re.search('%VAR_',line)==None) or (re.search('\s*<COLOR\s+',line)!=None):
                 result = result + line
-                logging.debug("skipping")
+                # logging.debug("  keeping %s"%line[:25])
                 continue
             
             # replace with data
-            logging.debug("replacing")
+            logging.debug("replacing VARS_ in %s"%line[:25])
             for i,cell in enumerate(row):
                 tmp = ('%VAR_' + varNames[i] + '%')                     
                 line = line.replace(tmp, cell)
