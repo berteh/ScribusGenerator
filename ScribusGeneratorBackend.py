@@ -42,10 +42,10 @@ class CONST:
     FILE_EXTENSION_SCRIBUS = 'sla'
     SEP_PATH = '/'  # In any case we use '/' as path separator on any platform
     SEP_EXT = os.extsep    
-    CSV_SEP = "," # CSV entry separator, comma by default
+    CSV_SEP = "," # CSV entry separator, comma by default; tab: "	" is also common if using Excel.
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
-    REMOVE_EMPTY_LINES = 1 # set to 0 to preserve un-subsituted variables to be removed, along with their empty containing itext and 
+    REMOVE_EMPTY_LINES = 1 # set to 0 to prevent removal of un-subsituted variables, along with their empty containing itext
     KEEP_TAB_LINEBREAK = 1 # set to 0 to replace all tabs and linebreaks in csv data by simple spaces.
 
     
@@ -54,6 +54,9 @@ class ScribusGenerator:
     def __init__(self, dataObject):
         self.__dataObject = dataObject
         logging.config.fileConfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))
+        # root_logger = logging.getLogger()
+        # root_logger.disabled = True
+        # todo: check if logging works, if not warn user to configure log file path and disable.
         logging.debug("ScribusGenerator initialized")
 
     
@@ -102,8 +105,8 @@ class ScribusGenerator:
         # Generate the Scribus Files
         for row in csvData:
             if(index == 0): # first line is the Header-Row of the CSV-File                
-                headerRowForFileName = row
-                headerRowForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
+                varNamesForFileName = row
+                varNamesForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
                 logging.debug("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
                 tree = ET.parse(self.__dataObject.getScribusSourceFile())
                 root = tree.getroot()                
@@ -127,7 +130,8 @@ class ScribusGenerator:
 
                
             else:
-                outContent = self.replaceVariablesWithCsvData(headerRowForReplacingVariables, self.handleAmpersand(row), ET.tostringlist(templateElt), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
+                outContent = self.replaceVariablesWithCsvData(varNamesForReplacingVariables, self.handleAmpersand(row), ET.tostring(templateElt, method='xml').split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
+                # using capturing parenthesis in re.split pattern above to make sure the closing '>' is included in the splitted array.
                 if (self.__dataObject.getSingleOutput()):
                     if (index == 1):
                         logging.debug("generating reference content from row #1")                        
@@ -150,7 +154,7 @@ class ScribusGenerator:
                         shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, objscount, version)                        
                         docElt.extend(shiftedElts)                                                
                 else: # write one of multiple sla
-                    outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), headerRowForFileName, row, fillCount)                    
+                    outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), varNamesForFileName, row, fillCount)                    
                     self.writeSLA(ET.fromstring(outContent), outputFileName)
                     outputFileNames.append(outputFileName)                    
             index = index + 1
@@ -306,7 +310,7 @@ class ScribusGenerator:
         # Build the absolute path, like C:/tmp/template.sla
         return outputDirectory + CONST.SEP_PATH + outputFileName + CONST.SEP_EXT + fileExtension
     
-    def createOutputFileName(self, index, outputFileName, headerRow, row, fillCount):
+    def createOutputFileName(self, index, outputFileName, varNames, row, fillCount):
         # If the User has not set an Output File Name, an internal unique file name
         # will be generated which is the index of the loop.
         result = str(index)
@@ -331,7 +335,7 @@ class ScribusGenerator:
                          ord(u'/'): u'_',
                          ord(u'*'): u'_'
                      }
-                result = self.replaceVariablesWithCsvData(headerRow, row, [outputFileName])
+                result = self.replaceVariablesWithCsvData(varNames, [row], [outputFileName])
                 result = result.decode('utf_8')
                 result = result.translate(table)
         return result
@@ -361,21 +365,22 @@ class ScribusGenerator:
         return result
     
     
-    def replaceVariablesWithCsvData(self, headerRow, row, lines, clean=CONST.REMOVE_EMPTY_LINES, keepTabsLF=0): # lines as list of strings
+    def replaceVariablesWithCsvData(self, varNames, row, lines, clean=CONST.REMOVE_EMPTY_LINES, keepTabsLF=0): # lines as list of strings
         result = ''
-        for line in lines: # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
-            
+        for idx,line in enumerate(lines): # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
+            # logging.debug("replacing vars in (out of %s): %s"%(len(line), line[:25]))
+
             # skip un-needed computations
-            if (re.search('%VAR_',line)==None) or (line.strip().startswith('<COLOR ')): # do not substitute in colors definition, find something more efficient; TODO fix: this "color" detection does not work on 1.5.1svn SLA file
+            if (re.search('%VAR_',line)==None) or (re.search('\s*<COLOR\s+',line)!=None):
                 result = result + line
+                # logging.debug("  keeping %s"%line[:25])
                 continue
             
             # replace with data
-            i = 0           
-            for cell in row:
-                tmp = ('%VAR_' + headerRow[i] + '%')                     
+            logging.debug("replacing VARS_ in %s"%line[:25])
+            for i,cell in enumerate(row):
+                tmp = ('%VAR_' + varNames[i] + '%')                     
                 line = line.replace(tmp, cell)
-                i = i + 1
             
             # remove (& trim) any (unused) %VAR_\w*% like string.                
             if (clean):  

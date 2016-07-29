@@ -60,9 +60,10 @@ class GeneratorControl:
         return self.__dataSourceFileEntryVariable
     
     def dataSourceFileEntryVariableHandler(self):
-        result = tkFileDialog.askopenfilename(title='Choose...', defaultextension='.csv', filetypes=[('CSV', '*.csv *.CSV')])
+        result = tkFileDialog.askopenfilename(title='Choose...', defaultextension='.csv', filetypes=[('CSV - comma separated values', '*.csv *.CSV'),('TSV - tab separated values', '*.tsv *.TSV'),('TXT - text', '*.txt *.TXT'),('all','*.*')])
         if result:
             self.__dataSourceFileEntryVariable.set(result)
+        # todo: opt update separator to tab if tsv is selected?
         
     def getScribusSourceFileEntryVariable(self):
         return self.__scribusSourceFileEntryVariable
