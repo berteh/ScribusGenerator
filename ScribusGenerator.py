@@ -6,6 +6,7 @@
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
+# v2.2 (2016-08-10): various bug fix (logging location in windows, dynamic colors in Scribus 1.5.2 and some more)
 # v2.0 (2015-12-02): added features (merge, range, clean, save/load)
 # v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
 # v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
