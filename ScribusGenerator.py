@@ -150,13 +150,14 @@ class GeneratorControl:
             try:
                 generator.run() 
                 tkMessageBox.showinfo('Scribus Generator', message='Done. Generated files are in '+dataObject.getOutputDirectory())
+            except IOError as e:   #except FileNotFoundError as e:
+                tkMessageBox.showerror(title='File Not Found', message="Could not find some input file, please verify your Scribus and Data file settings:\n\n %s"%e)
             except ValueError as e:
-                tkMessageBox.showerror(title='Error Scribus Generator', message="Could likely not replace a variable with its value,\nplease check your Data File and Data Separator settings.\n moreover: "+e.message+"\n")
+                tkMessageBox.showerror(title='Variable Error', message="Could likely not replace a variable with its value,\nplease check your Data File and Data Separator settings:\n\n %s"%e)
             except IndexError as e:
-                tkMessageBox.showerror(title='Error Scribus Generator', message="Could not find the value for one variable.\nplease check your Data File and Data Separator settings.\n moreover: "+e.message+"\n")
+                tkMessageBox.showerror(title='Variable Error', message="Could not find the value for one variable.\nplease check your Data File and Data Separator settings.\n\n %s"%e)
             except Exception:
-                tkMessageBox.showerror(title='Error Scribus Generator', message="Something went wrong\nRead the log file for more\n."+traceback.format_exc())
-
+                tkMessageBox.showerror(title='Error Scribus Generator', message="Something went wrong.\n\nRead the log file for more (in your home directory)."+traceback.format_exc())
         else:
             tkMessageBox.showerror(title='Validation failed', message='Please check if all settings have been set correctly!')
     

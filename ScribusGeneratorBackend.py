@@ -69,7 +69,11 @@ class ScribusGenerator:
 
         #parsing
         logging.info("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
-        csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
+        try:
+            csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
+        except IOError as e:
+            logging.error("CSV file not found: %s"%(self.__dataObject.getDataSourceFile()))
+            raise             
         if(len(csvData) < 1):
             logging.error("Data file %s is empty. At least a header line and a line of data is needed. Halting."%(self.__dataObject.getDataSourceFile()))
             return -1
@@ -107,7 +111,11 @@ class ScribusGenerator:
                 varNamesForFileName = row
                 varNamesForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
                 logging.info("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
-                tree = ET.parse(self.__dataObject.getScribusSourceFile())
+                try:
+                    tree = ET.parse(self.__dataObject.getScribusSourceFile())
+                except IOError as e:
+                    logging.error("Scribus file not found: %s"%(self.__dataObject.getScribusSourceFile()))
+                    raise
                 root = tree.getroot()                
                 # overwrite attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
                 templateElt = self.overwriteAttributesFromSGAttributes(root)                 
