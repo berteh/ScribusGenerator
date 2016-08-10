@@ -28,9 +28,9 @@ A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces t
 
 
 
-[Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. It can be placed with the standard extension scripts. On Windows platform this location would be ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\``, on Ubuntu ``/usr/share/scribus/scripts/``. We recommand to make this directory  writeable to your user, to allow the loging of Scribus Generator actions, or see the [configuration](#run-the-generator-script-settings) section to move the loging file elsewhere.
+[Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. It can be placed with the standard extension scripts. On Windows platform this location would be ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\``, on Ubuntu ``/usr/share/scribus/scripts/``.
 
-**Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line). It is implemented as a Python script. 
+**Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
 
 
 
@@ -167,17 +167,11 @@ To change the properties of a sub-element (such as one particular text line in a
 
 Running Scribus Generator from the command line
 ---------
-It is possible to run Scribus Generator from the command line. Great to automate your workflow or integrate with other tools!
+It is possible to run Scribus Generator from the command line, and it's fast! Great to automate your workflow or integrate with other tools.
 
-Note only the SLA generation works from the command line. PDF generation is at the moment impossible from the Scribus Generator command line due to Scribus 1.4 limitations.
+Please note only the SLA generation works from the command line. PDF generation is at the moment not suppoted from the Scribus Generator command line.
 
 Find all needed information from the script help: ``./ScribusGeneratorCLI.py --help``
-
-###WARNING!
-
-- The short option for a *single output* has changed to ``-m`` (merge). The former ``-s`` option is now used to *save* your settings from the command line, as explained below.
-- All pdf-related options (--fast, --noPdf, --pdfOnly, --noSla) have been removed from Scribus Generator CLI v2, as the CLI can only generate SLA files.
-
 
 ```
 positional arguments:
@@ -259,9 +253,9 @@ If you want to keep these unused variables and empty texts, simply change the de
 
 ### Logging and debug
 
-ScribusGenerator records all its actions in a log file located (by default) in its own directory. If you encounter an unexpected behaviour check out the content of scribusGenerator.log to find out more. You can change the logging settings in logging.conf (see [Python log configuration](https://docs.python.org/2/howto/logging.html#configuring-logging) for more options).
+ScribusGenerator records all its actions in a log file located (by default) in your user (home) directory. If you encounter an unexpected behaviour check out the content of ```.scribusGenerator.log``` to find out more. You can change the logging settings in logging.conf (see [Python log configuration](https://docs.python.org/2/howto/logging.html#configuring-logging) for more options).
 
-Kindly copy-paste the relevant (usually last) lines of your scribusGenerator.log if you want to [report an issue](https://github.com/berteh/ScribusGenerator/issues).
+Kindly copy-paste the relevant (usually last) lines of your ```.scribusGenerator.log``` if you want to [report an issue](https://github.com/berteh/ScribusGenerator/issues).
 
 ### Variable Names
 
@@ -296,14 +290,6 @@ You can use ```sqlite3 -csv``` in command line or ```.mode csv``` in sqlite's in
 
 Known Issues
 -------
-### Nothing happens
-
-> I get the script GUI and press 'generate' and nothing happens. 
-
-Is the directory of Scribus Generator writeable? It needs to be so we can record (log) all actions of the script. Simply move the whole Scribus Generator directory to a directory that does not need admin rights (such as your desktop) and try again. If that works you can simply consider changing the location of the logging file (see [configuration](#run-the-generator-script-settings) ), and move the script back where it belongs.
-
-If that is still not enough, kindly report an [issue](https://github.com/berteh/ScribusGenerator/issues) online, and copy there the few last lines of your log file (it's ```scribusGenerator.log```, inside your Scribus Generator plugin directory) to help find the reason of this bad behaviour, along with a short explanation of your problem.
-
 ### Mac OSX troubleshooting
 
 Some install of Python on Mac OSX do not ship a working Tkinter package, that is required for ScribusGenerator GUI. Either find a way to setup a compliant TCL/Tk environment, or simply use the [Scribus Generator command line interface](#running-scribus-generator-from-the-command-line).
@@ -312,7 +298,8 @@ If you would like to contribute another GUI to Scribus Generator that works in M
 
 Support
 --------
-Check out the [wiki](https://github.com/berteh/ScribusGenerator/wiki) for more ideas, look at the [solved](https://github.com/berteh/ScribusGenerator/issues?q=is%3Aissue+is%3Aclosed) and [open issues](https://github.com/berteh/ScribusGenerator/issues), and then report a new issue if you have a problem.
+Check out the [wiki](https://github.com/berteh/ScribusGenerator/wiki) for more ideas, look at the [solved](https://github.com/berteh/ScribusGenerator/issues?q=is%3Aissue+is%3Aclosed) and [open issues](https://github.com/berteh/ScribusGenerator/issues), and then kindly report an [issue](https://github.com/berteh/ScribusGenerator/issues) online, and copy there the few last lines of your log file (it's ```.scribusGenerator.log```, inside your user (home) directory, to help find the reason of this bad behaviour, along with a short explanation of your problem.
+
 
 Licence
 --------

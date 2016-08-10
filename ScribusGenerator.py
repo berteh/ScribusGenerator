@@ -6,6 +6,7 @@
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
+# v2.2 (2016-08-10): various bug fix (logging location in windows, dynamic colors in Scribus 1.5.2 and some more)
 # v2.0 (2015-12-02): added features (merge, range, clean, save/load)
 # v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
 # v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
@@ -149,13 +150,14 @@ class GeneratorControl:
             try:
                 generator.run() 
                 tkMessageBox.showinfo('Scribus Generator', message='Done. Generated files are in '+dataObject.getOutputDirectory())
+            except IOError as e:   #except FileNotFoundError as e:
+                tkMessageBox.showerror(title='File Not Found', message="Could not find some input file, please verify your Scribus and Data file settings:\n\n %s"%e)
             except ValueError as e:
-                tkMessageBox.showerror(title='Error Scribus Generator', message="Could likely not replace a variable with its value,\nplease check your Data File and Data Separator settings.\n moreover: "+e.message+"\n")
+                tkMessageBox.showerror(title='Variable Error', message="Could likely not replace a variable with its value,\nplease check your Data File and Data Separator settings:\n\n %s"%e)
             except IndexError as e:
-                tkMessageBox.showerror(title='Error Scribus Generator', message="Could not find the value for one variable.\nplease check your Data File and Data Separator settings.\n moreover: "+e.message+"\n")
+                tkMessageBox.showerror(title='Variable Error', message="Could not find the value for one variable.\nplease check your Data File and Data Separator settings.\n\n %s"%e)
             except Exception:
-                tkMessageBox.showerror(title='Error Scribus Generator', message="Something went wrong\nRead the log file for more\n."+traceback.format_exc())
-
+                tkMessageBox.showerror(title='Error Scribus Generator', message="Something went wrong.\n\nRead the log file for more (in your home directory)."+traceback.format_exc())
         else:
             tkMessageBox.showerror(title='Validation failed', message='Please check if all settings have been set correctly!')
     

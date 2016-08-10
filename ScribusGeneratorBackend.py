@@ -6,6 +6,7 @@
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
+# v2.2 (2016-08-10): various bug fix (logging location in windows, dynamic colors in Scribus 1.5.2 and some more)
 # v2.0 (2015-12-02): added features (merge, range, clean, save/load)
 # v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
 # v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
@@ -54,10 +55,8 @@ class ScribusGenerator:
     def __init__(self, dataObject):
         self.__dataObject = dataObject
         logging.config.fileConfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))
-        # root_logger = logging.getLogger()
-        # root_logger.disabled = True
         # todo: check if logging works, if not warn user to configure log file path and disable.
-        logging.debug("ScribusGenerator initialized")
+        logging.info("ScribusGenerator initialized")
 
     
     def run(self):
@@ -69,8 +68,12 @@ class ScribusGenerator:
             self.__dataObject.setOutputFileName(os.path.split(os.path.splitext(self.__dataObject.getScribusSourceFile())[0])[1] +'__single')    
 
         #parsing
-        logging.debug("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
-        csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
+        logging.info("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
+        try:
+            csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
+        except IOError as e:
+            logging.error("CSV file not found: %s"%(self.__dataObject.getDataSourceFile()))
+            raise             
         if(len(csvData) < 1):
             logging.error("Data file %s is empty. At least a header line and a line of data is needed. Halting."%(self.__dataObject.getDataSourceFile()))
             return -1
@@ -107,8 +110,12 @@ class ScribusGenerator:
             if(index == 0): # first line is the Header-Row of the CSV-File                
                 varNamesForFileName = row
                 varNamesForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
-                logging.debug("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
-                tree = ET.parse(self.__dataObject.getScribusSourceFile())
+                logging.info("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
+                try:
+                    tree = ET.parse(self.__dataObject.getScribusSourceFile())
+                except IOError as e:
+                    logging.error("Scribus file not found: %s"%(self.__dataObject.getScribusSourceFile()))
+                    raise
                 root = tree.getroot()                
                 # overwrite attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
                 templateElt = self.overwriteAttributesFromSGAttributes(root)                 
