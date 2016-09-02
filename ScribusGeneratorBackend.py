@@ -398,8 +398,11 @@ class ScribusGenerator:
                 line = line.replace(tmp, cell)
             
             # remove (& trim) any (unused) %VAR_\w*% like string.                
-            if (clean):  
-                (line, d) = re.subn('\s*%VAR_\w*%\s*', '', line)
+            if (clean):
+                if (CONST.REMOVE_CLEANED_ELEMENT_PREFIX):
+                    (line, d) = re.subn('\s*[,;-]*\s*%VAR_\w*%\s*', '', line)
+                else :
+                    (line, d) = re.subn('\s*%VAR_\w*%\s*', '', line)
                 if (d>0):
                     logging.debug("cleaned %d empty variable"%d)
             
