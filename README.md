@@ -247,7 +247,11 @@ Scribus Generator will remove unused variables from the generated documents, alo
 
 ![Illustration: Variables not substituted are removed](pic/SG_unusedVariables.png)
 
-If you want to keep these unused variables and empty texts, simply change the default setting accordingly in ```ScribusGeneratorBackend.py```, setting ```REMOVE_EMPTY_LINES``` to 0.
+If you want to keep these unused variables and empty texts, simply change the default setting accordingly in ```ScribusGeneratorBackend.py```, setting ```CLEAN_UNUSED_EMPTY_VARS``` to 0.
+
+Similarly, if these unused variables or empty texts were _preceded_ by a simple text (such as a single linefeed, or a character like any of ```,.;-```), these list-like separators will be removed, so you can have a clean enumaration by appending your variables in a simple manner such as ```%VAR_n1%, %VAR_n2%, %VAR_n3%, %VAR_n4%."
+
+If you want to keep these separators, simply change the default setting accordingly in ```ScribusGeneratorBackend.py```, setting ```REMOVE_CLEANED_ELEMENT_PREFIX``` to 0.
 
 **Linebreaks** and **tabulations** in your csv data are replaced by the scribus equivalent (newlines and tabulations). To remove them and turning them to simple spaces set the setting ```KEEP_TAB_LINEBREAK``` to 0.
 

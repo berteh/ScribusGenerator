@@ -46,7 +46,8 @@ class CONST:
     CSV_SEP = "," # CSV entry separator, comma by default; tab: "	" is also common if using Excel.
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
-    REMOVE_EMPTY_LINES = 1 # set to 0 to prevent removal of un-subsituted variables, along with their empty containing itext
+    CLEAN_UNUSED_EMPTY_VARS = 1 # set to 0 to prevent removal of un-subsituted variables, along with their empty containing itext
+    REMOVE_CLEANED_ELEMENT_PREFIX = 1  # set to 0 to keep the separating element before an unused/empty variable, typicaly a linefeed (<para>) or list syntax token (,;-.)
     KEEP_TAB_LINEBREAK = 1 # set to 0 to replace all tabs and linebreaks in csv data by simple spaces.
 
     
@@ -211,7 +212,7 @@ class ScribusGenerator:
         pdfExport.save()
         scribus.closeDoc()
 
-    def writeSLA(self, slaET, outFileName, clean=CONST.REMOVE_EMPTY_LINES):
+    def writeSLA(self, slaET, outFileName, clean=CONST.CLEAN_UNUSED_EMPTY_VARS):
         # write SLA to filepath computed from given elements, optionnaly cleaning empty ITEXT elements and their empty PAGEOBJECTS
         scribusOutputFilePath = self.createOutputFilePath(self.__dataObject.getOutputDirectory(), outFileName, CONST.FILE_EXTENSION_SCRIBUS)
         d = os.path.dirname(scribusOutputFilePath)
@@ -293,20 +294,27 @@ class ScribusGenerator:
         # returns number of ITEXT elements deleted.
         #   1. clean text in which some variable-like text is not substituted (ie: known or unknown variable):
         #      <ITEXT CH="empty %VAR_empty% variable should not show" FONT="Arial Regular" />
-        #   2. remove <ITEXT> with empty @CH
+        #   2. remove <ITEXT> with empty @CH and precedings <para/> if any
         #   3. remove any <PAGEOBJECT> that has no <ITEXT> child left
         emptyXPath = "ITEXT[@CH='']"
         d = 0
         for page in root.findall(".//%s/../.." %emptyXPath): #little obscure because its parent is needed to remove an element, and ElementTree has no parent() method.
-            for po in page.findall(".//%s/.." %emptyXPath):
-                for emptyItext in po.findall("./%s" %emptyXPath):
-                    logging.debug("cleaning 1 empty ITEXT")                    
-                    po.remove(emptyItext)
-                    d += 1
+            for po in page.findall(".//%s/.." %emptyXPath): #collect emptyXPath and <para> that precede for removal, iter is need for lack of sibling-previous navigation in ElementTree
+                trash = []
+                for pos,item in enumerate(po):
+                    if (item.tag=="ITEXT") and (item.get("CH")==""):
+                        print("cleaning 1 empty ITEXT and preceding linefeed (opt.)")
+                        if (CONST.REMOVE_CLEANED_ELEMENT_PREFIX and po[pos-1].tag=="para"):
+                            trash.append(pos-1)
+                        trash.append(pos)
+                        d += 1
+                trash.reverse()
+                for i in trash: # remove trashed elements as stack (lifo order), to preserve positions validity
+                    po.remove(po[i]) 
                 if (len(po.findall("ITEXT")) is 0):
-                    logging.debug("cleaning 1 empty PAGEOBJECT")
-                    page.remove(po)                 
-        logging.debug("removed %d empty ITEXTs"%d)
+                    print("cleaning 1 empty PAGEOBJECT")
+                    page.remove(po)
+        print("removed %d empty ITEXTs"%d)
         return d
     
     def deleteFile(self, outputFilePath):
@@ -372,7 +380,7 @@ class ScribusGenerator:
         return result
     
     
-    def replaceVariablesWithCsvData(self, varNames, row, lines, clean=CONST.REMOVE_EMPTY_LINES, keepTabsLF=0): # lines as list of strings
+    def replaceVariablesWithCsvData(self, varNames, row, lines, clean=CONST.CLEAN_UNUSED_EMPTY_VARS, keepTabsLF=0): # lines as list of strings
         result = ''
         for idx,line in enumerate(lines): # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
             # logging.debug("replacing vars in (out of %s): %s"%(len(line), line[:25]))
