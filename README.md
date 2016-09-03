@@ -58,7 +58,7 @@ You can place the variable at any position within a Text Frame. Apply all format
 The (csv) Data File
 --------
 
-**Scribus Generator** expects a CSV file (_Comma Separated Values_), which is very simple to create with a standard spread sheet editor (such as [LibreOffice](http://www.libreoffice.org/) or Excel): enter the data and save/export as CSV. UTF-8 encoding is recommended.
+**Scribus Generator** expects a CSV file (_Comma Separated Values_), which is very simple to create with a standard spread sheet editor (such as [LibreOffice](http://www.libreoffice.org/) or Excel): enter the data and save/export as CSV. Just make sure your CSV file is encoded in UTF-to have a full character set (accents, braille, math, cyrillic, symbols,...).
 
 ![Illustration: Data File for Generator](pic/SG-05.png)
 
