@@ -350,7 +350,7 @@ class ScribusGenerator:
                          ord(u'/'): u'_',
                          ord(u'*'): u'_'
                      }
-                result = self.replaceVariablesWithCsvData(varNames, [row], [outputFileName])
+                result = self.replaceVariablesWithCsvData(varNames, row, [outputFileName])
                 result = result.decode('utf_8')
                 result = result.translate(table)
         return result
@@ -394,7 +394,8 @@ class ScribusGenerator:
             # replace with data
             logging.debug("replacing VARS_ in %s"%line[:25])
             for i,cell in enumerate(row):
-                tmp = ('%VAR_' + varNames[i] + '%')                     
+                tmp = ('%VAR_' + varNames[i] + '%') 
+                # logging.debug("replacing %s by %s in %s"%(tmp,cell,line))                
                 line = line.replace(tmp, cell)
             
             # remove (& trim) any (unused) %VAR_\w*% like string.                
@@ -447,7 +448,7 @@ class ScribusGenerator:
             storage = doc.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')                    
             return storage.get("SCRIPT")
         except Exception, e:
-            logging.debug("could not load the user settings for Scribus Generator, skipping. more info:\n%s"%e.message)  
+            logging.debug("could not load the user settings: %s"%e)  
             return None
         
         
