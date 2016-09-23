@@ -23,6 +23,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 """
 import csv
 import os
+import platform
 import logging
 import logging.config
 #import traceback
@@ -49,6 +50,7 @@ class CONST:
     CLEAN_UNUSED_EMPTY_VARS = 1 # set to 0 to prevent removal of un-subsituted variables, along with their empty containing itext
     REMOVE_CLEANED_ELEMENT_PREFIX = 1  # set to 0 to keep the separating element before an unused/empty variable, typicaly a linefeed (<para>) or list syntax token (,;-.)
     KEEP_TAB_LINEBREAK = 1 # set to 0 to replace all tabs and linebreaks in csv data by simple spaces.
+    SG_VERSION = '2.4'
 
     
 class ScribusGenerator:
@@ -58,11 +60,16 @@ class ScribusGenerator:
         logging.config.fileConfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))
         # todo: check if logging works, if not warn user to configure log file path and disable.
         logging.info("ScribusGenerator initialized")
-
+        logging.debug("OS: %s - Python: %s - ScribusGenerator v%s"%(os.name, platform.python_version(), CONST.SG_VERSION))
+        
     
     def run(self):
         # Read CSV data and replace the variables in the Scribus File with the cooresponding data. Finaly export to the specified format.
         # may throw exceptions if errors are met, use traceback to get all error details
+        
+        # log options
+        optionsTxt = self.__dataObject.toString()
+        logging.debug("active options: %s%s"%(optionsTxt[:1], optionsTxt[172:]))
         
         #defaults for missing info
         if(self.__dataObject.getSingleOutput() and (self.__dataObject.getOutputFileName() is CONST.EMPTY)):
@@ -99,6 +106,9 @@ class ScribusGenerator:
                 logging.warning("Could not parse value of 'last row' as an integer, using default value instead")       
         if ( (firstElement != 1) or (lastElement != len(csvData)) ):
             csvData = csvData[0:1] + csvData[firstElement : lastElement]
+            logging.debug("custom data range is: %s - %s"%(firstElement, lastElement))
+        else:
+            logging.debug("full data range will be used")
 
         #generation
         dataC = len(csvData)-1
@@ -138,7 +148,7 @@ class ScribusGenerator:
 
                
             else:
-                outContent = self.replaceVariablesWithCsvData(varNamesForReplacingVariables, self.handleAmpersand(row), ET.tostring(templateElt, method='xml').split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
+                outContent = self.substituteData(varNamesForReplacingVariables, self.handleAmpersand(row), ET.tostring(templateElt, method='xml').split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
                 # using capturing parenthesis in re.split pattern above to make sure the closing '>' is included in the splitted array.
                 if (self.__dataObject.getSingleOutput()):
                     if (index == 1):
@@ -303,7 +313,7 @@ class ScribusGenerator:
                 trash = []
                 for pos,item in enumerate(po):
                     if (item.tag=="ITEXT") and (item.get("CH")==""):
-                        print("cleaning 1 empty ITEXT and preceding linefeed (opt.)")
+                        logging.debug("cleaning 1 empty ITEXT and preceding linefeed (opt.)")
                         if (CONST.REMOVE_CLEANED_ELEMENT_PREFIX and po[pos-1].tag=="para"):
                             trash.append(pos-1)
                         trash.append(pos)
@@ -312,9 +322,9 @@ class ScribusGenerator:
                 for i in trash: # remove trashed elements as stack (lifo order), to preserve positions validity
                     po.remove(po[i]) 
                 if (len(po.findall("ITEXT")) is 0):
-                    print("cleaning 1 empty PAGEOBJECT")
+                    logging.debug("cleaning 1 empty PAGEOBJECT")
                     page.remove(po)
-        print("removed %d empty ITEXTs"%d)
+        logging.info("removed %d empty texts items"%d)
         return d
     
     def deleteFile(self, outputFilePath):
@@ -350,9 +360,10 @@ class ScribusGenerator:
                          ord(u'/'): u'_',
                          ord(u'*'): u'_'
                      }
-                result = self.replaceVariablesWithCsvData(varNames, row, [outputFileName])
+                result = self.substituteData(varNames, row, [outputFileName])                
                 result = result.decode('utf_8')
                 result = result.translate(table)
+                logging.debug("output file name is %s"%result)
         return result
 
     def copyScribusContent(self, src):
@@ -380,7 +391,7 @@ class ScribusGenerator:
         return result
     
     
-    def replaceVariablesWithCsvData(self, varNames, row, lines, clean=CONST.CLEAN_UNUSED_EMPTY_VARS, keepTabsLF=0): # lines as list of strings
+    def substituteData(self, varNames, row, lines, clean=CONST.CLEAN_UNUSED_EMPTY_VARS, keepTabsLF=0): # lines as list of strings
         result = ''
         for idx,line in enumerate(lines): # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
             # logging.debug("replacing vars in (out of %s): %s"%(len(line), line[:25]))
@@ -391,8 +402,8 @@ class ScribusGenerator:
                 # logging.debug("  keeping %s"%line[:25])
                 continue
             
-            # replace with data
-            logging.debug("replacing VARS_ in %s"%line[:25])
+            # replace with data, todo consider replacing with https://docs.python.org/2/library/string.html#template-strings
+            logging.debug("replacing VARS_* in %s"%line[:25].strip())
             for i,cell in enumerate(row):
                 tmp = ('%VAR_' + varNames[i] + '%') 
                 # logging.debug("replacing %s by %s in %s"%(tmp,cell,line))                

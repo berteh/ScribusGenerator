@@ -107,10 +107,10 @@ if ((not(args.outDir is None)) and (not os.path.exists(args.outDir))):
 dataObject = GeneratorDataObject(   
     dataSourceFile = ife(not(args.csvFile is None), args.csvFile, CONST.EMPTY),
     outputDirectory = ife(not(args.outDir is None), args.outDir, CONST.EMPTY),
-    outputFileName = args.outName,                                          # is CONST.EMPTY by default
-    outputFormat = CONST.FORMAT_SLA, # ife(args.fast, CONST.FORMAT_SLA, CONST.FORMAT_PDF),
+    outputFileName = args.outName,    # is CONST.EMPTY by default
+    outputFormat = CONST.FORMAT_SLA,  # ife(args.fast, CONST.FORMAT_SLA, CONST.FORMAT_PDF),
     keepGeneratedScribusFiles = CONST.TRUE, # ife(args.pdfOnly, CONST.FALSE, CONST.TRUE), # not used if outputFormat is sla.
-    csvSeparator = args.csvDelimiter,                                       # is CONST.CSV_SEP by default
+    csvSeparator = args.csvDelimiter, # is CONST.CSV_SEP by default
     singleOutput = args.merge,
     firstRow = args.firstRow,
     lastRow = args.lastRow,
