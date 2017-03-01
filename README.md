@@ -27,6 +27,7 @@ A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces t
 [![Scribus Generator how to - high quality pdf generation](pic/screencast.png)](https://www.youtube.com/watch/kMsRn38TOiQ)
 
 How to install Scribus Generator ?
+-------
 
 [Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. It can be placed with the standard extension scripts. On Windows platform this location would be ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\``, on Ubuntu ``/usr/share/scribus/scripts/``.
 
