@@ -32,6 +32,7 @@ import sys
 import xml.etree.ElementTree as ET  # common Python xml implementation
 import json
 import re
+import string
 
 class CONST:
     # Constants for general usage
@@ -142,39 +143,28 @@ class ScribusGenerator:
         template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
         outputFileNames = []
         index = 0 # current data record
-        # detect if NEXT_RECORD is in use TODO
-        recordsInDocument = 1 # number of data record in the source document, is 1 + count(CONST.NEXT_RECORD is used)               
-        recordsInDataBuffer = 0 # data buffer for handling multiple records
+        rootStr = ET.tostring(root, encoding='utf8', method='xml') 
+        recordsInDocument = 1 + string.count(rootStr,CONST.NEXT_RECORD) # number of data records in the source document
+        logging.info("source document consumes %s data record(s)."%recordsInDocument)
+        dataBuffer = []
         for row in csvData:
-            if(index == 0): # first line is the Header-Row of the CSV-File                
-            
+            if(index == 0): # first line is the Header-Row of the CSV-File                            
                 varNamesForFileName = row
-                varNamesForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
-                if recordsInDocument > 1:
-                    logging.info("source document consumes multiple records: #"%recordsInDocument)
-                    # 1) multiply and index varNamesForReplacingVariables for each record, 
-                
-
-                #prepare template and placeholders            
+                varNamesForReplacingVariables = self.handleAmpersand([row])[0]
                 # overwrite attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
                 templateElt = self.overwriteAttributesFromSGAttributes(root)
-                if recordsInDocument > 1:
-                    # 2) index variables names in template per their record position.
-                    #save = update tempateElt
-                    pass
                
             else: #index > 0, row is one data entry
-                if recordsInDocument > 1:
-                    #accumulate in row TODO Here
-                    pass
+                #accumulate row in buffer
+                dataBuffer.append(row)
                     
                 if (index % recordsInDocument == 0) or index == dataC: # buffered data for all document records OR reached last data record
                     # subsitute
-                    outContent = self.substituteData(varNamesForReplacingVariables, self.handleAmpersand(row), ET.tostring(templateElt, method='xml').split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
-                    # using capturing parenthesis in re.split pattern above to make sure the closing '>' is included in the splitted array.
+                    outContent = self.substituteData(varNamesForReplacingVariables, self.handleAmpersand(dataBuffer), 
+                                    ET.tostring(templateElt, method='xml').split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)
                     if (self.__dataObject.getSingleOutput()):
                         if (index == recordsInDocument): #first substitution, update DOCUMENT properties 
-                            logging.debug("generating reference content from row #1")                        
+                            logging.debug("generating reference content from dataBuffer #1")                        
                             outputElt = ET.fromstring(outContent)
                             docElt = outputElt.find('DOCUMENT')  
                             pagescount = int(docElt.get('ANZPAGES'))
@@ -186,17 +176,18 @@ class ScribusGenerator:
                             version = outputElt.get('Version')
     #                        if version.startswith('1.4'):
     #                            docElt.set('GROUPC', str(groupscount*dataC))
-                            docElt.set('ANZPAGES', str(pagescount*dataC)) #todo / count of NEXT_RECORD + 1
+                            docElt.set('ANZPAGES', str(pagescount*dataC//recordsInDocument +1)) #todo replace +1 by roundup()
                             docElt.set('DOCCONTRIB',docElt.get('DOCCONTRIB')+CONST.CONTRIB_TEXT)
                         else: # not first substitution, append DOCUMENT content
-                            logging.debug("merging content from row #%s"%(index))
+                            logging.debug("merging content from dataBuffer #%s"%(index))
                             tmpElt = ET.fromstring(outContent).find('DOCUMENT')
-                            shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, objscount, version)                        
-                            docElt.extend(shiftedElts)                                                
+                            shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, recordsInDocument, groupscount, objscount, version)                        
+                            docElt.extend(shiftedElts)
                     else: # write one of multiple sla
-                        outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), varNamesForFileName, row, fillCount)                    
+                        outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), varNamesForFileName, dataBuffer, fillCount)
                         self.writeSLA(ET.fromstring(outContent), outputFileName)
-                        outputFileNames.append(outputFileName)                    
+                        outputFileNames.append(outputFileName) 
+                    dataBuffer=[]
             index = index + 1
         
         # clean & write single sla
@@ -290,9 +281,9 @@ class ScribusGenerator:
         return root
 
 
-    def shiftPagesAndObjects(self, docElt, pagescount, pageheight, vgap, index, groupscount, objscount, version):
+    def shiftPagesAndObjects(self, docElt, pagescount, pageheight, vgap, index, recordsInDocument, groupscount, objscount, version):
         shifted = []
-        voffset = (float(pageheight)+float(vgap)) * index
+        voffset = (float(pageheight)+float(vgap)) * (index // recordsInDocument)
         for page in docElt.findall('PAGE'):
             page.set('PAGEYPOS', str(float(page.get('PAGEYPOS')) + voffset))
             page.set('NUM', str(int(page.get('NUM')) + pagescount))
@@ -357,7 +348,7 @@ class ScribusGenerator:
         # Build the absolute path, like C:/tmp/template.sla
         return outputDirectory + CONST.SEP_PATH + outputFileName + CONST.SEP_EXT + fileExtension
     
-    def createOutputFileName(self, index, outputFileName, varNames, row, fillCount):
+    def createOutputFileName(self, index, outputFileName, varNames, rows, fillCount):
         # If the User has not set an Output File Name, an internal unique file name
         # will be generated which is the index of the loop.
         result = str(index)
@@ -382,7 +373,7 @@ class ScribusGenerator:
                          ord(u'/'): u'_',
                          ord(u'*'): u'_'
                      }
-                result = self.substituteData(varNames, row, [outputFileName])                
+                result = self.substituteData(varNames, rows, [outputFileName])                
                 result = result.decode('utf_8')
                 result = result.translate(table)
                 logging.debug("output file name is %s"%result)
@@ -402,14 +393,17 @@ class ScribusGenerator:
         tmp.close()
         return result
      
-    def handleAmpersand(self, row):
+    def handleAmpersand(self, rows):
         # If someone uses an '&' as variable (e.g. %VAR_&position%), this text will be saved
         # like %VAR_&amp;position% as the & is being converted by scribus to textual ampersand.
         # Therefore we have to check and convert. It will also be used to replace ampersand of
         # CSV rows, so that you can have values like e.g. "A & B Company".
         result = []
-        for i in row:
-            result.append(i.replace('&', '&amp;').replace('"','&quot;'))
+        for row in rows:      # todo remplace by 2d level map & multiple_replace ?      
+            res1=[]
+            for i in row:
+                res1.append(i.replace('&', '&amp;').replace('"','&quot;'))
+            result.append(res1)
         return result
     
     def multiple_replace(self, string, rep_dict):
@@ -418,9 +412,10 @@ class ScribusGenerator:
         pattern = re.compile("|".join([re.escape(k) for k in rep_dict.keys()]), re.M)
         return pattern.sub(lambda x: rep_dict[x.group(0)], string)
     
-    def substituteData(self, varNames, row, lines, clean=CONST.CLEAN_UNUSED_EMPTY_VARS, keepTabsLF=0): # lines as list of strings
+    def substituteData(self, varNames, rows, lines, clean=CONST.CLEAN_UNUSED_EMPTY_VARS, keepTabsLF=0): # lines as list of strings
         result = ''
-        replacements = dict(zip( ['%VAR_'+i+'%' for i in varNames], row))
+        currentRecord=0
+        replacements = dict(zip( ['%VAR_'+i+'%' for i in varNames], rows[currentRecord]))
         #logging.debug("replacements is: %s"%replacements)
         
         for idx,line in enumerate(lines): # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
@@ -432,6 +427,16 @@ class ScribusGenerator:
                 # logging.debug("  keeping intact %s"%line[:25])
                 continue
             
+            # detect NEXT_RECORD
+            if CONST.NEXT_RECORD in line :
+                currentRecord+=1
+                if currentRecord < len(rows):
+                    logging.debug("loading next record after %s"%replacements["%VAR_name%"])
+                    replacements = dict(zip( ['%VAR_'+i+'%' for i in varNames], rows[currentRecord]))
+                else: #last record reach, leave remaing variables to be cleaned
+                    replacements = {"END-OF-REPLACEMENTS":"END-OF-REPLACEMENTS"}
+                logging.debug("loading next record done")
+        
             # replace with data
             logging.debug("replacing VARS_* in %s"%line[:25].strip())
             line = self.multiple_replace(line, replacements)
@@ -488,6 +493,9 @@ class ScribusGenerator:
             doc = r.find('DOCUMENT')
             storage = doc.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')                    
             return storage.get("SCRIPT")
+        except SyntaxError, e:
+            logging.error("Loading settings in only possible with Python 2.7 and later, please update your system: %s"%e)  
+            return None
         except Exception, e:
             logging.debug("could not load the user settings: %s"%e)  
             return None
