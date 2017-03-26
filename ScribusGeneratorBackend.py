@@ -6,7 +6,8 @@
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
-# v2.2 (2016-08-10): various bug fix (logging location in windows, dynamic colors in Scribus 1.5.2 and some more)
+# v2.5 (2017-03-27): support for multiple records on same page (Next-Record mechanism), bug fix (multiple SGAttributes)
+# v2.3 (2016-08-10): various bug fix (logging location in windows, dynamic colors in Scribus 1.5.2 and some more)
 # v2.0 (2015-12-02): added features (merge, range, clean, save/load)
 # v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
 # v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
@@ -31,6 +32,7 @@ import sys
 import xml.etree.ElementTree as ET  # common Python xml implementation
 import json
 import re
+import string
 
 class CONST:
     # Constants for general usage
@@ -50,7 +52,8 @@ class CONST:
     CLEAN_UNUSED_EMPTY_VARS = 1 # set to 0 to prevent removal of un-subsituted variables, along with their empty containing itext
     REMOVE_CLEANED_ELEMENT_PREFIX = 1  # set to 0 to keep the separating element before an unused/empty variable, typicaly a linefeed (<para>) or list syntax token (,;-.)
     KEEP_TAB_LINEBREAK = 1 # set to 0 to replace all tabs and linebreaks in csv data by simple spaces.
-    SG_VERSION = '2.4'
+    SG_VERSION = '2.5'
+    NEXT_RECORD = '%VAR_NEXT-RECORD%' # set to any word you'd like to use to trigger a jump to the next data record. using a name similar to the variables %VAR_ ... % will ensure it is cleaned after generation, and not show in the final document(s).
 
     
 class ScribusGenerator:
@@ -71,11 +74,35 @@ class ScribusGenerator:
         optionsTxt = self.__dataObject.toString()
         logging.debug("active options: %s%s"%(optionsTxt[:1], optionsTxt[172:]))
         
-        #defaults for missing info
+        # output file name
         if(self.__dataObject.getSingleOutput() and (self.__dataObject.getOutputFileName() is CONST.EMPTY)):
             self.__dataObject.setOutputFileName(os.path.split(os.path.splitext(self.__dataObject.getScribusSourceFile())[0])[1] +'__single')    
 
-        #parsing
+        # source sla
+        logging.info("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
+        try:
+            tree = ET.parse(self.__dataObject.getScribusSourceFile())
+        except IOError as e:
+            logging.error("Scribus file not found: %s"%(self.__dataObject.getScribusSourceFile()))
+            raise
+        root = tree.getroot()    
+        
+        #save settings
+        if (self.__dataObject.getSaveSettings()):                                    
+            serial=self.__dataObject.toString()
+            logging.debug("saving current Scribus Generator settings in your source file")# as: %s"%serial)
+            docElt = root.find('DOCUMENT')
+            storageElt = docElt.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')
+            if (storageElt is None):
+                colorElt = docElt.find('./COLOR[1]')                     
+                scriptPos = docElt.getchildren().index(colorElt)
+                logging.debug("creating new storage element in SLA template at position %s"%scriptPos)
+                storageElt = ET.Element("JAVA", {"NAME":CONST.STORAGE_NAME})
+                docElt.insert(scriptPos, storageElt)
+            storageElt.set("SCRIPT",serial)
+            tree.write(self.__dataObject.getScribusSourceFile()) #todo check if scribus reloads (or overwrites :/ ) when doc is opened, opt use API to add a script if there's an open doc.
+            
+        #data
         logging.info("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
         try:
             csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
@@ -115,66 +142,52 @@ class ScribusGenerator:
         fillCount = len(str(dataC))
         template = [] # XML-Content/Text-Content of the Source Scribus File (List of Lines)
         outputFileNames = []
-        index = 0
-        # Generate the Scribus Files
+        index = 0 # current data record
+        rootStr = ET.tostring(root, encoding='utf8', method='xml') 
+        recordsInDocument = 1 + string.count(rootStr,CONST.NEXT_RECORD) # number of data records appearing in source document
+        logging.info("source document consumes %s data record(s)."%recordsInDocument)
+        dataBuffer = []
         for row in csvData:
-            if(index == 0): # first line is the Header-Row of the CSV-File                
+            if(index == 0): # first line is the Header-Row of the CSV-File                            
                 varNamesForFileName = row
-                varNamesForReplacingVariables = self.handleAmpersand(row) # Header-Row contains the variable names
-                logging.info("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
-                try:
-                    tree = ET.parse(self.__dataObject.getScribusSourceFile())
-                except IOError as e:
-                    logging.error("Scribus file not found: %s"%(self.__dataObject.getScribusSourceFile()))
-                    raise
-                root = tree.getroot()                
+                varNamesForReplacingVariables = self.handleAmpersand([row])[0]
                 # overwrite attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
-                templateElt = self.overwriteAttributesFromSGAttributes(root)                 
-
-                #save settings
-                if (self.__dataObject.getSaveSettings()):                                    
-                    serial=self.__dataObject.toString()
-                    logging.debug("saving current Scribus Generator settings in your source file")# as: %s"%serial)
-                    docElt = root.find('DOCUMENT')
-                    storageElt = docElt.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')
-                    if (storageElt is None):
-                        colorElt = docElt.find('./COLOR[1]')                     
-                        scriptPos = docElt.getchildren().index(colorElt)
-                        logging.debug("creating new storage element in SLA template at position %s"%scriptPos)
-                        storageElt = ET.Element("JAVA", {"NAME":CONST.STORAGE_NAME})
-                        docElt.insert(scriptPos, storageElt)
-                    storageElt.set("SCRIPT",serial)
-                    tree.write(self.__dataObject.getScribusSourceFile()) #todo check if scribus reloads (or overwrites :/ ) when doc is opened, opt use API to add a script if there's an open doc.
-
+                templateElt = self.overwriteAttributesFromSGAttributes(root)
                
-            else:
-                outContent = self.substituteData(varNamesForReplacingVariables, self.handleAmpersand(row), ET.tostring(templateElt, method='xml').split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
-                # using capturing parenthesis in re.split pattern above to make sure the closing '>' is included in the splitted array.
-                if (self.__dataObject.getSingleOutput()):
-                    if (index == 1):
-                        logging.debug("generating reference content from row #1")                        
-                        outputElt = ET.fromstring(outContent)
-                        docElt = outputElt.find('DOCUMENT')  
-                        pagescount = int(docElt.get('ANZPAGES'))
-                        pageheight = float(docElt.get('PAGEHEIGHT'))
-                        vgap = float(docElt.get('GapVertical'))
-                        groupscount = int(docElt.get('GROUPC'))
-                        objscount = len(outputElt.findall('.//PAGEOBJECT'))
-                        logging.debug("current template has #%s pageobjects"%(objscount))
-                        version = outputElt.get('Version')
-#                        if version.startswith('1.4'):
-#                            docElt.set('GROUPC', str(groupscount*dataC))
-                        docElt.set('ANZPAGES', str(pagescount*dataC))                        
-                        docElt.set('DOCCONTRIB',docElt.get('DOCCONTRIB')+CONST.CONTRIB_TEXT)
-                    else:
-                        logging.debug("merging content from row #%s"%(index))
-                        tmpElt = ET.fromstring(outContent).find('DOCUMENT')
-                        shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, groupscount, objscount, version)                        
-                        docElt.extend(shiftedElts)                                                
-                else: # write one of multiple sla
-                    outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), varNamesForFileName, row, fillCount)                    
-                    self.writeSLA(ET.fromstring(outContent), outputFileName)
-                    outputFileNames.append(outputFileName)                    
+            else: #index > 0, row is one data entry
+                #accumulate row in buffer
+                dataBuffer.append(row)
+                    
+                if (index % recordsInDocument == 0) or index == dataC: # buffered data for all document records OR reached last data record
+                    # subsitute
+                    outContent = self.substituteData(varNamesForReplacingVariables, self.handleAmpersand(dataBuffer), 
+                                    ET.tostring(templateElt, method='xml').split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)
+                    if (self.__dataObject.getSingleOutput()):
+                        if (index == recordsInDocument): #first substitution, update DOCUMENT properties 
+                            logging.debug("generating reference content from dataBuffer #1")                        
+                            outputElt = ET.fromstring(outContent)
+                            docElt = outputElt.find('DOCUMENT')  
+                            pagescount = int(docElt.get('ANZPAGES'))
+                            pageheight = float(docElt.get('PAGEHEIGHT'))
+                            vgap = float(docElt.get('GapVertical'))
+                            groupscount = int(docElt.get('GROUPC'))
+                            objscount = len(outputElt.findall('.//PAGEOBJECT'))
+                            logging.debug("current template has #%s pageobjects"%(objscount))
+                            version = outputElt.get('Version')
+    #                        if version.startswith('1.4'):
+    #                            docElt.set('GROUPC', str(groupscount*dataC))
+                            docElt.set('ANZPAGES', str(pagescount*dataC//recordsInDocument +1)) #todo replace +1 by roundup()
+                            docElt.set('DOCCONTRIB',docElt.get('DOCCONTRIB')+CONST.CONTRIB_TEXT)
+                        else: # not first substitution, append DOCUMENT content
+                            logging.debug("merging content from dataBuffer #%s"%(index))
+                            tmpElt = ET.fromstring(outContent).find('DOCUMENT')
+                            shiftedElts = self.shiftPagesAndObjects(tmpElt, pagescount, pageheight, vgap, index-1, recordsInDocument, groupscount, objscount, version)                        
+                            docElt.extend(shiftedElts)
+                    else: # write one of multiple sla
+                        outputFileName = self.createOutputFileName(index, self.__dataObject.getOutputFileName(), varNamesForFileName, dataBuffer, fillCount)
+                        self.writeSLA(ET.fromstring(outContent), outputFileName)
+                        outputFileNames.append(outputFileName) 
+                    dataBuffer=[]
             index = index + 1
         
         # clean & write single sla
@@ -243,34 +256,34 @@ class ScribusGenerator:
         # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FONT)   
 
         for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):
-            sga = pageobject.find(".//ItemAttribute[@Type='SGAttribute']")            
-            attribute = sga.get('Name')            
-            value = sga.get('Value')  
-            param = sga.get('Parameter')
-                  
-            if param is "": # Cannot use 'default' on .get() as it is "" by default in SLA file.
-                param = "." # target is pageobject by default. Cannot use ".|*" as not supported by ET.
-            elif param.startswith("/"): # ET cannot use absolute path on element 
-                param = "."+param 
+            for sga in pageobject.findall(".//ItemAttribute[@Type='SGAttribute']"):
+                attribute = sga.get('Name')            
+                value = sga.get('Value')  
+                param = sga.get('Parameter')
+                      
+                if param is "": # Cannot use 'default' on .get() as it is "" by default in SLA file.
+                    param = "." # target is pageobject by default. Cannot use ".|*" as not supported by ET.
+                elif param.startswith("/"): # ET cannot use absolute path on element 
+                    param = "."+param 
 
-            try:
-                targets = pageobject.findall(param)
-                if targets :
-                    for target in targets :
-                        logging.debug('overwriting value of %s in %s with "%s"'%(attribute, target.tag, value))
-                        target.set(attribute,value)
-                else :
-                    logging.error('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(param, attribute)) #todo message to user
-                    
-            except SyntaxError:
-                logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(param, attribute)) #todo message to user
+                try:
+                    targets = pageobject.findall(param)
+                    if targets :
+                        for target in targets :
+                            logging.debug('overwriting value of %s in %s with "%s"'%(attribute, target.tag, value))
+                            target.set(attribute,value)
+                    else :
+                        logging.error('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(param, attribute)) #todo message to user
+                        
+                except SyntaxError:
+                    logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(param, attribute)) #todo message to user
 
         return root
 
 
-    def shiftPagesAndObjects(self, docElt, pagescount, pageheight, vgap, index, groupscount, objscount, version):
+    def shiftPagesAndObjects(self, docElt, pagescount, pageheight, vgap, index, recordsInDocument, groupscount, objscount, version):
         shifted = []
-        voffset = (float(pageheight)+float(vgap)) * index
+        voffset = (float(pageheight)+float(vgap)) * (index // recordsInDocument)
         for page in docElt.findall('PAGE'):
             page.set('PAGEYPOS', str(float(page.get('PAGEYPOS')) + voffset))
             page.set('NUM', str(int(page.get('NUM')) + pagescount))
@@ -335,7 +348,7 @@ class ScribusGenerator:
         # Build the absolute path, like C:/tmp/template.sla
         return outputDirectory + CONST.SEP_PATH + outputFileName + CONST.SEP_EXT + fileExtension
     
-    def createOutputFileName(self, index, outputFileName, varNames, row, fillCount):
+    def createOutputFileName(self, index, outputFileName, varNames, rows, fillCount):
         # If the User has not set an Output File Name, an internal unique file name
         # will be generated which is the index of the loop.
         result = str(index)
@@ -360,7 +373,7 @@ class ScribusGenerator:
                          ord(u'/'): u'_',
                          ord(u'*'): u'_'
                      }
-                result = self.substituteData(varNames, row, [outputFileName])                
+                result = self.substituteData(varNames, rows, [outputFileName])                
                 result = result.decode('utf_8')
                 result = result.translate(table)
                 logging.debug("output file name is %s"%result)
@@ -380,35 +393,56 @@ class ScribusGenerator:
         tmp.close()
         return result
      
-    def handleAmpersand(self, row):
+    def handleAmpersand(self, rows):
         # If someone uses an '&' as variable (e.g. %VAR_&position%), this text will be saved
         # like %VAR_&amp;position% as the & is being converted by scribus to textual ampersand.
         # Therefore we have to check and convert. It will also be used to replace ampersand of
         # CSV rows, so that you can have values like e.g. "A & B Company".
         result = []
-        for i in row:
-            result.append(i.replace('&', '&amp;').replace('"','&quot;'))
+        for row in rows:      # todo remplace by 2d level map & multiple_replace ?      
+            res1=[]
+            for i in row:
+                res1.append(i.replace('&', '&amp;').replace('"','&quot;'))
+            result.append(res1)
         return result
     
+    def multiple_replace(self, string, rep_dict):
+        # multiple simultaneous string replacements, per http://stackoverflow.com/a/15448887/1694411)
+        # combine with dictionary = dict(zip(keys, values)) to use on arrays
+        pattern = re.compile("|".join([re.escape(k) for k in rep_dict.keys()]), re.M)
+        return pattern.sub(lambda x: rep_dict[x.group(0)], string)
     
-    def substituteData(self, varNames, row, lines, clean=CONST.CLEAN_UNUSED_EMPTY_VARS, keepTabsLF=0): # lines as list of strings
+    def substituteData(self, varNames, rows, lines, clean=CONST.CLEAN_UNUSED_EMPTY_VARS, keepTabsLF=0): # lines as list of strings
         result = ''
+        currentRecord=0
+        replacements = dict(zip( ['%VAR_'+i+'%' for i in varNames], rows[currentRecord]))
+        #logging.debug("replacements is: %s"%replacements)
+        
         for idx,line in enumerate(lines): # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
             # logging.debug("replacing vars in (out of %s): %s"%(len(line), line[:25]))
 
-            # skip un-needed computations
-            if (re.search('%VAR_',line)==None) or (re.search('\s*<COLOR\s+',line)!=None):
+            # skip un-needed computations and preserve colors declarations
+            if (re.search('%VAR_|'+CONST.NEXT_RECORD,line)==None) or (re.search('\s*<COLOR\s+',line)!=None):
                 result = result + line
-                # logging.debug("  keeping %s"%line[:25])
+                # logging.debug("  keeping intact %s"%line[:25])
                 continue
             
-            # replace with data, todo consider replacing with https://docs.python.org/2/library/string.html#template-strings
+            # detect NEXT_RECORD
+            if CONST.NEXT_RECORD in line :
+                currentRecord+=1
+                if currentRecord < len(rows):
+                    logging.debug("loading next record")
+                    replacements = dict(zip( ['%VAR_'+i+'%' for i in varNames], rows[currentRecord]))
+                else: #last record reach, leave remaing variables to be cleaned
+                    replacements = {"END-OF-REPLACEMENTS":"END-OF-REPLACEMENTS"}
+                    logging.debug("next record reached last data entry")
+        
+            # replace with data
             logging.debug("replacing VARS_* in %s"%line[:25].strip())
-            for i,cell in enumerate(row):
-                tmp = ('%VAR_' + varNames[i] + '%') 
-                # logging.debug("replacing %s by %s in %s"%(tmp,cell,line))                
-                line = line.replace(tmp, cell)
-            
+            line = self.multiple_replace(line, replacements)
+            logging.debug("replaced in line: %s"%line)
+        
+        
             # remove (& trim) any (unused) %VAR_\w*% like string.                
             if (clean):
                 if (CONST.REMOVE_CLEANED_ELEMENT_PREFIX):
@@ -417,6 +451,7 @@ class ScribusGenerator:
                     (line, d) = re.subn('\s*%VAR_\w*%\s*', '', line)
                 if (d>0):
                     logging.debug("cleaned %d empty variable"%d)
+                (line, d) = re.subn('\s*%s\w*\s*'%CONST.NEXT_RECORD, '', line)
             
             # convert \t and \n into scribus <tab/> and <linebreak/>
             if (keepTabsLF == 1) and (re.search('[\t\n]+', line, flags=re.MULTILINE)):
@@ -458,6 +493,9 @@ class ScribusGenerator:
             doc = r.find('DOCUMENT')
             storage = doc.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')                    
             return storage.get("SCRIPT")
+        except SyntaxError, e:
+            logging.error("Loading settings in only possible with Python 2.7 and later, please update your system: %s"%e)  
+            return None
         except Exception, e:
             logging.debug("could not load the user settings: %s"%e)  
             return None
