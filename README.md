@@ -3,24 +3,23 @@ ScribusGenerator
 
 Mail-Merge-like extension to Scribus, to generate Scribus and pdf documents automatically from external data.
 
-[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://github.com/berteh/ScribusGenerator/raw/master/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source pdf template and mail-merge alternative.
+[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://github.com/berteh/ScribusGenerator/raw/master/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source high-quality pdf template and mail-merge alternative.
 
 What is Scribus Generator?
 -------
 
-[Scribus](http://www.scribus.net/)  comes with a broad set of page layout features and functionality. One feature missing is to replace text with data dynamically. This kind of feature you may already know as the typical __mail merge__ functionality in your preferred office application.
+[Scribus](http://www.scribus.net/) comes with a broad set of page layout features and functionality. One feature missing is to replace text with data dynamically. This kind of feature you may already know as the typical __mail merge__ functionality in your preferred office application.
 
 [**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) provides this functionality. It allows you to:
 
-- replace texts dynamically
-- replace images dynamically
-- change colors, position, text font or size dynamically
+- replace texts and images dynamically
+- change object colors, position, text font or size dynamically
 - generate separate PDF (or Scribus) files for each data entry, or a single file from all your data
 - work directly in Scribus with a nice user interface, or from the command line
 - use any data source (Excel, OpenOffice, MySQL, Notepad, ...) that can export to CSV.
 - and much more...
 
-    Generally speaking, **Scribus Generator** replaces text with data to automatically generate files (e.g. SLA, PDF). It has been originally written by [Ekkehard Will](http://www.ekkehardwill.de/sg/) and further extended by [Berteh](https://github.com/berteh/).
+Generally speaking, **Scribus Generator** replaces text with data to automatically generate files (e.g. SLA, PDF). It has been originally written by [Ekkehard Will](http://www.ekkehardwill.de/sg/) and further extended by [Berteh](https://github.com/berteh/).
 
 A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces this Scribus Generator. 6 first minutes for the basic overview, 12 last for some more advanced features.
 
@@ -33,22 +32,13 @@ How to install Scribus Generator ?
 
 **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
 
-The graphical interface of Scribus Generator requires Tkinter to be installed in your Python setup. There is no extra dependency to run it from the [command line](#running-scribus-generator-from-the-command-line).
+The graphical interface of Scribus Generator requires Tkinter to be installed in your Python setup, which may be difficult under MacOSX. There is no extra dependency to run it from the [command line](#running-scribus-generator-from-the-command-line), which thus works fine in all OS, including MacOSX.
 
 
-What about Scribus?
---------
-
-[Scribus](http://www.scribus.net/) is a desktop publishing (DTP) application, which is free software and released under the GNU General Public License ([http://www.scribus.net](http://www.scribus.net/)).
-
-It is available for Linux, Unix-like, Mac OS X, OS/2, and Microsoft Windows. Known for its broad set of page layout features, it is comparable to leading non-free applications such as Adobe PageMaker, PagePlus, QuarkXPress or Adobe InDesign.
-
-Scribus is designed for flexible layout and typesetting and the ability to prepare files for professional quality image setting equipment. It can also create animated and interactive PDF presentations and forms. Example uses include writing small newspapers, brochures, newsletters, posters and books.
-
-
-
-The Scribus "template" file
+How to use Scribus Generator 
 ------
+
+### Create your Scribus "template" file
 
 Create and design your Scribus file as any other. At the positions where you need to replace text with data, just add ``%VAR_name%`` where ``name`` is the column your  data file.
 
@@ -56,15 +46,16 @@ You can place the variable at any position within a Text Frame. Apply all format
 
 ![Illustration: Scribus File for Generator](pic/SG-01.png)
 
+If you wish to generate one page (or many) for each data entry you're done, congratulations ! If you would rather display many data entries on a single page simply add the text ``%VAR_NEXT-RECORD%`` after each entry but the last: ScribusGenerator will automatically load the new data record when it reaches the end of your template.
 
-The (csv) Data File
---------
 
-**Scribus Generator** expects a CSV file (_Comma Separated Values_), which is very simple to create with a standard spread sheet editor (such as [LibreOffice](http://www.libreoffice.org/) or Excel): enter the data and save/export as CSV. Just make sure your CSV file is encoded in UTF-to have a full character set (accents, braille, math, cyrillic, symbols,...).
+### Create your (csv) Data File
+
+**Scribus Generator** expects a CSV file (_Comma Separated Values_), which is very simple to create with a standard spread sheet editor (such as [LibreOffice](http://www.libreoffice.org/), Excel or GoogleDoc): enter the data and save/export as CSV. Just make sure your CSV file is encoded in UTF-8 to have a full character set (accents, braille, math, cyrillic, symbols,...).
 
 ![Illustration: Data File for Generator](pic/SG-05.png)
 
-As you can see, the columns have the same ``name`` as variables (``%VAR_name%``) referenced in the Sribus file you have designed.
+It is important to make sure the columns have the same ``name`` as the variables (``%VAR_name%``) you reference in the Scribus template file you have designed.
 
 We recommend saving in UTF-8 encoding to enable the full set of accentuated characters, chinese, cyrillic, math symbols, arrows, braille, symbols and [many more](http://csbruce.com/software/utf-8.html). Simply copy-paste those for which you lack a keyboard combination.
 
@@ -127,6 +118,8 @@ Colors can be dynamically replaced just like text. See the [screencast video @8:
 
 ![Illustration: Replace colors dynamically](pic/SG-16.png)
 
+Use this together with the many reknown color palettes directly included in Scribus to make your documents design rich and appealing !
+
 Dynamic Links
 --------------
 
@@ -144,6 +137,14 @@ Instead of generating a single (sla or pdf) file for each data row, you can gene
 
 ![Illustration: Single ouput to merge all generated files](pic/mergedSLA.png)
 
+Multiple records on a single page
+-----------
+[**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) allows you to display mupliple data entries in a single document. Great to generate your own listings, team charts, game cards, who's who posters and more.
+
+Simply drop the text ``%VAR_NEXT-RECORD%`` in your document between each data entry, following our [example document](https://github.com/berteh/ScribusGenerator/blob/master/example/Next-Record.sla).
+
+Scribus Generator will automatically load the next record when it reaches the end of your template... so don't add the ``%VAR_NEXT-RECORD%`` at the end of your last page.
+
 More advanced uses
 -----------
 Scribus Generator allows more tech-savvy users you to customize the generated documents even more, changing virtually any attribute of any object, such as the fill or outline color of a line, the color of some text, a line thickness, an object position,... See the [screencast video @13:13](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=793).
@@ -159,7 +160,8 @@ To change the properties of a sub-element (such as one particular text line in a
 | Name | Type | Value | Parameter | Explanation 
 | --- | --- | --- | --- | --- |
 | ``FONT`` | ``SGAttribute`` | ``%VAR_font%`` | ``//ITEXT[2]`` | Font of the 2d text line in a frame, like "Arial Regular"
-| ``FONTSIZE`` | ``SGAttribute`` | ``%VAR_size%`` | ``//ITEXT`` | Text size all text lines in a frame, like "14" 
+| ``FONTSIZE`` | ``SGAttribute`` | ``%VAR_size%`` | ``//ITEXT`` | Text size of all text lines in a frame, like "14" 
+| ``LINESP`` | ``SGAttribute`` | ``%VAR_spacing%`` | ``//para[last()]`` | Fixed line spacing of the last paragraph in a frame, like "9.5"
 | ``YPOS`` | ``SGAttribute`` | ``%VAR_top%`` |  | Margin from the top for vertical element position, like "22.04"
 
 
@@ -320,7 +322,7 @@ Licence
 The MIT License<br/>
 Copyright <br/>
 (c) 2011, Ekkehard Will (www.ekkehardwill.de)<br/>
-(c) 2014-2016, Berteh (https://github.com/berteh/)
+(c) 2014-2017, Berteh (https://github.com/berteh/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: 
 
