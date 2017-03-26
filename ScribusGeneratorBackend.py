@@ -144,7 +144,7 @@ class ScribusGenerator:
         outputFileNames = []
         index = 0 # current data record
         rootStr = ET.tostring(root, encoding='utf8', method='xml') 
-        recordsInDocument = 1 + string.count(rootStr,CONST.NEXT_RECORD) # number of data records in the source document
+        recordsInDocument = 1 + string.count(rootStr,CONST.NEXT_RECORD) # number of data records appearing in source document
         logging.info("source document consumes %s data record(s)."%recordsInDocument)
         dataBuffer = []
         for row in csvData:
@@ -256,27 +256,27 @@ class ScribusGenerator:
         # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FONT)   
 
         for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):
-            sga = pageobject.find(".//ItemAttribute[@Type='SGAttribute']")            
-            attribute = sga.get('Name')            
-            value = sga.get('Value')  
-            param = sga.get('Parameter')
-                  
-            if param is "": # Cannot use 'default' on .get() as it is "" by default in SLA file.
-                param = "." # target is pageobject by default. Cannot use ".|*" as not supported by ET.
-            elif param.startswith("/"): # ET cannot use absolute path on element 
-                param = "."+param 
+            for sga in pageobject.findall(".//ItemAttribute[@Type='SGAttribute']"):
+                attribute = sga.get('Name')            
+                value = sga.get('Value')  
+                param = sga.get('Parameter')
+                      
+                if param is "": # Cannot use 'default' on .get() as it is "" by default in SLA file.
+                    param = "." # target is pageobject by default. Cannot use ".|*" as not supported by ET.
+                elif param.startswith("/"): # ET cannot use absolute path on element 
+                    param = "."+param 
 
-            try:
-                targets = pageobject.findall(param)
-                if targets :
-                    for target in targets :
-                        logging.debug('overwriting value of %s in %s with "%s"'%(attribute, target.tag, value))
-                        target.set(attribute,value)
-                else :
-                    logging.error('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(param, attribute)) #todo message to user
-                    
-            except SyntaxError:
-                logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(param, attribute)) #todo message to user
+                try:
+                    targets = pageobject.findall(param)
+                    if targets :
+                        for target in targets :
+                            logging.debug('overwriting value of %s in %s with "%s"'%(attribute, target.tag, value))
+                            target.set(attribute,value)
+                    else :
+                        logging.error('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(param, attribute)) #todo message to user
+                        
+                except SyntaxError:
+                    logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(param, attribute)) #todo message to user
 
         return root
 
@@ -431,11 +431,11 @@ class ScribusGenerator:
             if CONST.NEXT_RECORD in line :
                 currentRecord+=1
                 if currentRecord < len(rows):
-                    logging.debug("loading next record after %s"%replacements["%VAR_name%"])
+                    logging.debug("loading next record")
                     replacements = dict(zip( ['%VAR_'+i+'%' for i in varNames], rows[currentRecord]))
                 else: #last record reach, leave remaing variables to be cleaned
                     replacements = {"END-OF-REPLACEMENTS":"END-OF-REPLACEMENTS"}
-                logging.debug("loading next record done")
+                    logging.debug("next record reached last data entry")
         
             # replace with data
             logging.debug("replacing VARS_* in %s"%line[:25].strip())
