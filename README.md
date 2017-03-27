@@ -147,7 +147,7 @@ Scribus Generator will automatically load the next record when it reaches the en
 
 A full example to generate Monsters Game Cards based on [Dungeon World](http://www.dungeon-world.com/) is available in the [MonsterCards](https://github.com/berteh/ScribusGenerator/tree/master/example/MonsterCards) directory, created by Dustin Andrews:
 
-![Illustration: Example card deck of monsters, by Dustin Andrew](pic/MonsterCards_partial.png)
+[![Illustration: Example card deck of monsters, by Dustin Andrew](pic/MonsterCards_partial.png)](https://github.com/berteh/ScribusGenerator/raw/master/example/MonsterCards/MonsterCards_partial.pdf)
 
 More advanced uses
 -----------
