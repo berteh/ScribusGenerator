@@ -145,6 +145,10 @@ Simply drop the text ``%VAR_NEXT-RECORD%`` in your document between each data en
 
 Scribus Generator will automatically load the next record when it reaches the end of your template... so don't add the ``%VAR_NEXT-RECORD%`` at the end of your last page.
 
+A full example to generate Monsters Game Cards based on [Dungeon World](http://www.dungeon-world.com/) is available in the [MonsterCards](https://github.com/berteh/ScribusGenerator/tree/master/example/MonsterCards) directory, created by Dustin Andrews:
+
+![Illustration: Example card deck of monsters, by Dustin Andrew](pic/MonsterCards_partial.png)
+
 More advanced uses
 -----------
 Scribus Generator allows more tech-savvy users you to customize the generated documents even more, changing virtually any attribute of any object, such as the fill or outline color of a line, the color of some text, a line thickness, an object position,... See the [screencast video @13:13](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=793).
