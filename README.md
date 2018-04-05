@@ -137,6 +137,7 @@ Instead of generating a single (sla or pdf) file for each data row, you can gene
 
 ![Illustration: Single ouput to merge all generated files](pic/mergedSLA.png)
 
+
 Multiple records on a single page
 -----------
 [**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) allows you to display mupliple data entries in a single document. Great to generate your own listings, team charts, game cards, who's who posters and more.
@@ -148,6 +149,16 @@ Scribus Generator will automatically load the next record when it reaches the en
 A full example to generate Monsters Game Cards based on [Dungeon World](http://www.dungeon-world.com/) is available in the [MonsterCards](https://github.com/berteh/ScribusGenerator/tree/master/example/MonsterCards) directory, created by Dustin Andrews:
 
 [![Illustration: Example card deck of monsters, by Dustin Andrew](pic/MonsterCards_partial.png)](https://github.com/berteh/ScribusGenerator/raw/master/example/MonsterCards/MonsterCards_partial.pdf)
+
+
+Dynamic output file location
+-----------
+[**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) allows you to customize the name (and location) of the generated document easily. Add the output file name you wish in your data, and use the corresponding variable (or combination of multiple variables) in the field "Output File Name". Kindly note this file name is always relative to the output directory, and has *no extension*.
+
+Have a look at the combination of values of ``parent`` and ``outfile`` in our [example dataset](https://github.com/berteh/ScribusGenerator/blob/master/example/DynamicOutFile.csv) and related [example template](https://github.com/berteh/ScribusGenerator/blob/master/example/DynamicOutFile.csv)..
+
+![Illustration: Name your generated documents as like](pic/DynamicOutFile.png)
+
 
 More advanced uses
 -----------
@@ -198,7 +209,8 @@ optional arguments:
                         CSV field delimiter character. Default is comma: ","
   -n OUTNAME, --outName OUTNAME
                         name of the generated files, with no extension.
-                        Default is a simple incremental index.
+                        Default is a simple incremental index. Using SG variables
+                        is allowed to define the name of generated documents.
   -o OUTDIR, --outDir OUTDIR
                         directory were generated files are stored. Default is
                         the directory of the scribus source file. outputDir
@@ -215,7 +227,8 @@ optional arguments:
   -s, --save            Save current generator settings in (each) Scribus
                         input file(s).
   -l, --load            Load generator settings from (each) Scribus input
-                        file(s). Overloads all options (but -h).
+                        file(s). Overloads all default values, not provided
+                        command line arguments.
 
 requirements
     This program requires Python 2.7+
