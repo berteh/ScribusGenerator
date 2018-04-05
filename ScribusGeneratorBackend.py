@@ -302,11 +302,11 @@ class ScribusGenerator:
             else : #1.5, 1.6
                 logging.debug("shifting object %s (#%s)"%(obj.tag, obj.get('ItemID')))
                 
-                obj.set('ItemID', str(objscount * index) + str(int(obj.get('ItemID')))[3:] ) # update ID with something unlikely allocated, todo ensure unique ID.
+                obj.set('ItemID', str(objscount * index) + str(int(obj.get('ItemID')))[7:] ) # todo update ID with something unlikely allocated, TODO ensure unique ID instead of 6:, issue #101
                 if (obj.get('NEXTITEM') != None and (str(obj.get('NEXTITEM')) != "-1")): # next linked frame by ItemID                       
-                    obj.set('NEXTITEM', str(objscount * index) + str(int(obj.get('NEXTITEM')))[3:] )
+                    obj.set('NEXTITEM', str(objscount * index) + str(int(obj.get('NEXTITEM')))[7:] )
                 if (obj.get('BACKITEM') != None and (str(obj.get('BACKITEM')) != "-1")): # previous linked frame by ItemID    
-                    obj.set('BACKITEM', str(objscount * index) + str(int(obj.get('BACKITEM')))[3:] )
+                    obj.set('BACKITEM', str(objscount * index) + str(int(obj.get('BACKITEM')))[7:] )
 
             shifted.append(obj)
         logging.debug("shifted page %s element of %s"%(index,voffset))
