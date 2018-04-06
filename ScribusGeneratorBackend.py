@@ -354,6 +354,7 @@ class ScribusGenerator:
         result = str(index)
         result = result.zfill(fillCount)
         # Following characters are not allowed for File-Names on WINDOWS: < > ? " : | \ / *
+        # Note / is still allowed in filename as it allows dynamic subdirectory in Linux (issue 102); todo check & fix for Windows
         if(CONST.EMPTY != outputFileName):
                 table = {
                          #ord(u'ä'): u'ae',
@@ -370,7 +371,7 @@ class ScribusGenerator:
                          ord(u':'): u'_',
                          ord(u'|'): u'_',
                          ord(u'\\'): u'_',
-                         ord(u'/'): u'_',
+                         #ord(u'/'): u'_',
                          ord(u'*'): u'_'
                      }
                 result = self.substituteData(varNames, rows, [outputFileName])                
