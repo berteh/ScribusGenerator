@@ -82,7 +82,7 @@ class ScribusGenerator:
         logging.info("parsing scribus source file %s"%(self.__dataObject.getScribusSourceFile()))
         try:
             tree = ET.parse(self.__dataObject.getScribusSourceFile())
-        except IOError as e:
+        except IOError as exception:
             logging.error("Scribus file not found: %s"%(self.__dataObject.getScribusSourceFile()))
             raise
         root = tree.getroot()    
@@ -106,7 +106,7 @@ class ScribusGenerator:
         logging.info("parsing data source file %s"%(self.__dataObject.getDataSourceFile()))
         try:
             csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
-        except IOError as e:
+        except IOError as exception:
             logging.error("CSV file not found: %s"%(self.__dataObject.getDataSourceFile()))
             raise             
         if(len(csvData) < 1):
@@ -494,11 +494,11 @@ class ScribusGenerator:
             doc = r.find('DOCUMENT')
             storage = doc.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')                    
             return storage.get("SCRIPT")
-        except SyntaxError, e:
-            logging.error("Loading settings in only possible with Python 2.7 and later, please update your system: %s"%e)  
+        except SyntaxError as exception:
+            logging.error("Loading settings in only possible with Python 2.7 and later, please update your system: %s"%exception)  
             return None
-        except Exception, e:
-            logging.debug("could not load the user settings: %s"%e)  
+        except Exception as exception:
+            logging.debug("could not load the user settings: %s"%exception)  
             return None
         
         
