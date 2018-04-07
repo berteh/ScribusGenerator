@@ -65,7 +65,7 @@ parser.add_argument('-d', '--csvDelimiter', default=CONST.CSV_SEP,
 #parser.add_argument('-f', '--fast', '--noPdf', action='store_true', default=False, # commented utile Scribus allows pdf generation from command line
 #    help='no PDF generation, scribus SLA only (much faster)')
 parser.add_argument('-n', '--outName', default=CONST.EMPTY, 
-    help='name of the generated files, with no extension. Default is a simple incremental index.')
+    help='name of the generated files, with no extension. Default is a simple incremental index. Using SG variables is allowed to define the name of generated documents.')
 parser.add_argument('-o', '--outDir', default=None, 
     help='directory were generated files are stored. Default is the directory of the scribus source file. outputDir will be created if it does not exist.')
 #parser.add_argument('-p', '--pdfOnly', '--noSla', action='store_true', default=False, # for pdf from CLI

@@ -6,6 +6,7 @@
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
+# v2.6 (2018-04-07): bug fix (dynamic output file directory, linked frames limit, Python 3.6 syntax)
 # v2.5 (2017-03-27): support for multiple records on same page (Next-Record mechanism), bug fix (multiple SGAttributes)
 # v2.3 (2016-08-10): various bug fix (logging location in windows, dynamic colors in Scribus 1.5.2 and some more)
 # v2.0 (2015-12-02): added features (merge, range, clean, save/load)

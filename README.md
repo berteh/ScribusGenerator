@@ -146,7 +146,7 @@ Simply drop the text ``%VAR_NEXT-RECORD%`` in your document between each data en
 
 Scribus Generator will automatically load the next record when it reaches the end of your template... so don't add the ``%VAR_NEXT-RECORD%`` at the end of your last page.
 
-A full example to generate Monsters Game Cards based on [Dungeon World](http://www.dungeon-world.com/) is available in the [MonsterCards](https://github.com/berteh/ScribusGenerator/tree/master/example/MonsterCards) directory, created by Dustin Andrews:
+A full example to generate Monsters Game Cards based on [Dungeon World](http://www.dungeon-world.com/) is available in the [MonsterCards](https://github.com/berteh/ScribusGenerator/tree/master/example/MonsterCards) directory, created by [Dustin Andrews](https://github.com/dustinandrews):
 
 [![Illustration: Example card deck of monsters, by Dustin Andrew](pic/MonsterCards_partial.png)](https://github.com/berteh/ScribusGenerator/raw/master/example/MonsterCards/MonsterCards_partial.pdf)
 
