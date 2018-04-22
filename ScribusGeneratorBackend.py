@@ -6,6 +6,7 @@
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
+# v2.7 (2018-04-22): change SGAttribute to work in Scribus 1.5.3 GUI.
 # v2.6 (2018-04-07): bug fix (dynamic output file directory, linked frames limit, Python 3.6 syntax)
 # v2.5 (2017-03-27): support for multiple records on same page (Next-Record mechanism), bug fix (multiple SGAttributes)
 # v2.3 (2016-08-10): various bug fix (logging location in windows, dynamic colors in Scribus 1.5.2 and some more)
@@ -152,7 +153,7 @@ class ScribusGenerator:
             if(index == 0): # first line is the Header-Row of the CSV-File                            
                 varNamesForFileName = row
                 varNamesForReplacingVariables = self.handleAmpersand([row])[0]
-                # overwrite attributes from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
+                # overwrite attributes from their /*/ItemAttribute[Parameter=SGAttribute] sibling, when applicable.
                 templateElt = self.overwriteAttributesFromSGAttributes(root)
                
             else: #index > 0, row is one data entry
@@ -252,32 +253,32 @@ class ScribusGenerator:
 
     def overwriteAttributesFromSGAttributes(self, root):
         # modifies root such that
-        # attributes have been rewritten from their /*/ItemAttribute[Type=SGAttribute] sibling, when applicable.
+        # attributes have been rewritten from their /*/ItemAttribute[Parameter=SGAttribute] sibling, when applicable.
         #
         # allows to use %VAR_<var-name>% in Item Attribute to overwrite internal attributes (eg FONT)   
 
-        for pageobject in root.findall(".//ItemAttribute[@Type='SGAttribute']/../.."):
-            for sga in pageobject.findall(".//ItemAttribute[@Type='SGAttribute']"):
+        for pageobject in root.findall(".//ItemAttribute[@Parameter='SGAttribute']/../.."):
+            for sga in pageobject.findall(".//ItemAttribute[@Parameter='SGAttribute']"):
                 attribute = sga.get('Name')            
                 value = sga.get('Value')  
-                param = sga.get('Parameter')
+                ref = sga.get('RelationshipTo')
                       
-                if param is "": # Cannot use 'default' on .get() as it is "" by default in SLA file.
-                    param = "." # target is pageobject by default. Cannot use ".|*" as not supported by ET.
-                elif param.startswith("/"): # ET cannot use absolute path on element 
-                    param = "."+param 
+                if ref is "": # Cannot use 'default' on .get() as it is "" by default in SLA file.
+                    ref = "." # target is pageobject by default. Cannot use ".|*" as not supported by ET.
+                elif ref.startswith("/"): # ET cannot use absolute path on element 
+                    ref = "."+ref 
 
                 try:
-                    targets = pageobject.findall(param)
+                    targets = pageobject.findall(ref)
                     if targets :
                         for target in targets :
                             logging.debug('overwriting value of %s in %s with "%s"'%(attribute, target.tag, value))
                             target.set(attribute,value)
                     else :
-                        logging.error('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(param, attribute)) #todo message to user
+                        logging.error('Target "%s" could be parsed but designated no node. Check it out as it is probably not what you expected to replace %s.'%(ref, attribute)) #todo message to user
                         
                 except SyntaxError:
-                    logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(param, attribute)) #todo message to user
+                    logging.error('XPATH expression "%s" could not be parsed by ElementTree to overwrite %s. Skipping.'%(ref, attribute)) #todo message to user
 
         return root
 

@@ -164,20 +164,20 @@ More advanced uses
 -----------
 Scribus Generator allows more tech-savvy users you to customize the generated documents even more, changing virtually any attribute of any object, such as the fill or outline color of a line, the color of some text, a line thickness, an object position,... See the [screencast video @13:13](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=793).
 
-For instance, to change dynamically the *font* of an object, add an *attribute* to it (_«righ-click on object → Attributes → Add »_). The **type** attribute must be set to [``SGAttribute``][1], it's **name** to the [object property][2] you want to change (in this case ``FONT``) and its **value** to the desired dynamic value (typically some ``%VAR_name%``).  Your data (CSV) file should then contain the font name to use in the column of the given variable, such as "Arial Regular" or "Courier New Bold".
+For instance, to change dynamically the *font* of an object, add an *attribute* to it (_«righ-click on object → Attributes → Add »_). The **Parameter** attribute must be set to [``SGAttribute``][1], it's **name** to the [object property][2] you want to change (in this case ``FONT``) and its **value** to the desired dynamic value (typically some ``%VAR_name%``).  Your data (CSV) file should then contain the font name to use in the column of the given variable, such as "Arial Regular" or "Courier New Bold".
 
-![Illustration: Use Attributes to modify advanced object properties](pic/SG-20.png "Use Attributes to modify advanced object properties")
+![Illustration: Use Attributes to modify advanced object properties](pic/SG-20-new.png "Use Attributes to modify advanced object properties")
 
-To change the properties of a sub-element (such as one particular text line in a text frame), you may use the **parameter** field to define which sub-elements should receive the new property. Use ``*`` to modify all direct children, or any other [simplified XPATH expression][3] to modify only a subset.
+To change the properties of a sub-element (such as one particular text line in a text frame), you may use the **RelationshipTo** field to define which sub-elements should receive the new property. Use ``*`` to modify all direct children, or any other [simplified XPATH expression][3] to modify only a subset.
 
 ### Selected examples of SGAttributes:
 
-| Name | Type | Value | Parameter | Explanation 
+| Name | Value | Parameter | RelationshipTo | Explanation 
 | --- | --- | --- | --- | --- |
-| ``FONT`` | ``SGAttribute`` | ``%VAR_font%`` | ``//ITEXT[2]`` | Font of the 2d text line in a frame, like "Arial Regular"
-| ``FONTSIZE`` | ``SGAttribute`` | ``%VAR_size%`` | ``//ITEXT`` | Text size of all text lines in a frame, like "14" 
-| ``LINESP`` | ``SGAttribute`` | ``%VAR_spacing%`` | ``//para[last()]`` | Fixed line spacing of the last paragraph in a frame, like "9.5"
-| ``YPOS`` | ``SGAttribute`` | ``%VAR_top%`` |  | Margin from the top for vertical element position, like "22.04"
+| ``FONT`` | ``%VAR_font%`` | ``SGAttribute`` | ``//ITEXT[2]`` | Font of the 2d text line in a frame, like "Arial Regular"
+| ``FONTSIZE`` | ``%VAR_size%`` | ``SGAttribute`` | ``//ITEXT`` | Text size of all text lines in a frame, like "14" 
+| ``LINESP`` | ``%VAR_spacing%`` | ``SGAttribute`` | ``//para[last()]`` | Fixed line spacing of the last paragraph in a frame, like "9.5"
+| ``YPOS`` | ``%VAR_top%`` | ``SGAttribute`` |  | Margin from the top for vertical element position, like "22.04"
 
 
 [1]: # "SGAttribute is short for 'Scribus Generator Attribute'"
