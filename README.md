@@ -184,6 +184,18 @@ To change the properties of a sub-element (such as one particular text line in a
 [2]: http://wiki.scribus.net/canvas/File_Format_Specification_for_Scribus_1.4#Tags "Object property is expressed in the exact SLA syntax"
 [3]: https://docs.python.org/2/library/xml.etree.elementtree.html#supported-xpath-syntax "The reduced set of XPATH expressions valid in the 'parameter' field is defined in the ElementTree XPath support documentation."
 
+### Changes in SGAttribute syntax
+
+Since ScribusGenerator v2.7 (released in April 2018), the syntax of the SGAttributes has been slightly changed to support Scribus 1.5.3. 
+If you had templates written for an older version of the script kindly update your templates according to the documentation above.
+
+This can be done using the classical Scribus Editors windows, simply moving your values of ``Parameter`` to ``RelationshipTo``, and setting ``Parameter`` to ``SGAttribute``.
+
+If you have many such files, or attributes, a script is proposed to make this update automatically. Run it from the command line as follows, it creates automatically a backup of your old files:
+ 
+    python ./ConvertSGAttributesToSG27.py *.sla
+
+
 Running Scribus Generator from the command line
 ---------
 It is possible to run Scribus Generator from the command line, and it's fast! Great to automate your workflow or integrate with other tools.
@@ -285,7 +297,7 @@ If you want to keep these separators, simply change the default setting accordin
 
 ### Logging and debug
 
-ScribusGenerator records all its actions in a log file located (by default) in your user (home) directory. If you encounter an unexpected behaviour check out the content of ```.scribusGenerator.log``` to find out more. You can change the logging settings in logging.conf (see [Python log configuration](https://docs.python.org/2/howto/logging.html#configuring-logging) for more options).
+ScribusGenerator records all its actions in a log file located (by default) **in your user (home) directory**. If you encounter an unexpected behaviour check out the content of ```.scribusGenerator.log``` to find out more. You can change the logging settings in logging.conf (see [Python log configuration](https://docs.python.org/2/howto/logging.html#configuring-logging) for more options).
 
 Kindly copy-paste the relevant (usually last) lines of your ```.scribusGenerator.log``` if you want to [report an issue](https://github.com/berteh/ScribusGenerator/issues).
 
