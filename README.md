@@ -150,6 +150,7 @@ A full example to generate Monsters Game Cards based on [Dungeon World](http://w
 
 [![Illustration: Example card deck of monsters, by Dustin Andrew](pic/MonsterCards_partial.png)](https://github.com/berteh/ScribusGenerator/raw/master/example/MonsterCards/MonsterCards_partial.pdf)
 
+### Changes in NEXT-RECORD syntax
 
 Please note Scribus Generator v2.8 (from January 2019) changed the syntax of the ["Next Record" feature](https://github.com/berteh/ScribusGenerator#multiple-records-on-a-single-page)
 to a less confusing name, as per [suggestion #118](https://github.com/berteh/ScribusGenerator/issues/118)
@@ -339,6 +340,11 @@ toggle unaligned output with the ```\a``` switch, activate a comma as a separato
 #### Sqlite3
 
 You can use ```sqlite3 -csv``` in command line or ```.mode csv``` in sqlite's interactive shell
+
+#### Scripts
+
+Various scripts are available in the ``utils`` folder to facilitate your use of Scribus Generator.
+Check out the [related README](https://github.com/berteh/ScribusGenerator/blob/master/utils/README.md) !
 
 Known Issues
 -------

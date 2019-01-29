@@ -1,6 +1,19 @@
 Various Scripts
 ===========
 
+Collect variables in template
+-----------
+
+To find all objects with '%VAR' and lists them in a csv (Filename, Variable and type: text/image), 
+[jvr14115](https://github.com/berteh/ScribusGenerator/issues/116) provided a script you need
+to run from within Scribus ``> Script > run Script``, pick ``utils/CollectSGVarsFromScribus.py``
+
+Resulting CSV is stored in same folder with the suffix 'Elements'.
+
+Improvement suggestions are welcome to handle multiple %VAR_%'s in single text frame.
+
+
+
 Fixes to retro-compatibility issues
 -----------
 
