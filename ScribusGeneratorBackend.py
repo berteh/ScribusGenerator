@@ -6,6 +6,7 @@
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/
 #
+# v2.8 (2019-01-29): code style > PEP8 approximate, renamed %VAR_NEXT-RECORD% into %SG_NEXT-RECORD%
 # v2.7 (2018-04-22): change SGAttribute to work in Scribus 1.5.3 GUI.
 # v2.6 (2018-04-07): bug fix (dynamic output file directory, linked frames limit, Python 3.6 syntax)
 # v2.5 (2017-03-27): support for multiple records on same page (Next-Record mechanism), bug fix (multiple SGAttributes)
@@ -29,9 +30,8 @@ import os
 import platform
 import logging
 import logging.config
-#import traceback
 import sys
-import xml.etree.ElementTree as ET  # common Python xml implementation
+import xml.etree.ElementTree as ET
 import json
 import re
 import string
@@ -61,7 +61,7 @@ class CONST:
     KEEP_TAB_LINEBREAK = 1
     SG_VERSION = '2.5'
     # set to any word you'd like to use to trigger a jump to the next data record. using a name similar to the variables %VAR_ ... % will ensure it is cleaned after generation, and not show in the final document(s).
-    NEXT_RECORD = '%VAR_NEXT-RECORD%'
+    NEXT_RECORD = '%SG_NEXT-RECORD%'
 
 
 class ScribusGenerator:

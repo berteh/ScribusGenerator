@@ -46,7 +46,7 @@ You can place the variable at any position within a Text Frame. Apply all format
 
 ![Illustration: Scribus File for Generator](pic/SG-01.png)
 
-If you wish to generate one page (or many) for each data entry you're done, congratulations ! If you would rather display many data entries on a single page simply add the text ``%VAR_NEXT-RECORD%`` after each entry but the last: ScribusGenerator will automatically load the new data record when it reaches the end of your template.
+If you wish to generate one page (or many) for each data entry you're done, congratulations ! If you would rather display many data entries on a single page simply add the text ``%SG_NEXT-RECORD%`` after each entry but the last: ScribusGenerator will automatically load the new data record when it reaches the end of your template.
 
 
 ### Create your (csv) Data File
@@ -142,13 +142,21 @@ Multiple records on a single page
 -----------
 [**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) allows you to display mupliple data entries in a single document. Great to generate your own listings, team charts, game cards, who's who posters and more.
 
-Simply drop the text ``%VAR_NEXT-RECORD%`` in your document between each data entry, following our [example document](https://github.com/berteh/ScribusGenerator/blob/master/example/Next-Record.sla).
+Simply drop the text ``%SG_NEXT-RECORD%`` in your document between each data entry, following our [example document](https://github.com/berteh/ScribusGenerator/blob/master/example/Next-Record.sla).
 
-Scribus Generator will automatically load the next record when it reaches the end of your template... so don't add the ``%VAR_NEXT-RECORD%`` at the end of your last page.
+Scribus Generator will automatically load the next record when it reaches the end of your template... so don't add the ``%SG_NEXT-RECORD%`` at the end of your last page.
 
 A full example to generate Monsters Game Cards based on [Dungeon World](http://www.dungeon-world.com/) is available in the [MonsterCards](https://github.com/berteh/ScribusGenerator/tree/master/example/MonsterCards) directory, created by [Dustin Andrews](https://github.com/dustinandrews):
 
 [![Illustration: Example card deck of monsters, by Dustin Andrew](pic/MonsterCards_partial.png)](https://github.com/berteh/ScribusGenerator/raw/master/example/MonsterCards/MonsterCards_partial.pdf)
+
+
+Please note Scribus Generator v2.8 (from January 2019) changed the syntax of the ["Next Record" feature](https://github.com/berteh/ScribusGenerator#multiple-records-on-a-single-page)
+to a less confusing name, as per [suggestion #118](https://github.com/berteh/ScribusGenerator/issues/118)
+
+Update your older templates manually, changing ``%VAR_NEXT-RECORD`` to ``%SG_NEXT-RECORD``, or all at once by calling, for instance:
+    
+    python ./ConvertVAR_NEXT-RECORDToSG28.py ~/ScribusProjects/*/*.sla
 
 
 Dynamic output file location

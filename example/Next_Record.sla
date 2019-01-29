@@ -182,7 +182,7 @@
                     <para/>
                     <ITEXT FONTSIZE="12" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat"/>
                     <para/>
-                    <ITEXT FONTSIZE="12" CH="%VAR_NEXT-RECORD%"/>
+                    <ITEXT FONTSIZE="12" CH="%SG_NEXT-RECORD%"/>
                     <trail/>
                 </StoryText>
             </PAGEOBJECT>
@@ -210,7 +210,7 @@
                     <para/>
                     <ITEXT FONTSIZE="12" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat"/>
                     <para/>
-                    <ITEXT FONTSIZE="12" CH="%VAR_NEXT-RECORD%"/>
+                    <ITEXT FONTSIZE="12" CH="%SG_NEXT-RECORD%"/>
                     <trail/>
                 </StoryText>
             </PAGEOBJECT>
@@ -231,7 +231,7 @@
                     <para/>
                     <ITEXT FONTSIZE="12" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat"/>
                     <para/>
-                    <ITEXT FONTSIZE="12" CH="%VAR_NEXT-RECORD%"/>
+                    <ITEXT FONTSIZE="12" CH="%SG_NEXT-RECORD%"/>
                     <trail/>
                 </StoryText>
             </PAGEOBJECT>
@@ -252,7 +252,7 @@
                     <para/>
                     <ITEXT FONTSIZE="12" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat"/>
                     <para/>
-                    <ITEXT FONTSIZE="12" CH="%VAR_NEXT-RECORD%"/>
+                    <ITEXT FONTSIZE="12" CH="%SG_NEXT-RECORD%"/>
                     <trail/>
                 </StoryText>
             </PAGEOBJECT>
@@ -273,7 +273,7 @@
                     <para/>
                     <ITEXT FONTSIZE="12" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat"/>
                     <para/>
-                    <ITEXT FONTSIZE="12" CH="%VAR_NEXT-RECORD%"/>
+                    <ITEXT FONTSIZE="12" CH="%SG_NEXT-RECORD%"/>
                     <trail/>
                 </StoryText>
             </PAGEOBJECT>
