@@ -173,8 +173,8 @@ class ScribusGenerator:
         rootStr = ET.tostring(root, encoding='utf8', method='xml')
         # number of data records appearing in source document
         recordsInDocument = 1 + string.count(rootStr, CONST.NEXT_RECORD)
-        logging.info("source document consumes %s data record(s)." %
-                     recordsInDocument)
+        logging.info("source document consumes %s data record(s) from %s." %
+                     (recordsInDocument, dataC))
         dataBuffer = []
         for row in csvData:
             if(index == 0):  # first line is the Header-Row of the CSV-File
@@ -186,7 +186,7 @@ class ScribusGenerator:
             else:  # index > 0, row is one data entry
                 # accumulate row in buffer
                 dataBuffer.append(row)
-
+        
                 # buffered data for all document records OR reached last data record
                 if (index % recordsInDocument == 0) or index == dataC:
                     # subsitute
@@ -194,7 +194,7 @@ class ScribusGenerator:
                                                      ET.tostring(templateElt, method='xml').split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)
                     if (self.__dataObject.getSingleOutput()):
                         # first substitution, update DOCUMENT properties
-                        if (index == recordsInDocument):
+                        if (index == min(recordsInDocument,dataC)):
                             logging.debug(
                                 "generating reference content from dataBuffer #1")
                             outputElt = ET.fromstring(outContent)
@@ -484,12 +484,12 @@ class ScribusGenerator:
 
         # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
         for idx, line in enumerate(lines):
-            # logging.debug("replacing vars in (out of %s): %s"%(len(line), line[:25]))
+            # logging.debug("replacing vars in (out of %s): %s"%(len(line), line[:30]))
 
             # skip un-needed computations and preserve colors declarations
             if (re.search('%VAR_|'+CONST.NEXT_RECORD, line) == None) or (re.search('\s*<COLOR\s+', line) != None):
                 result = result + line
-                # logging.debug("  keeping intact %s"%line[:25])
+                # logging.debug("  keeping intact %s"%line[:30])
                 continue
 
             # detect NEXT_RECORD
@@ -505,9 +505,9 @@ class ScribusGenerator:
                     logging.debug("next record reached last data entry")
 
             # replace with data
-            logging.debug("replacing VARS_* in %s" % line[:25].strip())
+            logging.debug("replacing VARS_* in %s" % line[:30].strip())
             line = self.multiple_replace(line, replacements)
-            logging.debug("replaced in line: %s" % line)
+            #logging.debug("replaced in line: %s" % line)
 
             # remove (& trim) any (unused) %VAR_\w*% like string.
             if (clean):
