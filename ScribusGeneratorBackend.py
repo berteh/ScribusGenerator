@@ -553,15 +553,17 @@ class ScribusGenerator:
         return result
 
     def getCsvData(self, csvfile):
-        # Read CSV file and return  2-dimensional list containing the data
+        # Read CSV file and return  2-dimensional list containing the data , 
+		# TODO check to replace with https://docs.python.org/3/library/csv.html#csv.DictReader
         reader = csv.reader(file(csvfile), delimiter=self.__dataObject.getCsvSeparator(
         ), skipinitialspace=True, doublequote=True)
         result = []
         for row in reader:
-            rowlist = []
-            for col in row:
-                rowlist.append(col)
-            result.append(rowlist)
+            if(len(row) > 0): # strip empty lines in source CSV
+                rowlist = []
+                for col in row:
+                    rowlist.append(col)
+                result.append(rowlist)
         return result
 
     def getLog(self):
