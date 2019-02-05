@@ -51,6 +51,8 @@ class CONST:
     SEP_EXT = os.extsep
     # CSV entry separator, comma by default; tab: "	" is also common if using Excel.
     CSV_SEP = ","
+	# indent the generated SLA code for more readability, aka "XML pretty print". set to 0 to (slighlty) speed up the generation.
+    INDENT_SLA = 1
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
     # set to 0 to prevent removal of un-subsituted variables, along with their empty containing itext
@@ -253,7 +255,8 @@ class ScribusGenerator:
                 self.deleteFile(scribusOutputFilePath)
 
         return 1
-
+ 
+ 
     def exportPDF(self, scribusFilePath, pdfFilePath):
         import scribus
 
@@ -276,7 +279,7 @@ class ScribusGenerator:
         pdfExport.save()
         scribus.closeDoc()
 
-    def writeSLA(self, slaET, outFileName, clean=CONST.CLEAN_UNUSED_EMPTY_VARS):
+    def writeSLA(self, slaET, outFileName, clean=CONST.CLEAN_UNUSED_EMPTY_VARS, indentSLA=CONST.INDENT_SLA):
         # write SLA to filepath computed from given elements, optionnaly cleaning empty ITEXT elements and their empty PAGEOBJECTS
         scribusOutputFilePath = self.createOutputFilePath(
             self.__dataObject.getOutputDirectory(), outFileName, CONST.FILE_EXTENSION_SCRIBUS)
@@ -286,7 +289,13 @@ class ScribusGenerator:
         outTree = ET.ElementTree(slaET)
         if (clean):
             self.removeEmptyTexts(outTree.getroot())
-        outTree.write(scribusOutputFilePath, encoding="UTF-8")
+        if (indentSLA):
+            from xml.dom import minidom
+            xmlstr = minidom.parseString(ET.tostring(outTree.getroot())).toprettyxml(indent="   ")
+            with open(scribusOutputFilePath, "w") as f:
+                f.write(xmlstr.encode('utf-8'))
+        else:
+		    outTree.write(scribusOutputFilePath, encoding="UTF-8")
         logging.info("scribus file created: %s" % (scribusOutputFilePath))
         return scribusOutputFilePath
 
