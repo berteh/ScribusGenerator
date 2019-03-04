@@ -66,7 +66,7 @@ class GeneratorControl:
 
     def dataSourceFileEntryVariableHandler(self):
         result = tkFileDialog.askopenfilename(title='Choose...', defaultextension='.csv', filetypes=[(
-            'CSV - comma separated values', '*.csv *.CSV'), ('TSV - tab separated values', '*.tsv *.TSV'), ('TXT - text', '*.txt *.TXT'), ('all', '*.*')])
+            'CSV - comma separated values', '*.csv *.CSV'), ('TSV - tab separated values', '*.tsv *.TSV'), ('TXT - text', '*.txt *.TXT'), ('all', '*.*')], initialdir=os.path.dirname(self.__dataSourceFileEntryVariable.get()))
         if result:
             self.__dataSourceFileEntryVariable.set(result)
         # todo: opt update separator to tab if tsv is selected?
@@ -78,7 +78,7 @@ class GeneratorControl:
         # Important: Only sla should be allowed as this is plain XML.
         # E.g. zipped sla.gz files will lead to an error.
         result = tkFileDialog.askopenfilename(
-            title='Choose...', defaultextension='.sla', filetypes=[('SLA', '*.sla *.SLA')])
+            title='Choose...', defaultextension='.sla', filetypes=[('SLA', '*.sla *.SLA')], initialdir=os.path.dirname(self.__scribusSourceFileEntryVariable.get()))
         if result:
             self.__scribusSourceFileEntryVariable.set(result)
 
@@ -89,7 +89,7 @@ class GeneratorControl:
         return self.__outputDirectoryEntryVariable
 
     def outputDirectoryEntryVariableHandler(self):
-        result = tkFileDialog.askdirectory()
+        result = tkFileDialog.askdirectory(initialdir=self.__outputDirectoryEntryVariable.get())
         if result:
             self.__outputDirectoryEntryVariable.set(result)
 
