@@ -218,9 +218,13 @@ class GeneratorDialog:
         self.__ctrl = ctrl
         self.__pluginDir = os.path.dirname(
             os.path.abspath(inspect.stack()[0][1]))
-        self.__ico = PhotoImage(file=self.__pluginDir +
-                                '/pic/ScribusGenerator_logo.gif')
-        root.tk.call('wm', 'iconphoto', root._w, '-default', self.__ico)
+        for i in [self.__pluginDir + '/pic/ScribusGenerator_logo.gif', self.__pluginDir + '/ScribusGenerator_logo.gif']:
+            if os.path.exists(i):
+                try:
+                    self.__ico = PhotoImage(file=i)
+                    root.tk.call('wm', 'iconphoto', root._w, '-default', self.__ico)
+                except Exception as e:
+                    pass
 
     def show(self):
         self.__root.title(CONST.APP_NAME)
