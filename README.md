@@ -38,7 +38,7 @@ For the main platforms the script location is;
 - macOS: ``SCRIBUS_INSTALL_DIRECTORY/Contents/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L79))
 - Ubuntu/Debian/most Linux: ``/usr/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L65) & [build](https://github.com/scribusproject/scribus/blob/93c96b372b72d782eddbcba7f7e2e442f1e10b23/CMakeLists.txt#L333))
 
-For ScribusGenerator to run the files you need to copy are ``ScribusGenerator.py``, ``ScribusGeneratorBackend.py``, ``logging.conf`` and ``/pic/ScribusGenerator_logo.gif`` (into the ``pic`` subdirectory).
+To be able to run from the system directory the files you need to copy are ``ScribusGenerator.py``, ``ScribusGeneratorBackend.py``, ``logging.conf`` and ``pic/ScribusGenerator_logo.gif`` (needs to be in a subdirectory named ``pic``).
 
 The graphical interface of Scribus Generator requires Tkinter to be installed in your Python setup, which may be difficult under MacOSX. There is no extra dependency to run it from the [command line](#running-scribus-generator-from-the-command-line), which thus works fine in all OS, including MacOSX.
 
