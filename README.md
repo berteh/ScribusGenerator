@@ -30,18 +30,21 @@ How to install Scribus Generator ?
 
 [Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
 
-You can also add ScribusGenerator to the system directory where extension scripts distributed with Scribus is placed. Doing this will make it easily available from the application menu _«Scribus → Script → Scribus Scripts → ScribusGenerator»_ but it might require administrator priviledges to write to the required location.
+### Alternative install options
+
+To show ScribusGennerator in the application menu _«Scribus → Script → Scribus Scripts → ScribusGenerator»_ you need to move the downloaded files to the system directory where extension scripts distributed with Scribus are placed. It might require administrator priviledges to write to the required location.
 
 For the main platforms the script location is;
 
 - Windows: ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L110))
 - macOS: ``SCRIBUS_INSTALL_DIRECTORY/Contents/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L79))
-- Ubuntu/Debian/most Linux: ``/usr/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L65) & [build](https://github.com/scribusproject/scribus/blob/93c96b372b72d782eddbcba7f7e2e442f1e10b23/CMakeLists.txt#L333))
+- Ubuntu/Debian/most Linux: ``/usr/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L65)
 
-To be able to run from the system directory the files you need to copy are ``ScribusGenerator.py``, ``ScribusGeneratorBackend.py``, ``logging.conf`` and ``pic/ScribusGenerator_logo.gif`` (needs to be in a subdirectory named ``pic``).
+To be able to run from the system directory, the files you need to copy to the target ``scripts/`` directory are ``ScribusGenerator.py``, ``ScribusGeneratorBackend.py``, ``logging.conf`` and ``pic/ScribusGenerator_logo.gif``.
 
-The graphical interface of Scribus Generator requires Tkinter to be installed in your Python setup, which may be difficult under MacOSX. There is no extra dependency to run it from the [command line](#running-scribus-generator-from-the-command-line), which thus works fine in all OS, including MacOSX.
+### MacOSX issues
 
+We recommend running ScribusGenerator in MacOSX from the [command line](#running-scribus-generator-from-the-command-line), since the graphical interface of Scribus Generator requires Tkinter to be installed in your Python setup, which may be difficult under MacOSX.
 
 How to use Scribus Generator 
 ------
@@ -54,7 +57,7 @@ You can place the variable at any position within a Text Frame. Apply all format
 
 ![Illustration: Scribus File for Generator](pic/SG-01.png)
 
-If you wish to generate one page (or many) for each data entry you're done, congratulations ! If you would rather display many data entries on a single page simply add the text ``%SG_NEXT-RECORD%`` after each entry but the last: ScribusGenerator will automatically load the new data record when it reaches the end of your template.
+If you wish to generate one page (or many) for each data entry you're done, congratulations ! If you would rather display many data entries on a single page simply add the text ``%SG_NEXT-RECORD%`` before each entry but the first: ScribusGenerator will automatically load the new data record as soon as it detects this token.
 
 
 ### Create your (csv) Data File
@@ -150,13 +153,15 @@ Multiple records on a single page
 -----------
 [**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) allows you to display mupliple data entries in a single document. Great to generate your own listings, team charts, game cards, who's who posters and more.
 
-Simply drop the text ``%SG_NEXT-RECORD%`` in your document between each data entry, following our [example document](https://github.com/berteh/ScribusGenerator/blob/master/example/Next-Record.sla).
-
-Scribus Generator will automatically load the next record when it reaches the end of your template... so don't add the ``%SG_NEXT-RECORD%`` at the end of your last page.
+Simply drop the text ``%SG_NEXT-RECORD%`` in your document _before each data entry but the first_, following our [example document](https://github.com/berteh/ScribusGenerator/blob/master/example/Next-Record.sla). Kindly note this token is case sensitive and must be upper-case. Scribus Generator will automatically load the next record as soon as it detects ``%SG_NEXT-RECORD%``, and when it reaches the end of your template.
 
 A full example to generate Monsters Game Cards based on [Dungeon World](http://www.dungeon-world.com/) is available in the [MonsterCards](https://github.com/berteh/ScribusGenerator/tree/master/example/MonsterCards) directory, created by [Dustin Andrews](https://github.com/dustinandrews):
 
 [![Illustration: Example card deck of monsters, by Dustin Andrew](pic/MonsterCards_partial.png)](https://github.com/berteh/ScribusGenerator/raw/master/example/MonsterCards/MonsterCards_partial.pdf)
+
+### Advanced layout, groups and layers
+
+The Scribus Generator script prioritizes items based on their _Level_ in Scribus. For advanced layouts (groups, layers,...) we thus  recommend to put your main item on the first level, together with the ``%SG_NEXT-RECORD%`` token before you group them together, for it to behave properly (assuming you call next record at the beginning of your 2nd item and next ones).
 
 ### Changes in NEXT-RECORD syntax
 
