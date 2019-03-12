@@ -28,9 +28,17 @@ A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces t
 How to install Scribus Generator ?
 -------
 
-[Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. It can be placed with the standard extension scripts. On Windows platform this location would be ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\``, on Ubuntu ``/usr/share/scribus/scripts/``.
+[Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
 
-**Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
+You can also add ScribusGenerator to the system directory where extension scripts distributed with Scribus is placed. Doing this will make it easily available from the application menu _«Scribus → Script → Scribus Scripts → ScribusGenerator»_ but it might require administrator priviledges to write to the required location.
+
+For the main platforms the script location is;
+
+- Windows: ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L110))
+- macOS: ``SCRIBUS_INSTALL_DIRECTORY/Contents/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L79))
+- Ubuntu/Debian/most Linux: ``/usr/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L65) & [build](https://github.com/scribusproject/scribus/blob/93c96b372b72d782eddbcba7f7e2e442f1e10b23/CMakeLists.txt#L333))
+
+To be able to run from the system directory the files you need to copy are ``ScribusGenerator.py``, ``ScribusGeneratorBackend.py``, ``logging.conf`` and ``pic/ScribusGenerator_logo.gif`` (needs to be in a subdirectory named ``pic``).
 
 The graphical interface of Scribus Generator requires Tkinter to be installed in your Python setup, which may be difficult under MacOSX. There is no extra dependency to run it from the [command line](#running-scribus-generator-from-the-command-line), which thus works fine in all OS, including MacOSX.
 
