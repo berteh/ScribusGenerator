@@ -1,0 +1,19 @@
+{
+    "name": "berteh/scribusgenerator",
+    "type": "library",
+    "description": "Create beautiful documents with data - Open source pdf (and Scribus) template and mail-merge alternative",
+    "license": "MIT",
+    "homepage": "https://berteh.github.io/ScribusGenerator",
+    "authors": [
+        {
+            "name": "Berteh",
+            "homepage": "https://github.com/berteh",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Ekkehard Will",
+            "homepage": "http://ekkehardwill.de",
+            "role": "Project Founder"
+        }
+    ]
+}
