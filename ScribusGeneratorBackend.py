@@ -295,7 +295,7 @@ class ScribusGenerator:
             with open(scribusOutputFilePath, "w") as f:
                 f.write(xmlstr.encode('utf-8'))
         else:
-		    outTree.write(scribusOutputFilePath, encoding="UTF-8")
+            outTree.write(scribusOutputFilePath, encoding="UTF-8")
         logging.info("scribus file created: %s" % (scribusOutputFilePath))
         return scribusOutputFilePath
 
