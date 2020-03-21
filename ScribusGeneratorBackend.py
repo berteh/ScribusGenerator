@@ -59,9 +59,9 @@ class CONST:
     FILE_EXTENSION_SCRIBUS = 'sla'
     SEP_PATH = '/'  # In any case we use '/' as path separator on any platform
     SEP_EXT = os.extsep
-    # CSV entry separator, comma by default; tab: "	" is also common if using Excel.
+    # CSV entry separator, comma by default; tab: " " is also common if using Excel.
     CSV_SEP = ","
-	# indent the generated SLA code for more readability, aka "XML pretty print". set to 0 to (slighlty) speed up the generation.
+    # indent the generated SLA code for more readability, aka "XML pretty print". set to 0 to (slighlty) speed up the generation.
     INDENT_SLA = 1
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
@@ -80,8 +80,6 @@ class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
     def __init__(self, dataObject):
         self.__dataObject = dataObject
-        print("path: %s" % os.path.abspath(os.path.dirname(__file__)))
-        print("path2: %s" % os.path.join(os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))
         logging.config.fileConfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))
         # todo: check if logging works, if not warn user to configure log file path and disable.
         logging.info("ScribusGenerator initialized")
@@ -137,16 +135,13 @@ class ScribusGenerator:
                      (self.__dataObject.getDataSourceFile()))
         try:
             csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
+            #print(csvData)
         except IOError as exception:
             logging.error("CSV file not found: %s" %
                           (self.__dataObject.getDataSourceFile()))
             raise
         if(len(csvData) < 1):
-            logging.error("Data file %s is empty. At least a header line and a line of data is needed. Halting." % (
-                self.__dataObject.getDataSourceFile()))
-            return -1
-        if(len(csvData) < 2):
-            logging.error("Data file %s has only one line. At least a header line and a line of data is needed. Halting." % (
+            logging.error("Data file %s has only one line or is empty. At least a header line and a line of data is needed. Halting." % (
                 self.__dataObject.getDataSourceFile()))
             return -1
 
@@ -165,19 +160,19 @@ class ScribusGenerator:
             try:
                 newLastElementValue = int(self.__dataObject.getLastRow())
                 # Guard against numbers higher than the length of csvData
-                lastElement = min(newLastElementValue + 1, lastElement)
+                lastElement = min(newLastElementValue, lastElement)
             except:
                 logging.warning(
                     "Could not parse value of 'last row' as an integer, using default value instead")
         if ((firstElement != 1) or (lastElement != len(csvData))):
-            csvData = csvData[0:1] + csvData[firstElement: lastElement]
+            csvData = csvData[firstElement: lastElement]
             logging.debug("custom data range is: %s - %s" %
                           (firstElement, lastElement))
         else:
             logging.debug("full data range will be used")
 
         # generation
-        dataC = len(csvData)-1
+        dataC = len(csvData)
         fillCount = len(str(dataC))
         # XML-Content/Text-Content of the Source Scribus File (List of Lines)
         template = []
@@ -188,59 +183,65 @@ class ScribusGenerator:
         recordsInDocument = 1 + rootStr.count(CONST.NEXT_RECORD)
         logging.info("source document consumes %s data record(s) from %s." %
                      (recordsInDocument, dataC))
+        
+        #global vars
         dataBuffer = []
+        pagescount = pageheight = vgap = groupscount = objscount = 0
+        version = ''
+        
         for row in csvData:
-            if(index == 0):  # first line is the Header-Row of the CSV-File
-                varNamesForFileName = row
-                varNamesForReplacingVariables = self.handleAmpersand([row])[0]
+            if(index == 0):  # get vars names from first Header-Row of the CSV-File
+                varNamesForFileName = list(row.keys())
+                print(varNamesForFileName) #TODO unprint
+                varNamesForReplacingVariables = self.handleAmpersand([row.keys()])[0]
+                print(varNamesForReplacingVariables) #TODO unprint
                 # overwrite attributes from their /*/ItemAttribute[Parameter=SGAttribute] sibling, when applicable.
                 templateElt = self.overwriteAttributesFromSGAttributes(root)
 
-            else:  # index > 0, row is one data entry
-                # accumulate row in buffer
-                dataBuffer.append(row)
-        
-                # buffered data for all document records OR reached last data record
-                if (index % recordsInDocument == 0) or index == dataC:
-                    # subsitute
-                    outContent = self.substituteData(varNamesForReplacingVariables, self.handleAmpersand(dataBuffer),
-                                                     ET.tostring(templateElt, method='xml').decode().split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)
-                    if (self.__dataObject.getSingleOutput()):
-                        # first substitution, update DOCUMENT properties
-                        if (index == min(recordsInDocument,dataC)):
-                            logging.debug(
-                                "generating reference content from dataBuffer #1")
-                            outputElt = ET.fromstring(outContent)
-                            docElt = outputElt.find('DOCUMENT')
-                            pagescount = int(docElt.get('ANZPAGES'))
-                            pageheight = float(docElt.get('PAGEHEIGHT'))
-                            vgap = float(docElt.get('GapVertical'))
-                            groupscount = int(docElt.get('GROUPC'))
-                            objscount = len(outputElt.findall('.//PAGEOBJECT'))
-                            logging.debug(
-                                "current template has #%s pageobjects" % (objscount))
-                            version = outputElt.get('Version')
-    #                        if version.startswith('1.4'):
-    #                            docElt.set('GROUPC', str(groupscount*dataC))
-                            # todo replace +1 by roundup()
-                            docElt.set('ANZPAGES', str(
-                                pagescount*dataC//recordsInDocument + 1))
-                            docElt.set('DOCCONTRIB', docElt.get(
-                                'DOCCONTRIB')+CONST.CONTRIB_TEXT)
-                        else:  # not first substitution, append DOCUMENT content
-                            logging.debug(
-                                "merging content from dataBuffer #%s" % (index))
-                            tmpElt = ET.fromstring(outContent).find('DOCUMENT')
-                            shiftedElts = self.shiftPagesAndObjects(
-                                tmpElt, pagescount, pageheight, vgap, index-1, recordsInDocument, groupscount, objscount, version)
-                            docElt.extend(shiftedElts)
-                    else:  # write one of multiple sla
-                        outputFileName = self.createOutputFileName(
-                            index, self.__dataObject.getOutputFileName(), varNamesForFileName, dataBuffer, fillCount)
-                        self.writeSLA(ET.fromstring(
-                            outContent), outputFileName)
-                        outputFileNames.append(outputFileName)
-                    dataBuffer = []
+            # now handle row as data entry
+            # accumulate row in buffer
+            dataBuffer.append(row.values())
+            
+            # buffered data for all document records OR reached last data record
+            if ((index+1) % recordsInDocument == 0) or index == dataC:
+                logging.debug("subsitute")
+                outContent = self.substituteData(varNamesForReplacingVariables, self.handleAmpersand(dataBuffer), ET.tostring(templateElt, method='xml').decode().split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)
+                if (self.__dataObject.getSingleOutput()):
+                    # first substitution, update DOCUMENT properties
+                    if (index+1 == min(recordsInDocument,dataC)):
+                        logging.debug(
+                            "generating reference content from dataBuffer #%s" % (index))
+                        outputElt = ET.fromstring(outContent)
+                        docElt = outputElt.find('DOCUMENT')
+                        pagescount = int(docElt.get('ANZPAGES'))
+                        pageheight = float(docElt.get('PAGEHEIGHT'))
+                        vgap = float(docElt.get('GapVertical'))
+                        groupscount = int(docElt.get('GROUPC'))
+                        objscount = len(outputElt.findall('.//PAGEOBJECT'))
+                        logging.debug(
+                            "current template has #%s pageobjects" % (objscount))
+                        version = outputElt.get('Version')
+#                        if version.startswith('1.4'):
+#                            docElt.set('GROUPC', str(groupscount*dataC))
+                        # todo replace +1 by roundup()
+                        docElt.set('ANZPAGES', str(
+                            pagescount*dataC//recordsInDocument + 1))
+                        docElt.set('DOCCONTRIB', docElt.get(
+                            'DOCCONTRIB')+CONST.CONTRIB_TEXT)
+                    #append DOCUMENT content
+                    logging.debug(
+                        "merging content from dataBuffer #%s (version:%s)" % (index, version))
+                    tmpElt = ET.fromstring(outContent).find('DOCUMENT')
+                    shiftedElts = self.shiftPagesAndObjects(
+                        tmpElt, pagescount, pageheight, vgap, index-1, recordsInDocument, groupscount, objscount, version)
+                    docElt.extend(shiftedElts)
+                else:  # write one of multiple sla
+                    outputFileName = self.createOutputFileName(
+                        index, self.__dataObject.getOutputFileName(), varNamesForFileName, dataBuffer, fillCount)
+                    self.writeSLA(ET.fromstring(
+                        outContent), outputFileName)
+                    outputFileNames.append(outputFileName)
+                dataBuffer = []
             index = index + 1
 
         # clean & write single sla
@@ -304,7 +305,7 @@ class ScribusGenerator:
             from xml.dom import minidom
             xmlstr = minidom.parseString(ET.tostring(outTree.getroot())).toprettyxml(indent="   ")
             with open(scribusOutputFilePath, "w") as f:
-                f.write(xmlstr.encode('utf-8'))
+                f.write(xmlstr)
         else:
             outTree.write(scribusOutputFilePath, encoding="UTF-8")
         logging.info("scribus file created: %s" % (scribusOutputFilePath))
@@ -349,12 +350,17 @@ class ScribusGenerator:
         shifted = []
         voffset = (float(pageheight)+float(vgap)) * \
             (index // recordsInDocument)
+        #logging.debug("shifting to voffset %s " % (voffset)) 
         for page in docElt.findall('PAGE'):
             page.set('PAGEYPOS', str(float(page.get('PAGEYPOS')) + voffset))
             page.set('NUM', str(int(page.get('NUM')) + pagescount))
             shifted.append(page)
         for obj in docElt.findall('PAGEOBJECT'):
-            obj.set('YPOS', str(float(obj.get('YPOS')) + voffset))
+            ypos = obj.get('YPOS')
+            if (ypos == "" ): 
+                ypos = 0
+            #logging.debug("original YPOS is %s " % (ypos)) 
+            obj.set('YPOS', str(float(ypos) + voffset))
             obj.set('OwnPage', str(int(obj.get('OwnPage')) + pagescount))
             # update ID and links
             if version.startswith('1.4'):
@@ -369,8 +375,8 @@ class ScribusGenerator:
                     obj.set('BACKITEM', str(
                         int(obj.get('BACKITEM')) + (objscount * index)))
             else:  # 1.5, 1.6
-                logging.debug("shifting object %s (#%s)" %
-                              (obj.tag, obj.get('ItemID')))
+                logging.debug("version is %s shifting object %s (#%s)" %
+                              (version, obj.tag, obj.get('ItemID')))
 
                 # todo update ID with something unlikely allocated, TODO ensure unique ID instead of 6:, issue #101
                 obj.set('ItemID', str(objscount * index) +
@@ -564,19 +570,15 @@ class ScribusGenerator:
         return result
 
     def getCsvData(self, csvfile):
-        # Read CSV file and return  2-dimensional list containing the data , 
-		# TODO improve: since https://docs.python.org/3/library/csv.html#csv.DictReader returns a dict it may be possible to drop the rowlist object completely
-		
+        # Read CSV file and return array or dict [(var1,value1), (var2,value2),..]
+        
         result = []        
         with open(csvfile, newline='') as csvf:
-        	reader = csv.DictReader(csvf, delimiter=self.__dataObject.getCsvSeparator(), skipinitialspace=True, doublequote=True)
-        	for row in reader:
-        		if(len(row) > 0): # strip empty lines in source CSV
-        			
-        			rowlist = []
-        			for col in row:
-        				rowlist.append(col)
-        			result.append(rowlist)
+            reader = csv.DictReader(csvf, delimiter=self.__dataObject.getCsvSeparator(), skipinitialspace=True, doublequote=True)
+            for row in reader:
+                if(len(row) > 0): # strip empty lines in source CSV
+                    #print(row)
+                    result.append(row)
         return result
 
     def getLog(self):
