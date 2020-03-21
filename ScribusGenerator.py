@@ -1,30 +1,38 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Mail-Merge for Scribus.
-#
-# For further information (manual, description, etc.) please visit:
-# https://github.com/berteh/ScribusGenerator/
-#
-# v2.2 (2016-08-10): various bug fix (logging location in windows, dynamic colors in Scribus 1.5.2 and some more)
-# v2.0 (2015-12-02): added features (merge, range, clean, save/load)
-# v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
-# v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
-# v1.0 (2012-01-07): Fixed problems when using an ampersand as values within CSV-data.
-#
 """
+
+=================
+Automatic document generation for Scribus.
+=================
+
+For further information (manual, description, etc.) please visit:
+http://berteh.github.io/ScribusGenerator/
+
+    - v2.8.1 (2019-2-6): utilities scripts and support for CSV data fringe cases
+    - v2.5 (2017-05-27): support for linefeeds, tabulations, merged output and more
+    - v2.0 (2015-12-02): added features (merge, range, clean, save/load), command-line support (SLA only), overwriting attributes from data (eg text/area color)
+    - v1.0 (2012-01-07): Fixed problems when using an ampersand as values within CSV-data.
+
+This script is the GUI (TCL-tK) ScribusGenerator
+
+=================
 The MIT License
-Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014 Berteh (https://github.com/berteh/)
+=================
+
+Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2019 Berteh (https://github.com/berteh/)
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 import ScribusGeneratorBackend
 from ScribusGeneratorBackend import CONST, ScribusGenerator, GeneratorDataObject
-import Tkinter
-from Tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar, DISABLED, NORMAL, PhotoImage
-import tkMessageBox
-import tkFileDialog
+import tkinter
+from tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar, DISABLED, NORMAL, PhotoImage
+import tkinter.messagebox
+import tkinter.filedialog
 
 import scribus
 import os
@@ -65,7 +73,7 @@ class GeneratorControl:
         return self.__dataSourceFileEntryVariable
 
     def dataSourceFileEntryVariableHandler(self):
-        result = tkFileDialog.askopenfilename(title='Choose...', defaultextension='.csv', filetypes=[(
+        result = tkinter.filedialog.askopenfilename(title='Choose...', defaultextension='.csv', filetypes=[(
             'CSV - comma separated values', '*.csv *.CSV'), ('TSV - tab separated values', '*.tsv *.TSV'), ('TXT - text', '*.txt *.TXT'), ('all', '*.*')], initialdir=os.path.dirname(self.__dataSourceFileEntryVariable.get()))
         if result:
             self.__dataSourceFileEntryVariable.set(result)
@@ -75,9 +83,7 @@ class GeneratorControl:
         return self.__scribusSourceFileEntryVariable
 
     def scribusSourceFileEntryVariableHandler(self):
-        # Important: Only sla should be allowed as this is plain XML.
-        # E.g. zipped sla.gz files will lead to an error.
-        result = tkFileDialog.askopenfilename(
+        result = tkinter.filedialog.askopenfilename(
             title='Choose...', defaultextension='.sla', filetypes=[('SLA', '*.sla *.SLA')], initialdir=os.path.dirname(self.__scribusSourceFileEntryVariable.get()))
         if result:
             self.__scribusSourceFileEntryVariable.set(result)
@@ -89,7 +95,7 @@ class GeneratorControl:
         return self.__outputDirectoryEntryVariable
 
     def outputDirectoryEntryVariableHandler(self):
-        result = tkFileDialog.askdirectory(initialdir=self.__outputDirectoryEntryVariable.get())
+        result = tkinter.filedialog.askdirectory(initialdir=self.__outputDirectoryEntryVariable.get())
         if result:
             self.__outputDirectoryEntryVariable.set(result)
 
@@ -154,33 +160,33 @@ class GeneratorControl:
             generator = ScribusGenerator(dataObject)
             try:
                 generator.run()
-                tkMessageBox.showinfo(
+                tkinter.messagebox.showinfo(
                     'Scribus Generator', message='Done. Generated files are in '+dataObject.getOutputDirectory())
             except IOError as e:  # except FileNotFoundError as e:
-                tkMessageBox.showerror(
+                tkinter.messagebox.showerror(
                     title='File Not Found', message="Could not find some input file, please verify your Scribus and Data file settings:\n\n %s" % e)
             except ValueError as e:
-                tkMessageBox.showerror(
+                tkinter.messagebox.showerror(
                     title='Variable Error', message="Could likely not replace a variable with its value,\nplease check your Data File and Data Separator settings:\n\n %s" % e)
             except IndexError as e:
-                tkMessageBox.showerror(
+                tkinter.messagebox.showerror(
                     title='Variable Error', message="Could not find the value for one variable.\nplease check your Data File and Data Separator settings.\n\n %s" % e)
             except Exception:
-                tkMessageBox.showerror(title='Error Scribus Generator',
+                tkinter.messagebox.showerror(title='Error Scribus Generator',
                                        message="Something went wrong.\n\nRead the log file for more (in your home directory)."+traceback.format_exc())
         else:
-            tkMessageBox.showerror(
+            tkinter.messagebox.showerror(
                 title='Validation failed', message='Please check if all settings have been set correctly!')
 
     def helpButtonHandler(self):
-        tkMessageBox.showinfo(
+        tkinter.messagebox.showinfo(
             'Help', message="More information at :\nhttps://github.com/berteh/ScribusGenerator/")
 
     def scribusLoadSettingsHandler(self):
         slaFile = self.__scribusSourceFileEntryVariable.get()
 
         if(slaFile is CONST.EMPTY):
-            tkMessageBox.showinfo(
+            tkinter.messagebox.showinfo(
                 'Choose a file', message="Set a valid scribus input file prior to loading its settings.")
             return
         dataObject = GeneratorDataObject(
@@ -207,7 +213,7 @@ class GeneratorControl:
             self.__fromVariable.set(dataObject.getFirstRow())
             self.__toVariable.set(dataObject.getLastRow())
         else:
-            tkMessageBox.showinfo(
+            tkinter.messagebox.showinfo(
                 'No Settings', message="Input scribus file contains no former saved settings.")
 
 
@@ -372,7 +378,7 @@ class GeneratorDialog:
 
 
 def main(argv):
-    root = Tkinter.Tk()
+    root = tkinter.Tk()
     ctrl = GeneratorControl(root)
     dlg = GeneratorDialog(root, ctrl)
     dlg.show()

@@ -1,20 +1,33 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Mail-Merge for Scribus.
-#
-# For further information (manual, description, etc.) please visit:
-# https://github.com/berteh/ScribusGenerator/
-#
-# v2.0 (2015-12-02): added features (merge, range, clean, save/load)
-# v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
-#
+
 """
+
+=================
+Automatic document generation for Scribus.
+=================
+
+For further information (manual, description, etc.) please visit:
+http://berteh.github.io/ScribusGenerator/
+
+    - v2.8.1 (2019-2-6): utilities scripts and support for CSV data fringe cases
+    - v2.5 (2017-05-27): support for linefeeds, tabulations, merged output and more
+    - v2.0 (2015-12-02): added features (merge, range, clean, save/load), command-line support (SLA only), overwriting attributes from data (eg text/area color)
+    - v1.0 (2012-01-07): Fixed problems when using an ampersand as values within CSV-data.
+
+This script is the Command Line ScribusGenerator
+
+=================
 The MIT License
-Copyright (c) 2014 Berteh (https://github.com/berteh/)
+=================
+
+Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2019 Berteh (https://github.com/berteh/)
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import argparse
 import sys
 import os
@@ -159,8 +172,11 @@ for infile in args.infiles:
         generator.run()
         log.info("Scribus Generation completed. Congrats!")
     except ValueError as e:
-        log.error("\nerror: could likely not replace a variable with its value.\nplease check your CSV data and CSV separator.       moreover: "+e.message+"\n")
+        log.error("\nerror: could likely not replace a variable with its value.\nplease check your CSV data and CSV separator.       moreover: %s\n\n" % e)
+        traceback.print_exc()
     except IndexError as e:
-        log.error("\nerror: could likely not find the value for one variable.\nplease check your CSV data and CSV separator.\n       moreover: "+e.message+"\n")
+        log.error("\nerror: could likely not find the value for one variable.\nplease check your CSV data and CSV separator.\n       moreover: %s\n" % e)
+        traceback.print_exc
     except Exception:
         log.error("\nerror: "+traceback.format_exc())
+        traceback.print_exc

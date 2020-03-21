@@ -1,30 +1,40 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Mail-Merge for Scribus.
-#
-# For further information (manual, description, etc.) please visit:
-# https://github.com/berteh/ScribusGenerator/
-#
-# v2.8 (2019-01-29): code style > PEP8 approximate, renamed %VAR_NEXT-RECORD% into %SG_NEXT-RECORD%
-# v2.7 (2018-04-22): change SGAttribute to work in Scribus 1.5.3 GUI.
-# v2.6 (2018-04-07): bug fix (dynamic output file directory, linked frames limit, Python 3.6 syntax)
-# v2.5 (2017-03-27): support for multiple records on same page (Next-Record mechanism), bug fix (multiple SGAttributes)
-# v2.3 (2016-08-10): various bug fix (logging location in windows, dynamic colors in Scribus 1.5.2 and some more)
-# v2.0 (2015-12-02): added features (merge, range, clean, save/load)
-# v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
-# v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
-# v1.0 (2012-01-07): Fixed problems when using an ampersand as values within CSV-data.
-# v2011-01-18: Changed run() so that scribus- and pdf file creation and deletion works without problems.
-# v2011-01-17: Fixed the ampersand ('&') problem. It now can be used within variables.
-# v2011-01-01: Initial Release.
-#
 """
+=================
+Automatic document generation for Scribus.
+=================
+
+For further information (manual, description, etc.) please visit:
+http://berteh.github.io/ScribusGenerator/
+
+* v2.8.1 (2019-2-6): support for CSV data fringe cases (empty, short,...)
+* v2.8 (2019-01-29): code style > PEP8 approximate, renamed %VAR_NEXT-RECORD% into %SG_NEXT-RECORD%, added utilities scripts
+* v2.7 (2018-04-22): change SGAttribute to work in Scribus 1.5.3 GUI.
+* v2.6 (2018-04-07): bug fix (dynamic output file directory, linked frames limit, Python 3.6 syntax)
+* v2.5 (2017-03-27): support for multiple records on same page (Next-Record mechanism), bug fix (multiple SGAttributes)
+* v2.3 (2016-08-10): various bug fix (logging location in windows, dynamic colors in Scribus 1.5.2 and some more)
+* v2.0 (2015-12-02): added features (merge, range, clean, save/load)
+* v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
+* v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
+* v1.0 (2012-01-07): Fixed problems when using an ampersand as values within CSV-data.
+* v2011-01-18: Changed run() so that scribus- and pdf file creation and deletion works without problems.
+* v2011-01-17: Fixed the ampersand ('&') problem. It now can be used within variables.
+* v2011-01-01: Initial Release.
+
+This script is the ScribusGenerator Engine
+
+=================
 The MIT License
-Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2015 Berteh (https://github.com/berteh/)
+=================
+
+Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2019 Berteh (https://github.com/berteh/)
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import csv
 import os
 import platform
@@ -70,8 +80,9 @@ class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
     def __init__(self, dataObject):
         self.__dataObject = dataObject
-        logging.config.fileConfig(os.path.join(
-            os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))
+        print("path: %s" % os.path.abspath(os.path.dirname(__file__)))
+        print("path2: %s" % os.path.join(os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))
+        logging.config.fileConfig(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))
         # todo: check if logging works, if not warn user to configure log file path and disable.
         logging.info("ScribusGenerator initialized")
         logging.debug("OS: %s - Python: %s - ScribusGenerator v%s" %
@@ -172,9 +183,9 @@ class ScribusGenerator:
         template = []
         outputFileNames = []
         index = 0  # current data record
-        rootStr = ET.tostring(root, encoding='utf8', method='xml')
+        rootStr = ET.tostring(root, encoding='utf8', method='xml').decode()
         # number of data records appearing in source document
-        recordsInDocument = 1 + string.count(rootStr, CONST.NEXT_RECORD)
+        recordsInDocument = 1 + rootStr.count(CONST.NEXT_RECORD)
         logging.info("source document consumes %s data record(s) from %s." %
                      (recordsInDocument, dataC))
         dataBuffer = []
@@ -193,7 +204,7 @@ class ScribusGenerator:
                 if (index % recordsInDocument == 0) or index == dataC:
                     # subsitute
                     outContent = self.substituteData(varNamesForReplacingVariables, self.handleAmpersand(dataBuffer),
-                                                     ET.tostring(templateElt, method='xml').split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)
+                                                     ET.tostring(templateElt, method='xml').decode().split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)
                     if (self.__dataObject.getSingleOutput()):
                         # first substitution, update DOCUMENT properties
                         if (index == min(recordsInDocument,dataC)):
@@ -433,15 +444,15 @@ class ScribusGenerator:
                 # ord(u'ü'): u'ue',
                 # ord(u'Ü'): u'Ue',
                 # ord(u'ß'): u'ss',
-                ord(u'<'): u'_',
-                ord(u'>'): u'_',
-                ord(u'?'): u'_',
-                ord(u'"'): u'_',
-                ord(u':'): u'_',
-                ord(u'|'): u'_',
-                ord(u'\\'): u'_',
+                ord('<'): '_',
+                ord('>'): '_',
+                ord('?'): '_',
+                ord('"'): '_',
+                ord(':'): '_',
+                ord('|'): '_',
+                ord('\\'): '_',
                 # ord(u'/'): u'_',
-                ord(u'*'): u'_'
+                ord('*'): '_'
             }
             result = self.substituteData(varNames, rows, [outputFileName])
             result = result.decode('utf_8')
@@ -480,7 +491,7 @@ class ScribusGenerator:
         # multiple simultaneous string replacements, per http://stackoverflow.com/a/15448887/1694411)
         # combine with dictionary = dict(zip(keys, values)) to use on arrays
         pattern = re.compile("|".join([re.escape(k)
-                                       for k in rep_dict.keys()]), re.M)
+                                       for k in list(rep_dict.keys())]), re.M)
         return pattern.sub(lambda x: rep_dict[x.group(0)], string)
 
     # lines as list of strings
@@ -488,7 +499,7 @@ class ScribusGenerator:
         result = ''
         currentRecord = 0
         replacements = dict(
-            zip(['%VAR_'+i+'%' for i in varNames], rows[currentRecord]))
+            list(zip(['%VAR_'+i+'%' for i in varNames], rows[currentRecord])))
         #logging.debug("replacements is: %s"%replacements)
 
         # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
@@ -507,7 +518,7 @@ class ScribusGenerator:
                 if currentRecord < len(rows):
                     logging.debug("loading next record")
                     replacements = dict(
-                        zip(['%VAR_'+i+'%' for i in varNames], rows[currentRecord]))
+                        list(zip(['%VAR_'+i+'%' for i in varNames], rows[currentRecord])))
                 else:  # last record reach, leave remaing variables to be cleaned
                     replacements = {
                         "END-OF-REPLACEMENTS": "END-OF-REPLACEMENTS"}
@@ -554,16 +565,18 @@ class ScribusGenerator:
 
     def getCsvData(self, csvfile):
         # Read CSV file and return  2-dimensional list containing the data , 
-		# TODO check to replace with https://docs.python.org/3/library/csv.html#csv.DictReader
-        reader = csv.reader(file(csvfile), delimiter=self.__dataObject.getCsvSeparator(
-        ), skipinitialspace=True, doublequote=True)
-        result = []
-        for row in reader:
-            if(len(row) > 0): # strip empty lines in source CSV
-                rowlist = []
-                for col in row:
-                    rowlist.append(col)
-                result.append(rowlist)
+		# TODO improve: since https://docs.python.org/3/library/csv.html#csv.DictReader returns a dict it may be possible to drop the rowlist object completely
+		
+        result = []        
+        with open(csvfile, newline='') as csvf:
+        	reader = csv.DictReader(csvf, delimiter=self.__dataObject.getCsvSeparator(), skipinitialspace=True, doublequote=True)
+        	for row in reader:
+        		if(len(row) > 0): # strip empty lines in source CSV
+        			
+        			rowlist = []
+        			for col in row:
+        				rowlist.append(col)
+        			result.append(rowlist)
         return result
 
     def getLog(self):
@@ -701,7 +714,7 @@ class GeneratorDataObject:
     # todo add validity/plausibility checks on all values?
     def loadFromString(self, string):
         j = json.loads(string)
-        for k, v in j.iteritems():
+        for k, v in j.items():
             if v == None:
                 j[k] = CONST.EMPTY
         # self.__scribusSourceFile NOT loaded
