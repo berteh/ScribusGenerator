@@ -25,6 +25,7 @@ import Tkinter
 from Tkinter import Frame, LabelFrame, Label, Entry, Button, StringVar, OptionMenu, Checkbutton, IntVar, DISABLED, NORMAL, PhotoImage
 import tkMessageBox
 import tkFileDialog
+import webbrowser
 
 import scribus
 import os
@@ -53,6 +54,7 @@ class GeneratorControl:
         self.__fromVariable.set(CONST.EMPTY)
         self.__toVariable = StringVar()
         self.__toVariable.set(CONST.EMPTY)
+        self.__closeDialogVariable = IntVar()
         self.__root = root
         if scribus.haveDoc():
             doc = scribus.getDocName()
@@ -116,6 +118,11 @@ class GeneratorControl:
 
     def getToVariable(self):
         return self.__toVariable
+        
+    def getCloseDialogVariable(self):
+        return self.__closeDialogVariable
+   
+        
 
     def allValuesSet(self):
         # Simple check whether input fields are NOT EMPTY.
@@ -141,7 +148,8 @@ class GeneratorControl:
             singleOutput=self.__mergeOutputCheckboxVariable.get(),
             firstRow=self.__fromVariable.get(),
             lastRow=self.__toVariable.get(),
-            saveSettings=self.__saveCheckboxVariable.get()
+            saveSettings=self.__saveCheckboxVariable.get(),
+            closeDialog=self.__closeDialogVariable.get()
         )
         return result
 
@@ -154,8 +162,13 @@ class GeneratorControl:
             generator = ScribusGenerator(dataObject)
             try:
                 generator.run()
-                tkMessageBox.showinfo(
-                    'Scribus Generator', message='Done. Generated files are in '+dataObject.getOutputDirectory())
+                if(dataObject.getCloseDialog()):
+                     self.__root.destroy()
+                else:
+                    tkMessageBox.showinfo('Scribus Generator', 
+                        message='Done. Generated files are in '+dataObject.getOutputDirectory())
+                
+                
             except IOError as e:  # except FileNotFoundError as e:
                 tkMessageBox.showerror(
                     title='File Not Found', message="Could not find some input file, please verify your Scribus and Data file settings:\n\n %s" % e)
@@ -171,10 +184,6 @@ class GeneratorControl:
         else:
             tkMessageBox.showerror(
                 title='Validation failed', message='Please check if all settings have been set correctly!')
-
-    def helpButtonHandler(self):
-        tkMessageBox.showinfo(
-            'Help', message="More information at :\nhttps://github.com/berteh/ScribusGenerator/")
 
     def scribusLoadSettingsHandler(self):
         slaFile = self.__scribusSourceFileEntryVariable.get()
@@ -206,6 +215,7 @@ class GeneratorControl:
             # self.__saveCheckboxVariable = IntVar() #not loaded
             self.__fromVariable.set(dataObject.getFirstRow())
             self.__toVariable.set(dataObject.getLastRow())
+            self.__closeDialogVariable.set(dataObject.getCloseDialog())
         else:
             tkMessageBox.showinfo(
                 'No Settings', message="Input scribus file contains no former saved settings.")
@@ -244,9 +254,12 @@ class GeneratorDialog:
         outputFrame = LabelFrame(mainFrame, text='Output Settings')
         outputFrame.columnconfigure(2, weight=1)
         outputFrame.grid(column=0, row=1, padx=5, pady=5, sticky='ew')
+        miscFrame = LabelFrame(mainFrame, text='Misc Settings')
+        miscFrame.columnconfigure(2, weight=1)
+        miscFrame.grid(column=0, row=2, padx=5, pady=5, sticky='ew')
         buttonFrame = Frame(mainFrame)
         buttonFrame.columnconfigure(3, weight=1)
-        buttonFrame.grid(column=0, row=2, padx=5, pady=5, sticky='ew')
+        buttonFrame.grid(column=0, row=3, padx=5, pady=5, sticky='ew')
 
         # Input-Settings
         scribusSourceFileLabel = Label(
@@ -307,7 +320,7 @@ class GeneratorDialog:
             column=1, columnspan=4, row=0, padx=5, pady=5, sticky='ew')
         outputDirectoryButton = Button(
             outputFrame, text='⏏', command=self.__ctrl.outputDirectoryEntryVariableHandler)
-        outputDirectoryButton.grid(column=5, row=0, padx=5, pady=5, sticky='e')
+        outputDirectoryButton.grid(column=5, row=0, padx=5, pady=5, sticky='w')
 
         outputFileNameLabel = Label(
             outputFrame, text='Output File Name:', width=15, anchor='w')
@@ -317,36 +330,46 @@ class GeneratorDialog:
         outputFileNameEntry.grid(
             column=1, columnspan=3, row=1, padx=5, pady=5, sticky='ew')
 
-        saveLabel = Label(outputFrame, text='Save Settings:',
-                          width=15, anchor='w')
-        saveLabel.grid(column=4, row=1, padx=5, pady=5, sticky='w')
-        saveCheckbox = Checkbutton(
-            outputFrame, variable=self.__ctrl.getSaveCheckboxVariable())
-        saveCheckbox.grid(column=5, row=1, padx=5, pady=5, sticky='w')
-
+        outputFormatLabel = Label(
+            outputFrame, text='Format:', anchor='e')
+        outputFormatLabel.grid(column=4, row=1, padx=5, pady=5, sticky='e')
+        outputFormatListBox = OptionMenu(outputFrame, self.__ctrl.getSelectedOutputFormat(), *self.__ctrl.getOutputFormatList(),
+                                         command=lambda v=self.__ctrl.getSelectedOutputFormat(): self.updateState(v))
+        outputFormatListBox.grid(column=5, row=1, padx=5, pady=5, sticky='w')
+        
         mergeOutputLabel = Label(
-            outputFrame, text='Merge in Single File:', width=15, anchor='w')
-        mergeOutputLabel.grid(column=0, row=2, padx=5, pady=5, sticky='w')
+            outputFrame, text='Merge in Single File:', width=17, anchor='w')
+        mergeOutputLabel.grid(column=0,  columnspan=2, row=2, padx=5, pady=5, sticky='w')
         mergeOutputCheckbox = Checkbutton(
             outputFrame, variable=self.__ctrl.getMergeOutputCheckboxVariable())
-        mergeOutputCheckbox.grid(column=1, row=2, padx=5, pady=5, sticky='w')
+        mergeOutputCheckbox.grid(column=2, row=2, padx=5, pady=5, sticky='w')
 
         self.keepGeneratedScribusFilesLabel = Label(
-            outputFrame, text='Keep Scribus Files:', width=15, anchor='e')
+            outputFrame, text='Keep Scribus Files:', width=15, anchor='w')
         self.keepGeneratedScribusFilesLabel.grid(
-            column=4, row=2, padx=5, pady=5, sticky='e')
+            column=3, columnspan=2, row=2, padx=5, pady=5, sticky='w')
         self.keepGeneratedScribusFilesCheckbox = Checkbutton(
             outputFrame, variable=self.__ctrl.getKeepGeneratedScribusFilesCheckboxVariable(), anchor='w')
         self.keepGeneratedScribusFilesCheckbox.grid(
             column=5, row=2, padx=5, pady=5, sticky='w')
 
-        outputFormatLabel = Label(
-            outputFrame, text='Output Format:', anchor='e')
-        outputFormatLabel.grid(column=2, row=2, padx=5, pady=5, sticky='e')
-        outputFormatListBox = OptionMenu(outputFrame, self.__ctrl.getSelectedOutputFormat(), *self.__ctrl.getOutputFormatList(),
-                                         command=lambda v=self.__ctrl.getSelectedOutputFormat(): self.updateState(v))
-        outputFormatListBox.grid(column=3, row=2, padx=5, pady=5, sticky='w')
+        
+        # Misc Settings
+        saveLabel = Label(miscFrame, text='Save Settings:',
+                          width=12, anchor='w')
+        saveLabel.grid(column=0, row=1, padx=5, pady=5, sticky='w')
+        saveCheckbox = Checkbutton(
+            miscFrame, variable=self.__ctrl.getSaveCheckboxVariable())
+        saveCheckbox.grid(column=1, row=1, padx=5, pady=5, sticky='w')
 
+        closeLabel = Label(miscFrame, text='Close dialog on success:',
+                          width=20, anchor='w')
+        closeLabel.grid(column=3, columnspan=2, row=1, padx=5, pady=5, sticky='e')
+        closeCheckbox = Checkbutton(
+            miscFrame, variable=self.__ctrl.getCloseDialogVariable())
+        closeCheckbox.grid(column=5, row=1, padx=5, pady=5, sticky='e')
+
+        
         # Bottom Buttons
         generateButton = Button(
             buttonFrame, text='✔\nGenerate', width=10, command=self.__ctrl.buttonOkHandler)
@@ -355,7 +378,7 @@ class GeneratorDialog:
                               width=10, command=self.__ctrl.buttonCancelHandler)
         cancelButton.grid(column=1, row=0, padx=5, pady=5, sticky='e')
         helpButton = Button(buttonFrame, text='❓\nHelp',
-                            width=7, command=self.__ctrl.helpButtonHandler)
+                            width=7, command = lambda: webbrowser.open("https://github.com/berteh/ScribusGenerator/#how-to-use-scribus-generator"))
         helpButton.grid(column=3, row=0, padx=5, pady=5, sticky='e')
 
         # general layout

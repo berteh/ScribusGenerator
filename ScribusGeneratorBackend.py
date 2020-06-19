@@ -600,7 +600,8 @@ class GeneratorDataObject:
                  singleOutput=CONST.FALSE,
                  firstRow=CONST.EMPTY,
                  lastRow=CONST.EMPTY,
-                 saveSettings=CONST.TRUE):
+                 saveSettings=CONST.TRUE,
+                 closeDialog=CONST.FALSE):
         self.__scribusSourceFile = scribusSourceFile
         self.__dataSourceFile = dataSourceFile
         self.__outputDirectory = outputDirectory
@@ -612,6 +613,7 @@ class GeneratorDataObject:
         self.__firstRow = firstRow
         self.__lastRow = lastRow
         self.__saveSettings = saveSettings
+        self.__closeDialog = closeDialog
 
     # Get
     def getScribusSourceFile(self):
@@ -647,6 +649,9 @@ class GeneratorDataObject:
     def getSaveSettings(self):
         return self.__saveSettings
 
+    def getCloseDialog(self):
+        return self.__closeDialog
+
     # Set
     def setScribusSourceFile(self, fileName):
         self.__scribusSourceFile = fileName
@@ -681,6 +686,9 @@ class GeneratorDataObject:
     def setSaveSettings(self, value):
         self.__saveSettings = value
 
+    def setCloseDialog(self, value):
+        self.__closeDialog = value
+
     # (de)Serialize all options but scribusSourceFile and saveSettings
     def toString(self):
         return json.dumps({
@@ -695,6 +703,7 @@ class GeneratorDataObject:
             'single': self.__singleOutput,
             'from': self.__firstRow,
             'to': self.__lastRow,
+            'close': self.__closeDialog
             # 'savesettings':self.__saveSettings NOT saved
         }, sort_keys=True)
 
@@ -715,6 +724,7 @@ class GeneratorDataObject:
         self.__singleOutput = j["single"]
         self.__firstRow = j["from"]
         self.__lastRow = j["to"]
+        self.__closeDialog = j["close"]
         # self.__saveSettings NOT loaded
         logging.debug("loaded %d user settings" %
                       (len(j)-1))  # -1 for the artificial "comment"
