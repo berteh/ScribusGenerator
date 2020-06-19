@@ -192,9 +192,7 @@ class ScribusGenerator:
         for row in csvData:
             if(index == 0):  # get vars names from first Header-Row of the CSV-File
                 varNamesForFileName = list(row.keys())
-                print(varNamesForFileName) #TODO unprint
                 varNamesForReplacingVariables = self.handleAmpersand([row.keys()])[0]
-                print(varNamesForReplacingVariables) #TODO unprint
                 # overwrite attributes from their /*/ItemAttribute[Parameter=SGAttribute] sibling, when applicable.
                 templateElt = self.overwriteAttributesFromSGAttributes(root)
 
@@ -461,7 +459,7 @@ class ScribusGenerator:
                 ord('*'): '_'
             }
             result = self.substituteData(varNames, rows, [outputFileName])
-            result = result.decode('utf_8')
+            result = result
             result = result.translate(table)
             logging.debug("output file name is %s" % result)
         return result
