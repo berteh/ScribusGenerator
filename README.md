@@ -168,7 +168,7 @@ The Scribus Generator script prioritizes items based on their _Level_ in Scribus
 Please note Scribus Generator v2.8 (from January 2019) changed the syntax of the ["Next Record" feature](https://github.com/berteh/ScribusGenerator#multiple-records-on-a-single-page)
 to a less confusing name, as per [suggestion #118](https://github.com/berteh/ScribusGenerator/issues/118)
 
-Update your older templates manually, changing ``%VAR_NEXT-RECORD`` to ``%SG_NEXT-RECORD``, or all at once by calling, for instance:
+Update your older templates manually, changing ``%VAR_NEXT-RECORD%`` to ``%SG_NEXT-RECORD%``, or all at once by calling, for instance:
     
     python ./ConvertVAR_NEXT-RECORDToSG28.py ~/ScribusProjects/*/*.sla
 
