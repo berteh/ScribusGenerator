@@ -38,7 +38,7 @@ For the main platforms the script location is;
 
 - Windows: ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L110))
 - macOS: ``SCRIBUS_INSTALL_DIRECTORY/Contents/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L79))
-- Ubuntu/Debian/most Linux: ``/usr/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L65)
+- Ubuntu/Debian/most Linux: ``/usr/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L65))
 
 To be able to run from the system directory, the files you need to copy to the target ``scripts/`` directory are ``ScribusGenerator.py``, ``ScribusGeneratorBackend.py``, ``logging.conf`` and ``pic/ScribusGenerator_logo.gif``.
 
