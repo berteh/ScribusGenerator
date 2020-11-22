@@ -105,17 +105,13 @@ Dynamic Images
 
 Images references can also be dynamically modified with **Scribus Generator**. See the [screencast video @6:10](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=370).
 
-All images supported by **Scribus** can be used. However, to work with ScribusGeneratr, they must all be located in a single folder containing all images. This folder can be located anywhere on your PC.
+All images supported by **Scribus** can be used. However, to work with ScribusGenerator, they must all be located in a single folder containing all images. This folder can be located anywhere on your PC. Duplicate any image in this folder and rename it ``%VAR_pic%`` (and similarly for any other variable name you need to use for pictures, ``%VAR_pic2%, %VAR_photo%``). 
 
-Add an Image Frame anywhere in the Scribus file (_«Scribus → Insert → Insert Image Frame»_) and open the dialog for getting an image (_e.g. right click Image Frame → Get Image..._ on selected frame). Within the dialog navigate to the folder containing the images, though there won't be any images selected. Instead, the variable will be inserted into the value field of the _File name_.
+Add an Image Frame anywhere in the Scribus file (_«Scribus → Insert → Insert Image Frame»_) and open the dialog for getting an image (_e.g. right click Image Frame → Get Image..._ on selected frame). Select the needed "placeholder" picture.
 
 ![Illustration: Insert variable instead of image](pic/SG-15-1.png)
 
-After confirming the dialog, no image is displayed in the Image Frame any longer, however the variable name can be seen.
-
-![Illustration: Image Frame containing variable](pic/SG-15-2.png)
-
-The images file can be defined just like any other variable described in earlier. There just has to be a column with a column-name corresponding to the variable-name in the Scribus template file.
+The images file can be defined just like any other variable described in earlier. There just has to be a column with a column-name corresponding to the variable-name in the Scribus template file. Just make sure to handle the file extension either in the file name, or in the CSV data, but not in both.
 
 ![Illustration: Data file referencing images](pic/SG-15-3.png)
 
