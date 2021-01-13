@@ -28,9 +28,9 @@ A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces t
 How to install Scribus Generator ?
 -------
 
-For Scribus 1.4.x: [Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
+For Scribus 1.4.x to 1.5.5: [Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
 
-For Scribus 1.5.x, please [download the Python3 ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/python3.zip) version. No features added, just a few syntactic updates.
+For Scribus 1.5.6+, please [download the Python3 ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/python3.zip) version. No features added, just a few syntactic updates for the more recent Python3 engine.
 
 ### Alternative install options
 
