@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 =================
 Automatic document generation for Scribus.
@@ -9,19 +8,7 @@ Automatic document generation for Scribus.
 For further information (manual, description, etc.) please visit:
 http://berteh.github.io/ScribusGenerator/
 
-* v2.8.1 (2019-2-6): support for CSV data fringe cases (empty, short,...)
-* v2.8 (2019-01-29): code style > PEP8 approximate, renamed %VAR_NEXT-RECORD% into %SG_NEXT-RECORD%, added utilities scripts
-* v2.7 (2018-04-22): change SGAttribute to work in Scribus 1.5.3 GUI.
-* v2.6 (2018-04-07): bug fix (dynamic output file directory, linked frames limit, Python 3.6 syntax)
-* v2.5 (2017-03-27): support for multiple records on same page (Next-Record mechanism), bug fix (multiple SGAttributes)
-* v2.3 (2016-08-10): various bug fix (logging location in windows, dynamic colors in Scribus 1.5.2 and some more)
-* v2.0 (2015-12-02): added features (merge, range, clean, save/load)
-* v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
-* v1.1 (2014-10-01): Add support for overwriting attributes from data (eg text/area color)
-* v1.0 (2012-01-07): Fixed problems when using an ampersand as values within CSV-data.
-* v2011-01-18: Changed run() so that scribus- and pdf file creation and deletion works without problems.
-* v2011-01-17: Fixed the ampersand ('&') problem. It now can be used within variables.
-* v2011-01-01: Initial Release.
+# v2.9.1 (2021-01-22): update port to Python3 for Scribut 1.5.6+, various DOC update
 
 This script is the ScribusGenerator Engine
 
@@ -29,7 +16,7 @@ This script is the ScribusGenerator Engine
 The MIT License
 =================
 
-Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2019 Berteh (https://github.com/berteh/)
+Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2021 Berteh (https://github.com/berteh/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -613,7 +600,8 @@ class GeneratorDataObject:
                  singleOutput=CONST.FALSE,
                  firstRow=CONST.EMPTY,
                  lastRow=CONST.EMPTY,
-                 saveSettings=CONST.TRUE):
+                 saveSettings=CONST.TRUE,
+                 closeDialog=CONST.FALSE):
         self.__scribusSourceFile = scribusSourceFile
         self.__dataSourceFile = dataSourceFile
         self.__outputDirectory = outputDirectory
@@ -625,6 +613,7 @@ class GeneratorDataObject:
         self.__firstRow = firstRow
         self.__lastRow = lastRow
         self.__saveSettings = saveSettings
+        self.__closeDialog = closeDialog
 
     # Get
     def getScribusSourceFile(self):
@@ -660,6 +649,10 @@ class GeneratorDataObject:
     def getSaveSettings(self):
         return self.__saveSettings
 
+    def getCloseDialog(self):
+        return self.__closeDialog
+        
+
     # Set
     def setScribusSourceFile(self, fileName):
         self.__scribusSourceFile = fileName
@@ -694,6 +687,9 @@ class GeneratorDataObject:
     def setSaveSettings(self, value):
         self.__saveSettings = value
 
+    def setCloseDialog(self, value):
+        self.__closeDialog = value
+
     # (de)Serialize all options but scribusSourceFile and saveSettings
     def toString(self):
         return json.dumps({
@@ -708,6 +704,7 @@ class GeneratorDataObject:
             'single': self.__singleOutput,
             'from': self.__firstRow,
             'to': self.__lastRow,
+            'close': self.__closeDialog
             # 'savesettings':self.__saveSettings NOT saved
         }, sort_keys=True)
 
@@ -728,7 +725,9 @@ class GeneratorDataObject:
         self.__singleOutput = j["single"]
         self.__firstRow = j["from"]
         self.__lastRow = j["to"]
+        self.__closeDialog = j["close"]
         # self.__saveSettings NOT loaded
         logging.debug("loaded %d user settings" %
                       (len(j)-1))  # -1 for the artificial "comment"
         return j
+

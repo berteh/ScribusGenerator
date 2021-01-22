@@ -1,9 +1,9 @@
 ScribusGenerator
 ================
 
-Mail-Merge-like extension to Scribus, to generate Scribus and pdf documents automatically from external data.
+Mail-Merge-like extension to Scribus, to generate Scribus and pdf documents automatically from external data (spreadsheet, database and more).
 
-[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://github.com/berteh/ScribusGenerator/raw/master/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source high-quality pdf template and mail-merge alternative.
+[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://github.com/berteh/ScribusGenerator/raw/master/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source high-quality pdf template and mail-merge alternative. Your imagination is the limit for creating beautiful yearbooks, personalised weedings invitations, game cards decks, clubs rosters, art or work portfolio and [many more](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates).
 
 What is Scribus Generator?
 -------
@@ -28,19 +28,10 @@ A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces t
 How to install Scribus Generator ?
 -------
 
-[Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine. **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
+For Scribus 1.4.x to 1.5.5: [Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine in a folder your user can write to. **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
 
-### Alternative install options
+For Scribus 1.5.6+, please [download the Python3 ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/python3.zip) version. No features added, just a few syntactic updates for the more recent Python3 engine.
 
-To show ScribusGennerator in the application menu _«Scribus → Script → Scribus Scripts → ScribusGenerator»_ you need to move the downloaded files to the system directory where extension scripts distributed with Scribus are placed. It might require administrator priviledges to write to the required location.
-
-For the main platforms the script location is;
-
-- Windows: ``SCRIBUS_INSTALL_DIRECTORY\share\scripts\`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L110))
-- macOS: ``SCRIBUS_INSTALL_DIRECTORY/Contents/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L79))
-- Ubuntu/Debian/most Linux: ``/usr/share/scribus/scripts/`` ([source](https://github.com/scribusproject/scribus/blob/ec1238dbc3627f707a25fbc36181d67cba6d968d/scribus/scpaths.cpp#L65)
-
-To be able to run from the system directory, the files you need to copy to the target ``scripts/`` directory are ``ScribusGenerator.py``, ``ScribusGeneratorBackend.py``, ``logging.conf`` and ``pic/ScribusGenerator_logo.gif``.
 
 ### MacOSX issues
 
@@ -51,13 +42,13 @@ How to use Scribus Generator
 
 ### Create your Scribus "template" file
 
-Create and design your Scribus file as any other. At the positions where you need to replace text with data, just add ``%VAR_name%`` where ``name`` is the column your  data file.
+Create and design your Scribus file as any other. At the positions where you need to replace text with data, just add ``%VAR_name%`` where ``name`` is the column your  data file. Check out our [gallery of examples](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates) to see what others did. [Any existing Scribus file](https://www.scribus-templates.net/) can be used as template.
 
 You can place the variable at any position within a Text Frame. Apply all format and style to the variable that you wish to apply to the final text.
 
 ![Illustration: Scribus File for Generator](pic/SG-01.png)
 
-If you wish to generate one page (or many) for each data entry you're done, congratulations ! If you would rather display many data entries on a single page simply add the text ``%SG_NEXT-RECORD%`` before each entry but the first: ScribusGenerator will automatically load the new data record as soon as it detects this token.
+If you wish to generate one page (or many) for each data entry you're done, congratulations ! If you would rather display many data entries on a single page simply add the text ``%SG_NEXT-RECORD%`` **before each entry but the first**: ScribusGenerator will automatically load the new data record as soon as it detects this token.
 
 
 ### Create your (csv) Data File
@@ -70,7 +61,9 @@ It is important to make sure the columns have the same ``name`` as the variables
 
 We recommend saving in UTF-8 encoding to enable the full set of accentuated characters, chinese, cyrillic, math symbols, arrows, braille, symbols and [many more](http://csbruce.com/software/utf-8.html). Simply copy-paste those for which you lack a keyboard combination.
 
-To export well-formated CSV in UTF-8 encoding is easy as pie with OpenOffice or LibreOffice Calc, less so with Excel. If you are using excel you may be interested in this free add-in that provides good export/import features: http://www.csvio.net/
+To export well-formated CSV in UTF-8 encoding is easy as pie with OpenOffice or LibreOffice Calc, less so with Excel. If you are using Microsoft's Excel you may be interested in this free add-in that provides good export/import features: http://www.csvio.net/
+
+CSV files can easily be generated from many existing data sources (incl. enterprise-grade ETL platforms, most databases like MySQL, PostgreSQL, SQLite3 and more, ), see our wiki page for using [other data sources](https://github.com/berteh/ScribusGenerator/wiki/Other-data-sources)
 
 Run the Generator Script - Settings
 ---------
@@ -105,19 +98,21 @@ Dynamic Images
 
 Images references can also be dynamically modified with **Scribus Generator**. See the [screencast video @6:10](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=370).
 
-All images supported by **Scribus** can be used. However, to work with ScribusGeneratr, they must all be located in a single folder containing all images. This folder can be located anywhere on your PC.
+All images supported by **Scribus** can be used. However, to work with ScribusGenerator, they must all be located in a single folder containing all images. This folder can be located anywhere on your PC. Duplicate any image in this folder and rename it ``%VAR_pic%`` (and similarly for any other variable name you need to use for pictures, ``%VAR_pic2%, %VAR_photo%``). 
 
-Add an Image Frame anywhere in the Scribus file (_«Scribus → Insert → Insert Image Frame»_) and open the dialog for getting an image (_e.g. right click Image Frame → Get Image..._ on selected frame). Within the dialog navigate to the folder containing the images, though there won't be any images selected. Instead, the variable will be inserted into the value field of the _File name_.
+Add an Image Frame anywhere in the Scribus file (_«Scribus → Insert → Insert Image Frame»_) and open the dialog for getting an image (_e.g. right click Image Frame → Get Image..._ on selected frame). Select the needed "placeholder" picture.
 
 ![Illustration: Insert variable instead of image](pic/SG-15-1.png)
 
-After confirming the dialog, no image is displayed in the Image Frame any longer, however the variable name can be seen.
-
-![Illustration: Image Frame containing variable](pic/SG-15-2.png)
-
-The images file can be defined just like any other variable described in earlier. There just has to be a column with a column-name corresponding to the variable-name in the Scribus template file.
+The images file can be defined just like any other variable described in earlier. There just has to be a column with a column-name corresponding to the variable-name in the Scribus template file. Just make sure to handle the file extension either in the file name, or in the CSV data, but not in both.
 
 ![Illustration: Data file referencing images](pic/SG-15-3.png)
+
+Importing vector images (SVG, PDF or other) as image frames does work in ScribusGenerator, just as with PNG or JPG images; just make sure your (relative or absolute) SVG *file path matches the generator **output directory***, as that is the place Scribus will be looking from when transforming the SLA into your PDF format.
+
+Scribus sometimes renders the included image in really low resolution, so you should check out the resolution (dpi) (and or size) or your source material. To quickly batch export SVG objects in multiple resolutions you may be interested in [Inkscape's object export script](https://github.com/berteh/svg-objects-export).
+
+There is unfortunately no way to include dynamically vector files (pdf or svg) with ScribusGenerator, because of the way Scribus imports them (from the menu File > Import > Vector) by converting them one-the-fly to scribus objects. Which is great for direct editing in Scribus, but not for including external files by reference.
 
 Dynamic Colors
 ---------------
@@ -168,7 +163,7 @@ The Scribus Generator script prioritizes items based on their _Level_ in Scribus
 Please note Scribus Generator v2.8 (from January 2019) changed the syntax of the ["Next Record" feature](https://github.com/berteh/ScribusGenerator#multiple-records-on-a-single-page)
 to a less confusing name, as per [suggestion #118](https://github.com/berteh/ScribusGenerator/issues/118)
 
-Update your older templates manually, changing ``%VAR_NEXT-RECORD`` to ``%SG_NEXT-RECORD``, or all at once by calling, for instance:
+Update your older templates manually, changing ``%VAR_NEXT-RECORD%`` to ``%SG_NEXT-RECORD%``, or all at once by calling, for instance:
     
     python ./ConvertVAR_NEXT-RECORDToSG28.py ~/ScribusProjects/*/*.sla
 
@@ -334,7 +329,7 @@ This is only important for variable *names* in the scribus file and *column name
 
 ### Database source
 
-To use data from a database instead a (manual) spreadsheet you can simply export the related query result to a csv file. Some examples below for common database engines:
+To use data from a database instead a (manual) spreadsheet you can simply export the related query result to a CSV file. Some examples below for common database engines. Find out more about using external data sources in our [wiki](https://github.com/berteh/ScribusGenerator/wiki) .
 
 #### Mysql:
 
@@ -381,7 +376,7 @@ Licence
 The MIT License<br/>
 Copyright <br/>
 (c) 2011, Ekkehard Will (www.ekkehardwill.de)<br/>
-(c) 2014-2017, Berteh (https://github.com/berteh/)
+(c) 2014-2021, Berteh (https://github.com/berteh/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: 
 
