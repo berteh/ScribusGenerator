@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Mail-Merge for Scribus.
+# Mail-Merge for Scribus. This file provides the Command Line Interface (all OS)
 #
 # For further information (manual, description, etc.) please visit:
 # https://github.com/berteh/ScribusGenerator/

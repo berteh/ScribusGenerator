@@ -3,7 +3,7 @@ ScribusGenerator
 
 Mail-Merge-like extension to Scribus, to generate Scribus and pdf documents automatically from external data (spreadsheet, database and more).
 
-[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://github.com/berteh/ScribusGenerator/raw/master/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source high-quality pdf template and mail-merge alternative. Your imagination is the limit for creating beautiful yearbooks, personalised weedings invitations, game cards decks, clubs rosters and [many more](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates).
+[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://github.com/berteh/ScribusGenerator/raw/master/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source high-quality pdf template and mail-merge alternative. Your imagination is the limit for creating beautiful yearbooks, personalised weedings invitations, game cards decks, clubs rosters, art or work portfolio and [many more](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates).
 
 What is Scribus Generator?
 -------
@@ -329,7 +329,7 @@ This is only important for variable *names* in the scribus file and *column name
 
 ### Database source
 
-To use data from a database instead a (manual) spreadsheet you can simply export the related query result to a csv file. Some examples below for common database engines:
+To use data from a database instead a (manual) spreadsheet you can simply export the related query result to a CSV file. Some examples below for common database engines. Find out more about using external data sources in our [wiki](https://github.com/berteh/ScribusGenerator/wiki) .
 
 #### Mysql:
 
@@ -376,7 +376,7 @@ Licence
 The MIT License<br/>
 Copyright <br/>
 (c) 2011, Ekkehard Will (www.ekkehardwill.de)<br/>
-(c) 2014-2017, Berteh (https://github.com/berteh/)
+(c) 2014-2021, Berteh (https://github.com/berteh/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: 
 
