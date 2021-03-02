@@ -108,7 +108,7 @@ class ScribusGenerator:
             storageElt = docElt.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')
             if (storageElt is None):
                 colorElt = docElt.find('./COLOR[1]')
-                scriptPos = docElt.getchildren().index(colorElt)
+                scriptPos = list(docElt).index(colorElt)
                 logging.debug(
                     "creating new storage element in SLA template at position %s" % scriptPos)
                 storageElt = ET.Element("JAVA", {"NAME": CONST.STORAGE_NAME})
@@ -308,7 +308,7 @@ class ScribusGenerator:
                 value = sga.get('Value')
                 ref = sga.get('RelationshipTo')
 
-                if ref is "":  # Cannot use 'default' on .get() as it is "" by default in SLA file.
+                if ref == "":  # Cannot use 'default' on .get() as it is "" by default in SLA file.
                     # target is pageobject by default. Cannot use ".|*" as not supported by ET.
                     ref = "."
                 elif ref.startswith("/"):  # ET cannot use absolute path on element
@@ -405,7 +405,7 @@ class ScribusGenerator:
                 # remove trashed elements as stack (lifo order), to preserve positions validity
                 for i in trash:
                     po.remove(po[i])
-                if (len(po.findall("ITEXT")) is 0):
+                if (len(po.findall("ITEXT")) == 0):
                     logging.debug("cleaning 1 empty PAGEOBJECT")
                     page.remove(po)
         logging.info("removed %d empty texts items" % d)
