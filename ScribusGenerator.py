@@ -126,11 +126,10 @@ class GeneratorControl:
 
     def getToVariable(self):
         return self.__toVariable
-        
+
     def getCloseDialogVariable(self):
         return self.__closeDialogVariable
-   
-        
+
 
     def allValuesSet(self):
         # Simple check whether input fields are NOT EMPTY.
@@ -354,7 +353,7 @@ class GeneratorDialog:
         outputFormatListBox = OptionMenu(outputFrame, self.__ctrl.getSelectedOutputFormat(), *self.__ctrl.getOutputFormatList(),
                                          command=lambda v=self.__ctrl.getSelectedOutputFormat(): self.updateState(v))
         outputFormatListBox.grid(column=5, row=1, padx=5, pady=5, sticky='w')
-        
+
         mergeOutputLabel = Label(
             outputFrame, text='Merge in Single File:', width=17, anchor='w')
         mergeOutputLabel.grid(column=0,  columnspan=2, row=2, padx=5, pady=5, sticky='w')
@@ -371,7 +370,6 @@ class GeneratorDialog:
         self.keepGeneratedScribusFilesCheckbox.grid(
             column=5, row=2, padx=5, pady=5, sticky='w')
 
-        
         # Misc Settings
         saveLabel = Label(miscFrame, text='Save Settings:',
                           width=12, anchor='w')
@@ -387,7 +385,6 @@ class GeneratorDialog:
             miscFrame, variable=self.__ctrl.getCloseDialogVariable())
         closeCheckbox.grid(column=5, row=1, padx=5, pady=5, sticky='e')
 
-        
         # Bottom Buttons
         generateButton = Button(
             buttonFrame, text='✔\nGenerate', width=10, command=self.__ctrl.buttonOkHandler)

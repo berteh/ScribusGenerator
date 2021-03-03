@@ -171,12 +171,12 @@ class ScribusGenerator:
         recordsInDocument = 1 + rootStr.count(CONST.NEXT_RECORD)
         logging.info("source document consumes %s data record(s) from %s." %
                      (recordsInDocument, dataC))
-        
+
         #global vars
         dataBuffer = []
         pagescount = pageheight = vgap = groupscount = objscount = 0
         version = ''
-        
+
         for row in csvData:
             if(index == 0):  # get vars names from first Header-Row of the CSV-File
                 varNamesForFileName = list(row.keys())
@@ -187,7 +187,7 @@ class ScribusGenerator:
             # now handle row as data entry
             # accumulate row in buffer
             dataBuffer.append(row.values())
-            
+
             # buffered data for all document records OR reached last data record
             if ((index+1) % recordsInDocument == 0) or index == dataC:
                 logging.debug("subsitute")
@@ -253,8 +253,7 @@ class ScribusGenerator:
                 self.deleteFile(scribusOutputFilePath)
 
         return 1
- 
- 
+
     def exportPDF(self, scribusFilePath, pdfFilePath):
         import scribus
 
@@ -336,16 +335,16 @@ class ScribusGenerator:
         shifted = []
         voffset = (float(pageheight)+float(vgap)) * \
             (index // recordsInDocument)
-        #logging.debug("shifting to voffset %s " % (voffset)) 
+        #logging.debug("shifting to voffset %s " % (voffset))
         for page in docElt.findall('PAGE'):
             page.set('PAGEYPOS', str(float(page.get('PAGEYPOS')) + voffset))
             page.set('NUM', str(int(page.get('NUM')) + pagescount))
             shifted.append(page)
         for obj in docElt.findall('PAGEOBJECT'):
             ypos = obj.get('YPOS')
-            if (ypos == "" ): 
+            if (ypos == "" ):
                 ypos = 0
-            #logging.debug("original YPOS is %s " % (ypos)) 
+            #logging.debug("original YPOS is %s " % (ypos))
             obj.set('YPOS', str(float(ypos) + voffset))
             obj.set('OwnPage', str(int(obj.get('OwnPage')) + pagescount))
             # update ID and links
@@ -557,8 +556,8 @@ class ScribusGenerator:
 
     def getCsvData(self, csvfile):
         # Read CSV file and return array or dict [(var1,value1), (var2,value2),..]
-        
-        result = []        
+
+        result = []
         with open(csvfile, newline='', encoding=self.__dataObject.getCsvEncoding()) as csvf:
             reader = csv.DictReader(csvf, delimiter=self.__dataObject.getCsvSeparator(), skipinitialspace=True, doublequote=True)
             for row in reader:
