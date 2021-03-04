@@ -43,23 +43,23 @@ parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpForm
     This program requires Python 2.7+
 
 examples:
-    
+
   %(prog)s my-template.sla
     generates Scribus (SLA) files for each line of 'my-template.csv'
-    by subsituting the provides values into 'my-template.sla' to the 
+    by subsituting the provides values into 'my-template.sla' to the
     current directory.
 
-  %(prog)s --outDir "/home/user/tmp" example/Business_Card.sla 
+  %(prog)s --outDir "/home/user/tmp" example/Business_Card.sla
     generates Scribus files for each line of example/Business_Card.csv
     in the "/home/user/tmp" subdirectory.
 
-  %(prog)s --outName "card_%%VAR_email%%"  */*.sla 
+  %(prog)s --outName "card_%%VAR_email%%"  */*.sla
     generates Scribus files for each sla file in any subdirectory
     that has a csv file with a similar name in the same directory.
     Generated files will have a name constructed from the "email" field
     data, and are stored in their respective sla file directory.
 
-  %(prog)s --single -c translations.csv -n doc_  lang/*.sla 
+  %(prog)s --single -c translations.csv -n doc_  lang/*.sla
     generates a single Scribus file for each sla file in the lang/ subdirectory
     using all rows of the translations.csv data file.
     Generated files will have a name constructed from the "doc_" prefix
