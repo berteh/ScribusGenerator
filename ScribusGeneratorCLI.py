@@ -74,6 +74,8 @@ parser.add_argument('-c', '--csvFile', default=None,
                     help='CSV file containing the data to substitute in each template during generation. Default is scribus source file(s) name with "csv" extension instead of "sla". If csv file is not found, generation from this particular template is skipped.')
 parser.add_argument('-d', '--csvDelimiter', default=CONST.CSV_SEP,
                     help='CSV field delimiter character. Default is comma: ","')
+parser.add_argument('-e', '--csvEncoding', default=CONST.CSV_ENCODING,
+                    help='Encoding of the CSV file (default: utf-8)')
 # parser.add_argument('-f', '--fast', '--noPdf', action='store_true', default=False, # commented utile Scribus allows pdf generation from command line
 #    help='no PDF generation, scribus SLA only (much faster)')
 parser.add_argument('-n', '--outName', default=CONST.EMPTY,
@@ -125,6 +127,7 @@ dataObject = GeneratorDataObject(
     # ife(args.pdfOnly, CONST.FALSE, CONST.TRUE), # not used if outputFormat is sla.
     keepGeneratedScribusFiles=CONST.TRUE,
     csvSeparator=args.csvDelimiter,  # is CONST.CSV_SEP by default
+    csvEncoding=args.csvEncoding, # is CONST.CSV_ENCODING by default
     singleOutput=args.merge,
     firstRow=args.firstRow,
     lastRow=args.lastRow,

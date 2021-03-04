@@ -46,6 +46,8 @@ class GeneratorControl:
         self.__scribusSourceFileEntryVariable = StringVar()
         self.__dataSeparatorEntryVariable = StringVar()
         self.__dataSeparatorEntryVariable.set(CONST.CSV_SEP)
+        self.__dataEncodingEntryVariable = StringVar()
+        self.__dataEncodingEntryVariable.set(CONST.CSV_ENCODING)
         self.__outputDirectoryEntryVariable = StringVar()
         self.__outputFileNameEntryVariable = StringVar()
         # SLA & PDF are valid output format
@@ -89,6 +91,9 @@ class GeneratorControl:
 
     def getDataSeparatorEntryVariable(self):
         return self.__dataSeparatorEntryVariable
+
+    def getDataEncodingEntryVariable(self):
+        return self.__dataEncodingEntryVariable
 
     def getOutputDirectoryEntryVariable(self):
         return self.__outputDirectoryEntryVariable
@@ -134,6 +139,7 @@ class GeneratorControl:
         if((self.__scribusSourceFileEntryVariable.get() != CONST.EMPTY) and
             (self.__dataSourceFileEntryVariable.get() != CONST.EMPTY) and
             (self.__outputDirectoryEntryVariable.get() != CONST.EMPTY) and
+            (len(self.__dataEncodingEntryVariable.get()) >= 4 ) and
                 (len(self.__dataSeparatorEntryVariable.get()) == 1)):
             result = 1
         return result
@@ -148,6 +154,7 @@ class GeneratorControl:
             outputFormat=self.__selectedOutputFormat.get(),
             keepGeneratedScribusFiles=self.__keepGeneratedScribusFilesCheckboxVariable.get(),
             csvSeparator=self.__dataSeparatorEntryVariable.get(),
+            csvEncoding=self.__dataEncodingEntryVariable.get(),
             singleOutput=self.__mergeOutputCheckboxVariable.get(),
             firstRow=self.__fromVariable.get(),
             lastRow=self.__toVariable.get(),
@@ -206,6 +213,7 @@ class GeneratorControl:
             self.__dataSourceFileEntryVariable.set(
                 dataObject.getDataSourceFile())
             self.__dataSeparatorEntryVariable.set(dataObject.getCsvSeparator())
+            self.__dataEncodingEntryVariable.set(dataObject.getCsvEncoding())
             self.__outputDirectoryEntryVariable.set(
                 dataObject.getOutputDirectory())
             self.__outputFileNameEntryVariable.set(
@@ -299,6 +307,13 @@ class GeneratorDialog:
         dataSeparatorEntry = Entry(
             inputFrame, width=3, textvariable=self.__ctrl.getDataSeparatorEntryVariable())
         dataSeparatorEntry.grid(column=1, row=2, padx=5, pady=5, sticky='w')
+
+        dataEncodingLabel = Label(
+            inputFrame, text='Data Encoding:', width=15, anchor='w')
+        dataEncodingLabel.grid(column=0, row=3, padx=5, pady=5, sticky='w')
+        dataEncodingEntry = Entry(
+            inputFrame, width=15, textvariable=self.__ctrl.getDataEncodingEntryVariable())
+        dataEncodingEntry.grid(column=1, row=3, padx=5, pady=5, sticky='w')
 
         fromLabel = Label(
             inputFrame, text='(opt.) use partial data, only from:', anchor='e')
