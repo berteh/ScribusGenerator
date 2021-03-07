@@ -49,8 +49,8 @@ class CONST:
     # CSV entry separator, comma by default; tab: " " is also common if using Excel.
     CSV_SEP = ","
     CSV_ENCODING = 'utf-8'
-    # indent the generated SLA code for more readability, aka "XML pretty print". set to 0 to (slighlty) speed up the generation.
-    INDENT_SLA = 1
+    # indent the generated SLA code for more readability, aka "XML pretty print". set to 1 if you want to edit generated SLA manually.
+    INDENT_SLA = 0
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
     # set to 0 to prevent removal of un-subsituted variables, along with their empty containing itext
