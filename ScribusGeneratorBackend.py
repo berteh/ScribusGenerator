@@ -48,6 +48,7 @@ class CONST:
     SEP_EXT = os.extsep
     # CSV entry separator, comma by default; tab: " " is also common if using Excel.
     CSV_SEP = ","
+    CSV_ENCODING = 'utf-8'
     # indent the generated SLA code for more readability, aka "XML pretty print". set to 0 to (slighlty) speed up the generation.
     INDENT_SLA = 1
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
@@ -170,12 +171,12 @@ class ScribusGenerator:
         recordsInDocument = 1 + rootStr.count(CONST.NEXT_RECORD)
         logging.info("source document consumes %s data record(s) from %s." %
                      (recordsInDocument, dataC))
-        
+
         #global vars
         dataBuffer = []
         pagescount = pageheight = vgap = groupscount = objscount = 0
         version = ''
-        
+
         for row in csvData:
             if(index == 0):  # get vars names from first Header-Row of the CSV-File
                 varNamesForFileName = list(row.keys())
@@ -186,7 +187,7 @@ class ScribusGenerator:
             # now handle row as data entry
             # accumulate row in buffer
             dataBuffer.append(row.values())
-            
+
             # buffered data for all document records OR reached last data record
             if ((index+1) % recordsInDocument == 0) or index == dataC:
                 logging.debug("subsitute")
@@ -252,8 +253,7 @@ class ScribusGenerator:
                 self.deleteFile(scribusOutputFilePath)
 
         return 1
- 
- 
+
     def exportPDF(self, scribusFilePath, pdfFilePath):
         import scribus
 
@@ -335,16 +335,16 @@ class ScribusGenerator:
         shifted = []
         voffset = (float(pageheight)+float(vgap)) * \
             (index // recordsInDocument)
-        #logging.debug("shifting to voffset %s " % (voffset)) 
+        #logging.debug("shifting to voffset %s " % (voffset))
         for page in docElt.findall('PAGE'):
             page.set('PAGEYPOS', str(float(page.get('PAGEYPOS')) + voffset))
             page.set('NUM', str(int(page.get('NUM')) + pagescount))
             shifted.append(page)
         for obj in docElt.findall('PAGEOBJECT'):
             ypos = obj.get('YPOS')
-            if (ypos == "" ): 
+            if (ypos == "" ):
                 ypos = 0
-            #logging.debug("original YPOS is %s " % (ypos)) 
+            #logging.debug("original YPOS is %s " % (ypos))
             obj.set('YPOS', str(float(ypos) + voffset))
             obj.set('OwnPage', str(int(obj.get('OwnPage')) + pagescount))
             # update ID and links
@@ -460,7 +460,7 @@ class ScribusGenerator:
 
     def readFileContent(self, src):
         # Returns the list of lines (as strings) of the text-file
-        tmp = open(src, 'r', encoding='utf-8')
+        tmp = open(src, 'r', encoding=self.__dataObject.getCsvEncoding())
         result = tmp.readlines()
         tmp.close()
         return result
@@ -556,9 +556,9 @@ class ScribusGenerator:
 
     def getCsvData(self, csvfile):
         # Read CSV file and return array or dict [(var1,value1), (var2,value2),..]
-        
-        result = []        
-        with open(csvfile, newline='', encoding='utf-8') as csvf:
+
+        result = []
+        with open(csvfile, newline='', encoding=self.__dataObject.getCsvEncoding()) as csvf:
             reader = csv.DictReader(csvf, delimiter=self.__dataObject.getCsvSeparator(), skipinitialspace=True, doublequote=True)
             for row in reader:
                 if(len(row) > 0): # strip empty lines in source CSV
@@ -597,6 +597,7 @@ class GeneratorDataObject:
                  outputFormat=CONST.EMPTY,
                  keepGeneratedScribusFiles=CONST.FALSE,
                  csvSeparator=CONST.CSV_SEP,
+                 csvEncoding=CONST.CSV_ENCODING,
                  singleOutput=CONST.FALSE,
                  firstRow=CONST.EMPTY,
                  lastRow=CONST.EMPTY,
@@ -609,6 +610,7 @@ class GeneratorDataObject:
         self.__outputFormat = outputFormat
         self.__keepGeneratedScribusFiles = keepGeneratedScribusFiles
         self.__csvSeparator = csvSeparator
+        self.__csvEncoding = csvEncoding
         self.__singleOutput = singleOutput
         self.__firstRow = firstRow
         self.__lastRow = lastRow
@@ -637,6 +639,9 @@ class GeneratorDataObject:
     def getCsvSeparator(self):
         return self.__csvSeparator
 
+    def getCsvEncoding(self):
+        return self.__csvEncoding
+
     def getSingleOutput(self):
         return self.__singleOutput
 
@@ -651,7 +656,7 @@ class GeneratorDataObject:
 
     def getCloseDialog(self):
         return self.__closeDialog
-        
+
 
     # Set
     def setScribusSourceFile(self, fileName):
@@ -674,6 +679,9 @@ class GeneratorDataObject:
 
     def setCsvSeparator(self, value):
         self.__csvSeparator = value
+
+    def setCsvEncoding(self, value):
+        self.__csvEncoding = value
 
     def setSingleOutput(self, value):
         self.__singleOutput = value
@@ -701,6 +709,7 @@ class GeneratorDataObject:
             'outformat': self.__outputFormat,
             'keepsla': self.__keepGeneratedScribusFiles,
             'separator': self.__csvSeparator,
+            'csvencoding': self.__csvEncoding,
             'single': self.__singleOutput,
             'from': self.__firstRow,
             'to': self.__lastRow,
@@ -722,6 +731,7 @@ class GeneratorDataObject:
         self.__keepGeneratedScribusFiles = j['keepsla']
         # str()to prevent TypeError: : "delimiter" must be string, not unicode, in csv.reader() call
         self.__csvSeparator = str(j['separator'])
+        self.__csvEncoding = str(j['csvencoding'])
         self.__singleOutput = j["single"]
         self.__firstRow = j["from"]
         self.__lastRow = j["to"]
