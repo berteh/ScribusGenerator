@@ -289,10 +289,10 @@ class ScribusGenerator:
         if (indentSLA):
             from xml.dom import minidom
             xmlstr = minidom.parseString(ET.tostring(outTree.getroot())).toprettyxml(indent="   ")
-            with open(scribusOutputFilePath, "w") as f:
+            with open(scribusOutputFilePath, "w", encoding='utf-8') as f:
                 f.write(xmlstr)
         else:
-            outTree.write(scribusOutputFilePath, encoding="UTF-8")
+            outTree.write(scribusOutputFilePath, encoding='utf-8')
         logging.info("scribus file created: %s" % (scribusOutputFilePath))
         return scribusOutputFilePath
 
@@ -460,7 +460,7 @@ class ScribusGenerator:
 
     def readFileContent(self, src):
         # Returns the list of lines (as strings) of the text-file
-        tmp = open(src, 'r')
+        tmp = open(src, 'r', encoding='utf-8')
         result = tmp.readlines()
         tmp.close()
         return result
@@ -558,7 +558,7 @@ class ScribusGenerator:
         # Read CSV file and return array or dict [(var1,value1), (var2,value2),..]
         
         result = []        
-        with open(csvfile, newline='') as csvf:
+        with open(csvfile, newline='', encoding='utf-8') as csvf:
             reader = csv.DictReader(csvf, delimiter=self.__dataObject.getCsvSeparator(), skipinitialspace=True, doublequote=True)
             for row in reader:
                 if(len(row) > 0): # strip empty lines in source CSV
