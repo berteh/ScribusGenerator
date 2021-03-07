@@ -40,8 +40,8 @@ class CONST:
     SEP_EXT = os.extsep
     # CSV entry separator, comma by default; tab: "	" is also common if using Excel.
     CSV_SEP = ","
-	# indent the generated SLA code for more readability, aka "XML pretty print". set to 0 to (slighlty) speed up the generation.
-    INDENT_SLA = 1
+    # indent the generated SLA code for more readability, aka "XML pretty print". set to 1 if you want to edit generated SLA manually.
+    INDENT_SLA = 0
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
     # set to 0 to prevent removal of un-subsituted variables, along with their empty containing itext
@@ -50,7 +50,7 @@ class CONST:
     REMOVE_CLEANED_ELEMENT_PREFIX = 1
     # set to 0 to replace all tabs and linebreaks in csv data by simple spaces.
     KEEP_TAB_LINEBREAK = 1
-    SG_VERSION = '2.5'
+    SG_VERSION = '2.9.1 python2'
     # set to any word you'd like to use to trigger a jump to the next data record. using a name similar to the variables %VAR_ ... % will ensure it is cleaned after generation, and not show in the final document(s).
     NEXT_RECORD = '%SG_NEXT-RECORD%'
 
@@ -90,6 +90,8 @@ class ScribusGenerator:
                           (self.__dataObject.getScribusSourceFile()))
             raise
         root = tree.getroot()
+        version = root.get('Version')
+        logging.debug("Scribus SLA template version is %s" % (version))
 
         # save settings
         if (self.__dataObject.getSaveSettings()):
@@ -196,8 +198,7 @@ class ScribusGenerator:
                             groupscount = int(docElt.get('GROUPC'))
                             objscount = len(outputElt.findall('.//PAGEOBJECT'))
                             logging.debug(
-                                "current template has #%s pageobjects" % (objscount))
-                            version = outputElt.get('Version')
+                                "current template has #%s pageobjects" % (objscount))                            
     #                        if version.startswith('1.4'):
     #                            docElt.set('GROUPC', str(groupscount*dataC))
                             # todo replace +1 by roundup()
