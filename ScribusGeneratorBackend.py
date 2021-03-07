@@ -236,7 +236,7 @@ class ScribusGenerator:
                 dataBuffer = []
             index = index + 1
 
-        # clean & write single sla   #TODO BUG #173 KO if merge with too few CSV entries
+        # clean & write single sla
         if (self.__dataObject.getSingleOutput()):
             self.writeSLA(outputElt, self.__dataObject.getOutputFileName())
             outputFileNames.append(self.__dataObject.getOutputFileName())
