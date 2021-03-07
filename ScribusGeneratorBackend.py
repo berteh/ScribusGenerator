@@ -31,7 +31,7 @@ import sys
 import xml.etree.ElementTree as ET
 import json
 import re
-import string
+import string, math
 
 
 class CONST:
@@ -59,7 +59,7 @@ class CONST:
     REMOVE_CLEANED_ELEMENT_PREFIX = 1
     # set to 0 to replace all tabs and linebreaks in csv data by simple spaces.
     KEEP_TAB_LINEBREAK = 1
-    SG_VERSION = '2.5'
+    SG_VERSION = '2.9.2 python3'
     # set to any word you'd like to use to trigger a jump to the next data record. using a name similar to the variables %VAR_ ... % will ensure it is cleaned after generation, and not show in the final document(s).
     NEXT_RECORD = '%SG_NEXT-RECORD%'
 
@@ -89,7 +89,7 @@ class ScribusGenerator:
                 self.__dataObject.getScribusSourceFile())[0])[1] + '__single')
 
         # source sla
-        logging.info("parsing scribus source file %s" %
+        logging.info("parsing scribus SLA file %s" %
                      (self.__dataObject.getScribusSourceFile()))
         try:
             tree = ET.parse(self.__dataObject.getScribusSourceFile())
@@ -98,13 +98,14 @@ class ScribusGenerator:
                           (self.__dataObject.getScribusSourceFile()))
             raise
         root = tree.getroot()
+        version = root.get('Version')
+        logging.debug("Scribus SLA template version is %s" % (version))
 
         # save settings
         if (self.__dataObject.getSaveSettings()):
             serial = self.__dataObject.toString()
-            # as: %s"%serial)
             logging.debug(
-                "saving current Scribus Generator settings in your source file")
+                "saving current Scribus Generator settings in your source file") # as: %s"%serial)
             docElt = root.find('DOCUMENT')
             storageElt = docElt.find('./JAVA[@NAME="'+CONST.STORAGE_NAME+'"]')
             if (storageElt is None):
@@ -115,11 +116,11 @@ class ScribusGenerator:
                 storageElt = ET.Element("JAVA", {"NAME": CONST.STORAGE_NAME})
                 docElt.insert(scriptPos, storageElt)
             storageElt.set("SCRIPT", serial)
-            # todo check if scribus reloads (or overwrites :/ ) when doc is opened, opt use API to add a script if there's an open doc.
+            # todo BUG race condition: check if scribus reloads (or overwrites :/ ) when doc is opened, opt use API to add a script if there's an open doc.
             tree.write(self.__dataObject.getScribusSourceFile())
 
         # data
-        logging.info("parsing data source file %s" %
+        logging.debug("parsing data CSV file %s" %
                      (self.__dataObject.getDataSourceFile()))
         try:
             csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
@@ -165,9 +166,9 @@ class ScribusGenerator:
         # XML-Content/Text-Content of the Source Scribus File (List of Lines)
         template = []
         outputFileNames = []
-        index = 0  # current data record
-        rootStr = ET.tostring(root, encoding='utf8', method='xml').decode()
-        # number of data records appearing in source document
+        index = 1  # current data record
+        rootStr = ET.tostring(root, encoding=self.__dataObject.getCsvEncoding(), method='xml').decode()
+        # number of data records consumed by source document
         recordsInDocument = 1 + rootStr.count(CONST.NEXT_RECORD)
         logging.info("source document consumes %s data record(s) from %s." %
                      (recordsInDocument, dataC))
@@ -175,28 +176,37 @@ class ScribusGenerator:
         #global vars
         dataBuffer = []
         pagescount = pageheight = vgap = groupscount = objscount = 0
-        version = ''
-
+        outContent = ''
+        
         for row in csvData:
-            if(index == 0):  # get vars names from first Header-Row of the CSV-File
+        #invariant: data has been substituded up to csvData[index-1], and
+        #  SLA code is stored accordingly in outContent, 
+        #  SLA files have been generated up to index-1 entry as per generation 
+        #  options and numer of records consumed by the source template.
+        
+            if(index == 1):  # initialization, get vars names from frow keys
                 varNamesForFileName = list(row.keys())
                 varNamesForReplacingVariables = self.handleAmpersand([row.keys()])[0]
                 # overwrite attributes from their /*/ItemAttribute[Parameter=SGAttribute] sibling, when applicable.
                 templateElt = self.overwriteAttributesFromSGAttributes(root)
-
-            # now handle row as data entry
-            # accumulate row in buffer
+                
+            # handle row data
             dataBuffer.append(row.values())
-
-            # buffered data for all document records OR reached last data record
-            if ((index+1) % recordsInDocument == 0) or index == dataC:
-                logging.debug("subsitute")
-                outContent = self.substituteData(varNamesForReplacingVariables, self.handleAmpersand(dataBuffer), ET.tostring(templateElt, method='xml').decode().split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)
-                if (self.__dataObject.getSingleOutput()):
+              
+            # done buffering data for current document OR reached last data record 
+            if (index % recordsInDocument == 0) or index == dataC:
+                logging.debug("subsitute, with data entry index being %s" % (index))
+                outContent = self.substituteData(
+                  varNamesForReplacingVariables, 
+                  self.handleAmpersand(dataBuffer), 
+                  ET.tostring(templateElt, method='xml').decode().split('\n'), 
+                  keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
+                  
+                if (self.__dataObject.getSingleOutput()): # merge mode
                     # first substitution, update DOCUMENT properties
-                    if (index+1 == min(recordsInDocument,dataC)):
+                    if (index == min(recordsInDocument,dataC)):
                         logging.debug(
-                            "generating reference content from dataBuffer #%s" % (index))
+                            "generating reference content from dataBuffer at #%s" % (index))
                         outputElt = ET.fromstring(outContent)
                         docElt = outputElt.find('DOCUMENT')
                         pagescount = int(docElt.get('ANZPAGES'))
@@ -205,18 +215,14 @@ class ScribusGenerator:
                         groupscount = int(docElt.get('GROUPC'))
                         objscount = len(outputElt.findall('.//PAGEOBJECT'))
                         logging.debug(
-                            "current template has #%s pageobjects" % (objscount))
-                        version = outputElt.get('Version')
-#                        if version.startswith('1.4'):
-#                            docElt.set('GROUPC', str(groupscount*dataC))
-                        # todo replace +1 by roundup()
+                            "current template has #%s pageobjects" % (objscount))                      
                         docElt.set('ANZPAGES', str(
-                            pagescount*dataC//recordsInDocument + 1))
+                            math.ceil(pagescount*dataC//recordsInDocument)))
                         docElt.set('DOCCONTRIB', docElt.get(
                             'DOCCONTRIB')+CONST.CONTRIB_TEXT)
                     #append DOCUMENT content
                     logging.debug(
-                        "merging content from dataBuffer #%s (version:%s)" % (index, version))
+                        "merging content from dataBuffer up to entry index #%s" % (index))
                     tmpElt = ET.fromstring(outContent).find('DOCUMENT')
                     shiftedElts = self.shiftPagesAndObjects(
                         tmpElt, pagescount, pageheight, vgap, index-1, recordsInDocument, groupscount, objscount, version)
@@ -230,7 +236,7 @@ class ScribusGenerator:
                 dataBuffer = []
             index = index + 1
 
-        # clean & write single sla
+        # clean & write single sla   #TODO BUG #173 KO if merge with too few CSV entries
         if (self.__dataObject.getSingleOutput()):
             self.writeSLA(outputElt, self.__dataObject.getOutputFileName())
             outputFileNames.append(self.__dataObject.getOutputFileName())
