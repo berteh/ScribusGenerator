@@ -172,7 +172,7 @@ class ScribusGenerator:
         for row in csvData:
             if(index == 0):  # first line is the Header-Row of the CSV-File
                 varNamesForFileName = row
-                varNamesForReplacingVariables = self.handleAmpersand([row])[0]
+                varNamesForReplacingVariables = self.encodeScribusXML([row])[0]
                 # overwrite attributes from their /*/ItemAttribute[Parameter=SGAttribute] sibling, when applicable.
                 templateElt = self.overwriteAttributesFromSGAttributes(root)
 
@@ -183,7 +183,7 @@ class ScribusGenerator:
                 # buffered data for all document records OR reached last data record
                 if (index % recordsInDocument == 0) or index == dataC:
                     # subsitute
-                    outContent = self.substituteData(varNamesForReplacingVariables, self.handleAmpersand(dataBuffer),
+                    outContent = self.substituteData(varNamesForReplacingVariables, self.encodeScribusXML(dataBuffer),
                                                      ET.tostring(templateElt, method='xml').split('\n'), keepTabsLF=CONST.KEEP_TAB_LINEBREAK)
                     if (self.__dataObject.getSingleOutput()):
                         # first substitution, update DOCUMENT properties
@@ -453,16 +453,16 @@ class ScribusGenerator:
         tmp.close()
         return result
 
-    def handleAmpersand(self, rows):
-        # If someone uses an '&' as variable (e.g. %VAR_&position%), this text will be saved
-        # like %VAR_&amp;position% as the & is being converted by scribus to textual ampersand.
-        # Therefore we have to check and convert. It will also be used to replace ampersand of
-        # CSV rows, so that you can have values like e.g. "A & B Company".
+    def encodeScribusXML(self, rows):
+        # Encode some characters that can be found in CSV into XML entities
+        # not all are needed as Scribus handles most UTF8 characters just fine.
         result = []
-        for row in rows:      # todo remplace by 2d level map & multiple_replace ?
+        replacements = {'&':'&amp;', '"':'&quot;', '<':'&lt;'}
+            
+        for row in rows:
             res1 = []
             for i in row:
-                res1.append(i.replace('&', '&amp;').replace('"', '&quot;'))
+                res1.append(self.multiple_replace(i, replacements))             
             result.append(res1)
         return result
 
