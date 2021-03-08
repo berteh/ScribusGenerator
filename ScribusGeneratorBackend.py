@@ -50,7 +50,7 @@ class CONST:
     CSV_SEP = ","
     CSV_ENCODING = 'utf-8'
     # indent the generated SLA code for more readability, aka "XML pretty print". set to 1 if you want to edit generated SLA manually.
-    INDENT_SLA = 0
+    INDENT_SLA = 1
     CONTRIB_TEXT = "\npowered by ScribusGenerator - https://github.com/berteh/ScribusGenerator/"
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
     # set to 0 to prevent removal of un-subsituted variables, along with their empty containing itext
@@ -186,7 +186,8 @@ class ScribusGenerator:
         
             if(index == 1):  # initialization, get vars names from frow keys
                 varNamesForFileName = list(row.keys())
-                varNamesForReplacingVariables = self.handleAmpersand([row.keys()])[0]
+                varNamesForReplacingVariables = self.encodeScribusXML([row.keys()])[0]
+                logging.info("variables from data files: %s" % (varNamesForReplacingVariables))                
                 # overwrite attributes from their /*/ItemAttribute[Parameter=SGAttribute] sibling, when applicable.
                 templateElt = self.overwriteAttributesFromSGAttributes(root)
                 
@@ -198,7 +199,7 @@ class ScribusGenerator:
                 logging.debug("subsitute, with data entry index being %s" % (index))
                 outContent = self.substituteData(
                   varNamesForReplacingVariables, 
-                  self.handleAmpersand(dataBuffer), 
+                  self.encodeScribusXML(dataBuffer), 
                   ET.tostring(templateElt, method='xml').decode().split('\n'), 
                   keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
                   
@@ -366,8 +367,8 @@ class ScribusGenerator:
                     obj.set('BACKITEM', str(
                         int(obj.get('BACKITEM')) + (objscount * index)))
             else:  # 1.5, 1.6
-                logging.debug("version is %s shifting object %s (#%s)" %
-                              (version, obj.tag, obj.get('ItemID')))
+                #logging.debug("version is %s shifting object %s (#%s)" %
+                #              (version, obj.tag, obj.get('ItemID')))
 
                 # todo update ID with something unlikely allocated, TODO ensure unique ID instead of 6:, issue #101
                 obj.set('ItemID', str(objscount * index) +
@@ -471,16 +472,16 @@ class ScribusGenerator:
         tmp.close()
         return result
 
-    def handleAmpersand(self, rows):
-        # If someone uses an '&' as variable (e.g. %VAR_&position%), this text will be saved
-        # like %VAR_&amp;position% as the & is being converted by scribus to textual ampersand.
-        # Therefore we have to check and convert. It will also be used to replace ampersand of
-        # CSV rows, so that you can have values like e.g. "A & B Company".
+    def encodeScribusXML(self, rows):
+        # Encode some characters that can be found in CSV into XML entities
+        # not all are needed as Scribus handles most UTF8 characters just fine.
         result = []
-        for row in rows:      # todo remplace by 2d level map & multiple_replace ?
+        replacements = {'&':'&amp;', '"':'&quot;', '<':'&lt;'}
+            
+        for row in rows:
             res1 = []
             for i in row:
-                res1.append(i.replace('&', '&amp;').replace('"', '&quot;'))
+                res1.append(self.multiple_replace(i, replacements))             
             result.append(res1)
         return result
 
@@ -497,7 +498,7 @@ class ScribusGenerator:
         currentRecord = 0
         replacements = dict(
             list(zip(['%VAR_'+i+'%' for i in varNames], rows[currentRecord])))
-        #logging.debug("replacements is: %s"%replacements)
+        logging.debug("replacements is: %s"%replacements)
 
         # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
         for idx, line in enumerate(lines):
@@ -522,17 +523,17 @@ class ScribusGenerator:
                     logging.debug("next record reached last data entry")
 
             # replace with data
-            logging.debug("replacing VARS_* in %s" % line[:30].strip())
+            #logging.debug("replacing VARS_* in %s" % line[:30].strip())
             line = self.multiple_replace(line, replacements)
             #logging.debug("replaced in line: %s" % line)
 
             # remove (& trim) any (unused) %VAR_\w*% like string.
             if (clean):
-                if (CONST.REMOVE_CLEANED_ELEMENT_PREFIX):
+                if (CONST.REMOVE_CLEANED_ELEMENT_PREFIX):  ## TODO is there a way to input warning "data not found for variable named XX" instead of the number
                     (line, d) = re.subn('\s*[,;-]*\s*%VAR_\w*%\s*', '', line)
-                else:
+                else: ## TODO is there a way to input warning "data not found for variable named XX" instead of the number
                     (line, d) = re.subn('\s*%VAR_\w*%\s*', '', line)
-                if (d > 0):
+                if (d > 0): 
                     logging.debug("cleaned %d empty variable" % d)
                 (line, d) = re.subn('\s*%s\w*\s*' %
                                     CONST.NEXT_RECORD, '', line)
