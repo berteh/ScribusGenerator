@@ -193,7 +193,7 @@ To change the properties of a sub-element (such as one particular text line in a
 | --- | --- | --- | --- | --- |
 | ``FONT`` | ``%VAR_font%`` | ``SGAttribute`` | ``//ITEXT[2]`` | Font of the 2d text line in a frame, like "Arial Regular"
 | ``FONTSIZE`` | ``%VAR_size%`` | ``SGAttribute`` | ``//ITEXT`` | Text size of all text lines in a frame, like "14" 
-| ``LINESP`` | ``%VAR_spacing%`` | ``SGAttribute`` | ``//para[last()]`` | Fixed line spacing of the last paragraph in a frame, like "9.5"
+| ``LINESP`` | ``%VAR_spacing%`` | ``SGAttribute`` | ``//para[last()]`` | Fixed line spacing of the last paragraph in a frame, like "9.5". In scribus 1.5.5 only ``//trail`` seems to work.
 | ``YPOS`` | ``%VAR_top%`` | ``SGAttribute`` |  | Margin from the top for vertical element position, like "22.04"
 | ``ROT`` | ``%VAR_degrees%`` | ``SGAttribute`` |   | rotation of the current object, in degrees, [0 , 359]
 
