@@ -48,7 +48,7 @@ You can place the variable at any position within a Text Frame. Apply all format
 
 ![Illustration: Scribus File for Generator](pic/SG-01.png)
 
-If you wish to generate one page (or many) for each data entry you're done, congratulations ! If you would rather display many data entries on a single page simply add the text ``%SG_NEXT-RECORD%`` **before each entry but the first**: ScribusGenerator will automatically load the new data record as soon as it detects this token.
+If you wish to generate one page (or many) for each data entry you're done, congratulations ! If you would rather display many data entries on a single page simply add the text ``%SG_NEXT-RECORD%`` **before each entry but the first**: ScribusGenerator will automatically load the new data record as soon as it detects this token, see the [dedicated documentation page](https://github.com/berteh/ScribusGenerator/wiki/How-to-use-%25SG_NEXT-RECORD%25).
 
 
 ### Create your (csv) Data File
@@ -150,23 +150,10 @@ Multiple records on a single page
 
 Simply drop the text ``%SG_NEXT-RECORD%`` in your document _before each data entry except the first_ record, following our [example document](https://github.com/berteh/ScribusGenerator/blob/master/example/Next-Record.sla). Kindly note this token is case sensitive and must be _upper-case_. Scribus Generator will automatically load the next record as soon as it detects ``%SG_NEXT-RECORD%``, and when it reaches the end of your template.
 
-A full example to generate Monsters Game Cards based on [Dungeon World](http://www.dungeon-world.com/) is available in the [MonsterCards](https://github.com/berteh/ScribusGenerator/tree/master/example/MonsterCards) directory, created by [Dustin Andrews](https://github.com/dustinandrews):
+The feature to include several data records on a single page (or document) works great but is error prone, please read (and improve) our [dedicated wiki page for multiple records, SG_NEXT-RECORD](https://github.com/berteh/ScribusGenerator/wiki/How-to-use-%25SG_NEXT-RECORD%25).
 
-[![Illustration: Example card deck of monsters, by Dustin Andrew](pic/MonsterCards_partial.png)](https://github.com/berteh/ScribusGenerator/raw/master/example/MonsterCards/MonsterCards_partial.pdf)
-
-### Advanced layout, groups and layers
-
-The Scribus Generator script prioritizes items based on their _Level_ in Scribus. For advanced layouts (groups, layers,...) we thus  recommend to put your main item on the first level, together with the ``%SG_NEXT-RECORD%`` token before you group them together, for it to behave properly (assuming you call next record at the beginning of your 2nd item and next ones).
-
-### Changes in NEXT-RECORD syntax
-
-Please note Scribus Generator v2.8 (from January 2019) changed the syntax of the ["Next Record" feature](https://github.com/berteh/ScribusGenerator#multiple-records-on-a-single-page)
-to a less confusing name, as per [suggestion #118](https://github.com/berteh/ScribusGenerator/issues/118)
-
-Update your older templates manually, changing ``%VAR_NEXT-RECORD%`` to ``%SG_NEXT-RECORD%``, or all at once by calling, for instance:
-    
-    python ./ConvertVAR_NEXT-RECORDToSG28.py ~/ScribusProjects/*/*.sla
-
+[<img src="http://imgur.com/8yRVWOEl.png" alt="Multiple records how-to, example" height="250px">](https://github.com/berteh/ScribusGenerator/wiki/How-to-use-%25SG_NEXT-RECORD%25)
+[<img src="https://github.com/berteh/ScribusGenerator/raw/master/pic/MonsterCards_partial.png" alt="Example card deck of monsters, by Dustin Andrew" height="250px">](https://github.com/berteh/ScribusGenerator/wiki/How-to-use-%25SG_NEXT-RECORD%25#other-examples)
 
 Dynamic output file location
 -----------
