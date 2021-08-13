@@ -1,0 +1,112 @@
+[
+  {
+    "name": "John Йоан Dòë",
+    "position": "Director",
+    "email": "john",
+    "logo": "sun.pdf",
+    "color1": "Blue1",
+    "color2": "Blue2",
+    "color3": "Blue3",
+    "font": "Arial Regular",
+    "top": 17.04
+  },
+  {
+    "name": "Jane Smith",
+    "position": "Managing\nDirector",
+    "email": "jane",
+    "logo": "moon.pdf",
+    "color1": "Blue1",
+    "color2": "Blue2",
+    "color3": "Blue3",
+    "font": "Princess Sofia Regular",
+    "top": 40.4
+  },
+  {
+    "name": "Ed إد Graham",
+    "position": "HR\tIT\nAssistant",
+    "email": "ed",
+    "logo": "foot.pdf",
+    "color1": "Orange1",
+    "color2": "Orange2",
+    "color3": "Orange3",
+    "font": "Arial Regular",
+    "top": 17.04
+  },
+  {
+    "name": "Samuel Prot",
+    "position": "Assistant",
+    "email": "sam",
+    "logo": "sun.pdf",
+    "color1": "Orange1",
+    "color2": "Orange2",
+    "color3": "Orange3",
+    "font": "Arial Regular",
+    "top": 17.04
+  },
+  {
+    "name": "Rachel Banks",
+    "position": "Expert\n\nAssistant",
+    "email": "rachel",
+    "logo": "moon.pdf",
+    "color1": "Orange1",
+    "color2": "Orange2",
+    "color3": "Orange3",
+    "font": "Princess Sofia Regular",
+    "top": 40.4
+  },
+  {
+    "name": "Albert Pratt",
+    "position": "Assistant",
+    "email": "al",
+    "logo": "foot.pdf",
+    "color1": "Orange1",
+    "color2": "Orange2",
+    "color3": "Orange3",
+    "font": "Arial Regular",
+    "top": 17.04
+  },
+  {
+    "name": "Simon Garf",
+    "position": "Assistant",
+    "email": "simon",
+    "logo": "sun.pdf",
+    "color1": "Orange1",
+    "color2": "Orange2",
+    "color3": "Orange3",
+    "font": "Arial Regular",
+    "top": 17.04
+  },
+  {
+    "name": "Paty Smith",
+    "position": "Assistant",
+    "email": "paty",
+    "logo": "moon.pdf",
+    "color1": "Orange1",
+    "color2": "Orange2",
+    "color3": "Orange3",
+    "font": "Princess Sofia Regular",
+    "top": 40.4
+  },
+  {
+    "name": "Liz Taylor",
+    "position": "Assistant",
+    "email": "liz",
+    "logo": "moon.pdf",
+    "color1": "Orange1",
+    "color2": "Orange2",
+    "color3": "Orange3",
+    "font": "Princess Sofia Regular",
+    "top": 40.4
+  },
+  {
+    "name": "Max Orwell",
+    "position": "Assistant",
+    "email": "max",
+    "logo": "foot.pdf",
+    "color1": "Orange1",
+    "color2": "Orange2",
+    "color3": "Orange3",
+    "font": "Arial Regular",
+    "top": 17.04
+  }
+]

@@ -75,7 +75,7 @@ class ScribusGenerator:
                       (os.name, platform.python_version(), CONST.SG_VERSION))
 
     def run(self):
-        # Read CSV data and replace the variables in the Scribus File with the cooresponding data. Finaly export to the specified format.
+        # Read CSV/JSON data and replace the variables in the Scribus File with the corresponding data. Finally export to the specified format.
         # may throw exceptions if errors are met, use traceback to get all error details
 
         # log options
@@ -175,34 +175,36 @@ class ScribusGenerator:
 
         #global vars
         dataBuffer = []
+        templateElt = self.overwriteAttributesFromSGAttributes(root)
+
         pagescount = pageheight = vgap = groupscount = objscount = 0
         outContent = ''
-        
+        varNamesForReplacingVariables = self.encodeScribusXML([csvData[0]])[0]
+
         for row in csvData:
         #invariant: data has been substituded up to csvData[index-1], and
-        #  SLA code is stored accordingly in outContent, 
-        #  SLA files have been generated up to index-1 entry as per generation 
+        #  SLA code is stored accordingly in outContent,
+        #  SLA files have been generated up to index-1 entry as per generation
         #  options and numer of records consumed by the source template.
-        
+
             if(index == 1):  # initialization, get vars names from frow keys
                 varNamesForFileName = list(row.keys())
-                varNamesForReplacingVariables = self.encodeScribusXML([row.keys()])[0]
-                logging.info("variables from data files: %s" % (varNamesForReplacingVariables))                
+                logging.info("variables from data files: %s" % (varNamesForReplacingVariables))
                 # overwrite attributes from their /*/ItemAttribute[Parameter=SGAttribute] sibling, when applicable.
                 templateElt = self.overwriteAttributesFromSGAttributes(root)
-                
+
             # handle row data
-            dataBuffer.append(row.values())
-              
-            # done buffering data for current document OR reached last data record 
+            dataBuffer.append(row)
+
+            # done buffering data for current document OR reached last data record
             if (index % recordsInDocument == 0) or index == dataC:
                 logging.debug("subsitute, with data entry index being %s" % (index))
                 outContent = self.substituteData(
-                  varNamesForReplacingVariables, 
-                  self.encodeScribusXML(dataBuffer), 
-                  ET.tostring(templateElt, method='xml').decode().split('\n'), 
-                  keepTabsLF=CONST.KEEP_TAB_LINEBREAK)                
-                  
+                  varNamesForReplacingVariables,
+                  self.encodeScribusXML(dataBuffer),
+                  ET.tostring(templateElt, method='xml').decode().split('\n'),
+                  keepTabsLF=CONST.KEEP_TAB_LINEBREAK)
+
                 if (self.__dataObject.getSingleOutput()): # merge mode
                     # first substitution, update DOCUMENT properties
                     if (index == min(recordsInDocument,dataC)):
@@ -216,7 +218,7 @@ class ScribusGenerator:
                         groupscount = int(docElt.get('GROUPC'))
                         objscount = len(outputElt.findall('.//PAGEOBJECT'))
                         logging.debug(
-                            "current template has #%s pageobjects" % (objscount))                      
+                            "current template has #%s pageobjects" % (objscount))
                         docElt.set('ANZPAGES', str(
                             math.ceil(pagescount*dataC//recordsInDocument)))
                         docElt.set('DOCCONTRIB', docElt.get(
@@ -230,7 +232,7 @@ class ScribusGenerator:
                     docElt.extend(shiftedElts)
                 else:  # write one of multiple sla
                     outputFileName = self.createOutputFileName(
-                        index, self.__dataObject.getOutputFileName(), varNamesForFileName, dataBuffer, fillCount)
+                        index, self.__dataObject.getOutputFileName(), dataBuffer, fillCount)
                     self.writeSLA(ET.fromstring(
                         outContent), outputFileName)
                     outputFileNames.append(outputFileName)
@@ -426,7 +428,7 @@ class ScribusGenerator:
         # Build the absolute path, like C:/tmp/template.sla
         return outputDirectory + CONST.SEP_PATH + outputFileName + CONST.SEP_EXT + fileExtension
 
-    def createOutputFileName(self, index, outputFileName, varNames, rows, fillCount):
+    def createOutputFileName(self, index, outputFileName, rows, fillCount):
         # If the User has not set an Output File Name, an internal unique file name
         # will be generated which is the index of the loop.
         result = str(index)
@@ -452,7 +454,7 @@ class ScribusGenerator:
                 # ord(u'/'): u'_',
                 ord('*'): '_'
             }
-            result = self.substituteData(varNames, rows, [outputFileName])
+            result = self.substituteData([key for key in rows[0].keys()], rows, [outputFileName])
             result = result
             result = result.translate(table)
             logging.debug("output file name is %s" % result)
@@ -477,27 +479,33 @@ class ScribusGenerator:
         # not all are needed as Scribus handles most UTF8 characters just fine.
         result = []
         replacements = {'&':'&amp;', '"':'&quot;', '<':'&lt;'}
-            
+
         for row in rows:
-            res1 = []
-            for i in row:
-                res1.append(self.multiple_replace(i, replacements))             
-            result.append(res1)
+            result.append({key: self.multiple_replace(value, replacements) for key, value in row.items()})
+
+            # res1 = []
+            # for i in row:
+            #     res1.append(self.multiple_replace(i, replacements))
+            # result.append(res1)
         return result
 
     def multiple_replace(self, string, rep_dict):
         # multiple simultaneous string replacements, per http://stackoverflow.com/a/15448887/1694411)
         # combine with dictionary = dict(zip(keys, values)) to use on arrays
-        pattern = re.compile("|".join([re.escape(k)
-                                       for k in list(rep_dict.keys())]), re.M)
-        return pattern.sub(lambda x: rep_dict[x.group(0)], string)
+        pattern = re.compile("|".join([re.escape(k) for k in rep_dict.keys()]), re.M)
+
+        return pattern.sub(lambda x: rep_dict[x.group(0)], str(string))
 
     # lines as list of strings
     def substituteData(self, varNames, rows, lines, clean=CONST.CLEAN_UNUSED_EMPTY_VARS, keepTabsLF=0):
         result = ''
         currentRecord = 0
-        replacements = dict(
-            list(zip(['%VAR_'+i+'%' for i in varNames], rows[currentRecord])))
+        # replacements = dict(
+        #     list(zip(['%VAR_'+i+'%' for i in varNames], rows[currentRecord])))
+        varNames = [key for key in rows[0].keys()]
+
+        replacements = {'%VAR_'+ key +'%': value for key, value in rows[0].items()}
+
         logging.debug("replacements is: %s"%replacements)
 
         # done in string instead of XML for lack of efficient attribute-value-based substring-search in ElementTree
@@ -533,7 +541,7 @@ class ScribusGenerator:
                     (line, d) = re.subn('\s*[,;-]*\s*%VAR_\w*%\s*', '', line)
                 else: ## TODO is there a way to input warning "data not found for variable named XX" instead of the number
                     (line, d) = re.subn('\s*%VAR_\w*%\s*', '', line)
-                if (d > 0): 
+                if (d > 0):
                     logging.debug("cleaned %d empty variable" % d)
                 (line, d) = re.subn('\s*%s\w*\s*' %
                                     CONST.NEXT_RECORD, '', line)
@@ -562,6 +570,21 @@ class ScribusGenerator:
         return result
 
     def getCsvData(self, csvfile):
+        _, extension = os.path.splitext(csvfile)
+
+        if extension == '.json':
+            json_data = []
+
+            try:
+                with open(csvfile, 'r', newline='', encoding=self.__dataObject.getCsvEncoding()) as json_file:
+                    for item in json.load(json_file):
+                        json_data.append({key: value for key, value in item.items()})
+
+            except ValueError:
+                logging.error("Error decoding JSON source file: %s" % exception)
+
+            return json_data
+
         # Read CSV file and return array or dict [(var1,value1), (var2,value2),..]
 
         result = []
@@ -571,6 +594,7 @@ class ScribusGenerator:
                 if(len(row) > 0): # strip empty lines in source CSV
                     #print(row)
                     result.append(row)
+
         return result
 
     def getLog(self):
@@ -747,4 +771,3 @@ class GeneratorDataObject:
         logging.debug("loaded %d user settings" %
                       (len(j)-1))  # -1 for the artificial "comment"
         return j
-
