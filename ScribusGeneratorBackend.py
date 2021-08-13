@@ -119,49 +119,12 @@ class ScribusGenerator:
             # todo BUG race condition: check if scribus reloads (or overwrites :/ ) when doc is opened, opt use API to add a script if there's an open doc.
             tree.write(self.__dataObject.getScribusSourceFile())
 
-        # data
-        logging.debug("parsing data CSV file %s" %
-                     (self.__dataObject.getDataSourceFile()))
-        try:
-            csvData = self.getCsvData(self.__dataObject.getDataSourceFile())
-            #print(csvData)
-        except IOError as exception:
-            logging.error("CSV file not found: %s" %
-                          (self.__dataObject.getDataSourceFile()))
-            raise
-        if(len(csvData) < 1):
-            logging.error("Data file %s has only one line or is empty. At least a header line and a line of data is needed. Halting." % (
-                self.__dataObject.getDataSourceFile()))
-            return -1
 
-        # range
-        firstElement = 1
-        if(self.__dataObject.getFirstRow() != CONST.EMPTY):
-            try:
-                newFirstElementValue = int(self.__dataObject.getFirstRow())
-                # Guard against 0 or negative numbers
-                firstElement = max(newFirstElementValue, 1)
-            except:
-                logging.warning(
-                    "Could not parse value of 'first row' as an integer, using default value instead")
-        lastElement = len(csvData)
-        if(self.__dataObject.getLastRow() != CONST.EMPTY):
-            try:
-                newLastElementValue = int(self.__dataObject.getLastRow())
-                # Guard against numbers higher than the length of csvData
-                lastElement = min(newLastElementValue, lastElement)
-            except:
-                logging.warning(
-                    "Could not parse value of 'last row' as an integer, using default value instead")
-        if ((firstElement != 1) or (lastElement != len(csvData))):
-            csvData = csvData[firstElement: lastElement]
-            logging.debug("custom data range is: %s - %s" %
-                          (firstElement, lastElement))
-        else:
-            logging.debug("full data range will be used")
+        # Parse data file
+        data = self.parse_data()
 
-        # generation
-        dataC = len(csvData)
+        # Generate SLA file(s) from data
+        dataC = len(data)
         fillCount = len(str(dataC))
         # XML-Content/Text-Content of the Source Scribus File (List of Lines)
         template = []
@@ -173,19 +136,19 @@ class ScribusGenerator:
         logging.info("source document consumes %s data record(s) from %s." %
                      (recordsInDocument, dataC))
 
-        #global vars
+        # global vars
         dataBuffer = []
         templateElt = self.overwriteAttributesFromSGAttributes(root)
 
         pagescount = pageheight = vgap = groupscount = objscount = 0
         outContent = ''
-        varNamesForReplacingVariables = self.encodeScribusXML([csvData[0]])[0]
+        varNamesForReplacingVariables = self.encodeScribusXML([data[0]])[0]
 
-        for row in csvData:
-        #invariant: data has been substituded up to csvData[index-1], and
-        #  SLA code is stored accordingly in outContent,
-        #  SLA files have been generated up to index-1 entry as per generation
-        #  options and numer of records consumed by the source template.
+        for row in data:
+        # invariant: data has been substituded up to data[index-1], and
+        # SLA code is stored accordingly in outContent,
+        # SLA files have been generated up to index-1 entry as per generation
+        # options and numer of records consumed by the source template.
 
             if(index == 1):  # initialization, get vars names from frow keys
                 varNamesForFileName = list(row.keys())
@@ -569,33 +532,112 @@ class ScribusGenerator:
             result = result + line
         return result
 
-    def getCsvData(self, csvfile):
-        _, extension = os.path.splitext(csvfile)
+
+    # Part I : PARSING DATA
+
+    def parse_data(self):
+        data_file = self.__dataObject.getDataSourceFile()
+
+        # (1) Check if data file exists
+        if not os.path.exists(data_file):
+        # .. otherwise, log error & raise exception
+            logging.error('Data file not found: %s' % (data_file))
+            raise
+
+        logging.debug('Parsing data file %s' % (data_file))
+
+        # (2) Process data
+        data = []
+
+        # .. depending on file type
+        extension = os.path.splitext(data_file)[1]
 
         if extension == '.json':
-            json_data = []
+            # .. from JSON file
+            data = load_json(data_file)
 
-            try:
-                with open(csvfile, 'r', newline='', encoding=self.__dataObject.getCsvEncoding()) as json_file:
-                    for item in json.load(json_file):
-                        json_data.append({key: value for key, value in item.items()})
+        # (3) Load data
+        if extension == '.csv':
+            # .. from CSV file
+            data = self.load_csv(data_file)
 
-            except ValueError:
-                logging.error("Error decoding JSON source file: %s" % exception)
+            if len(data) <= 1:
+                logging.error(
+                    'Data file %s has only one line or is empty. ' +
+                    'At least a header line and a line of data is needed. Halting.' % (
+                        data_file
+                    )
+                )
 
-            return json_data
+                return -1
 
-        # Read CSV file and return array or dict [(var1,value1), (var2,value2),..]
+            # Determine data range
+            # (1) First item
+            first_item = 1
+            first_row = self.__dataObject.getFirstRow()
 
-        result = []
-        with open(csvfile, newline='', encoding=self.__dataObject.getCsvEncoding()) as csvf:
-            reader = csv.DictReader(csvf, delimiter=self.__dataObject.getCsvSeparator(), skipinitialspace=True, doublequote=True)
-            for row in reader:
-                if(len(row) > 0): # strip empty lines in source CSV
-                    #print(row)
-                    result.append(row)
+            if first_row != CONST.EMPTY:
+                try:
+                    new_first_item_value = int(first_row)
 
-        return result
+                    # Guard against 0 or negative numbers
+                    first_item = max(new_first_item_value, 1)
+
+                except:
+                    logging.warning(
+                        'Could not parse value of "first row" as an integer, using default value instead.'
+                    )
+
+            # (2) Last item
+            last_item = len(data)
+            last_row = self.__dataObject.getLastRow()
+
+            if last_row != CONST.EMPTY:
+                try:
+                    new_last_item_value = int(last_row)
+
+                    # Guard against numbers higher than the length of data
+                    last_item = min(new_last_item_value, last_item)
+
+                except:
+                    logging.warning(
+                        'Could not parse value of "last row" as an integer, using default value instead.')
+
+            # (3) Apply data range (if needed)
+            if first_item != 1 or last_item != len(data):
+                data = data[first_item:last_item]
+                logging.debug('Custom data range is: %s - %s' % (first_item, last_item))
+
+            else:
+                logging.debug('Full data range will be used.')
+
+        return data
+
+
+    def load_json(self, json_file: str) -> list:
+        try:
+            with open(json_file, 'r') as file:
+                return json.load(file)
+
+        except json.decoder.JSONDecodeError:
+            raise
+
+        return []
+
+
+    def load_csv(self, csv_file: str) -> list:
+        # Determine CSV options
+        encoding = self.__dataObject.getCsvEncoding()
+        delimiter = self.__dataObject.getCsvSeparator()
+
+        # Load file contents
+        with open(csv_file, newline='', encoding=encoding) as file:
+            # Parse CSV data
+            reader = csv.DictReader(file, delimiter=delimiter, skipinitialspace=True, doublequote=True)
+
+            # Filter empty lines
+            return [item for item in list(reader) if item]
+
 
     def getLog(self):
         return logging
@@ -611,7 +653,7 @@ class ScribusGenerator:
             return storage.get("SCRIPT")
         except SyntaxError as exception:
             logging.error(
-                "Loading settings in only possible with Python 2.7 and later, please update your system: %s" % exception)
+                "Loading settings is only possible with Python 2.7 and later, please update your system: %s" % exception)
             return None
         except Exception as exception:
             logging.debug("could not load the user settings: %s" % exception)
@@ -621,19 +663,20 @@ class ScribusGenerator:
 class GeneratorDataObject:
     # Data Object for transfering the settings made by the user on the UI / CLI
     def __init__(self,
-                 scribusSourceFile=CONST.EMPTY,
-                 dataSourceFile=CONST.EMPTY,
-                 outputDirectory=CONST.EMPTY,
-                 outputFileName=CONST.EMPTY,
-                 outputFormat=CONST.EMPTY,
-                 keepGeneratedScribusFiles=CONST.FALSE,
-                 csvSeparator=CONST.CSV_SEP,
-                 csvEncoding=CONST.CSV_ENCODING,
-                 singleOutput=CONST.FALSE,
-                 firstRow=CONST.EMPTY,
-                 lastRow=CONST.EMPTY,
-                 saveSettings=CONST.TRUE,
-                 closeDialog=CONST.FALSE):
+        scribusSourceFile=CONST.EMPTY,
+        dataSourceFile=CONST.EMPTY,
+        outputDirectory=CONST.EMPTY,
+        outputFileName=CONST.EMPTY,
+        outputFormat=CONST.EMPTY,
+        keepGeneratedScribusFiles=CONST.FALSE,
+        csvSeparator=CONST.CSV_SEP,
+        csvEncoding=CONST.CSV_ENCODING,
+        singleOutput=CONST.FALSE,
+        firstRow=CONST.EMPTY,
+        lastRow=CONST.EMPTY,
+        saveSettings=CONST.TRUE,
+        closeDialog=CONST.FALSE
+    ):
         self.__scribusSourceFile = scribusSourceFile
         self.__dataSourceFile = dataSourceFile
         self.__outputDirectory = outputDirectory
@@ -648,7 +691,9 @@ class GeneratorDataObject:
         self.__saveSettings = saveSettings
         self.__closeDialog = closeDialog
 
-    # Get
+
+    # Getters
+
     def getScribusSourceFile(self):
         return self.__scribusSourceFile
 
@@ -689,7 +734,8 @@ class GeneratorDataObject:
         return self.__closeDialog
 
 
-    # Set
+    # Setters
+
     def setScribusSourceFile(self, fileName):
         self.__scribusSourceFile = fileName
 
