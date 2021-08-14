@@ -134,7 +134,7 @@ dataObject = GeneratorDataObject(
     saveSettings=args.save)
 
 generator = ScribusGenerator(dataObject)
-log = generator.getLog()
+log = generator.get_log()
 log.debug("ScribusGenerator is starting generation for %s template(s)." %
           (str(len(args.infiles))))
 
@@ -142,10 +142,12 @@ for infile in args.infiles:
     dataObject.setScribusSourceFile(infile)
 
     if(args.load):
-        saved = generator.getSavedSettings()
+        saved = generator.get_saved_settings()
+
         if (saved):
             dataObject.loadFromString(saved)
             log.info("settings loaded from %s:" % (os.path.split(infile)[1]))
+
         else:
             log.warning("could not load settings from %s. using arguments and defaults instead" % (
                 os.path.split(infile)[1]))
