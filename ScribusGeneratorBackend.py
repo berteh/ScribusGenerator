@@ -146,64 +146,44 @@ class ScribusGenerator:
             # TODO: bug race condition: check if scribus reloads (or overwrites :/ ) when doc is opened, opt use API to add a script if there's an open doc.
             tree.write(scribus_file)
 
-        # Parse data file
+        # Run core functions
+        # (1) Parse data file & store its contents
         data = self.parse_data()
 
-        # Generate output file(s) from data
-        output_files = self.generate_templates(root, data)
+        # (2) Generate SLA file(s) from template, using parsed data
+        output_filenames = self.generate_templates(root, data)
 
-        # Export the generated Scribus Files as PDF
-        if(CONST.FORMAT_PDF == self.__dataObject.getOutputFormat()):
-            for output_file in output_files:
-                pdf_output_file = self.build_file_path(
-                    self.__dataObject.getOutputDirectory(), output_file, CONST.FILE_EXTENSION_PDF
-                )
-
+        # (3) Export them to PDF (if specified)
+        if self.__dataObject.getOutputFormat() == CONST.FORMAT_PDF:
+            for output_name in output_filenames:
+                # Build absolute paths for ..
+                # (1) .. SLA file
                 sla_output_file = self.build_file_path(
-                    self.__dataObject.getOutputDirectory(), output_file, CONST.FILE_EXTENSION_SCRIBUS
+                    self.__dataObject.getOutputDirectory(), output_name, CONST.FILE_EXTENSION_SCRIBUS
                 )
 
+                # (2) .. PDF file
+                pdf_output_file = self.build_file_path(
+                    self.__dataObject.getOutputDirectory(), output_name, CONST.FILE_EXTENSION_PDF
+                )
+
+                # Export template to PDF
                 self.export_pdf(sla_output_file, pdf_output_file)
 
                 logging.info('PDF file created: %s' % pdf_output_file)
 
-        # Cleanup generated Scribus template files
-        if(not (CONST.FORMAT_SLA == self.__dataObject.getOutputFormat()) and CONST.FALSE == self.__dataObject.getKeepGeneratedScribusFiles()):
-            for output_file in output_files:
+        # (4) Remove them (if specified)
+        if (not self.__dataObject.getOutputFormat() == CONST.FORMAT_SLA) and (self.__dataObject.getKeepGeneratedScribusFiles() == CONST.FALSE):
+            for output_name in output_filenames:
+                # Build absolute path for each SLA file
                 sla_output_file = self.build_file_path(
-                    self.__dataObject.getOutputDirectory(), output_file, CONST.FILE_EXTENSION_SCRIBUS
+                    self.__dataObject.getOutputDirectory(), output_name, CONST.FILE_EXTENSION_SCRIBUS
                 )
 
                 # Delete temporary files
                 os.remove(sla_output_file)
 
         return 1
-
-
-    def export_pdf(self, sla_file: str, pdf_file: str):
-        import scribus
-
-        d = os.path.dirname(pdf_file)
-        if not os.path.exists(d):
-            os.makedirs(d)
-
-        # Export to PDF
-        scribus.openDoc(sla_file)
-
-        pages_count = []
-
-        i = 0
-
-        while (i < scribus.pageCount()):
-            i = i + 1
-            pages_count.append(i)
-
-        pdf_exporter = scribus.PDFfile()
-        pdf_exporter.info = CONST.APP_NAME
-        pdf_exporter.file = str(pdf_file)
-        pdf_exporter.pages = pages_count
-        pdf_exporter.save()
-        scribus.closeDoc()
 
 
     # Part I : PARSING DATA
@@ -691,7 +671,7 @@ class ScribusGenerator:
         return shifted
 
 
-    def create_output_file(self, index, file_name, data, fill_count):
+    def create_output_file(self, index, filename, data, fill_count):
         # If the User has not set an Output File Name, an internal unique file name
         # will be generated which is the index of the loop.
         result = str(index).zfill(fill_count)
@@ -699,7 +679,7 @@ class ScribusGenerator:
         # Following characters are not allowed for File-Names on WINDOWS: < > ? " : | \ / *
         # Note / is still allowed in filename as it allows dynamic subdirectory in Linux (issue 102);
         # TODO: Check & fix for Windows
-        if file_name != CONST.EMPTY:
+        if filename != CONST.EMPTY:
             table = {
                 # ord(u'ä'): u'ae',
                 # ord(u'Ä'): u'Ae',
@@ -719,7 +699,7 @@ class ScribusGenerator:
                 ord('*'): '_'
             }
 
-            result = self.substitute_data(data, [file_name])
+            result = self.substitute_data(data, [filename])
 
             # TODO: ??
             # result = result
@@ -797,14 +777,50 @@ class ScribusGenerator:
         return d
 
 
+    # Part III : PDF EXPORT & CLEANUP
+
+    def export_pdf(self, sla_file: str, pdf_file: str):
+        import scribus
+
+        # Create filepath (if needed)
+        directory = os.path.dirname(pdf_file)
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        # Export PDF using Scribus API
+        # (1) Open template file
+        scribus.openDoc(sla_file)
+
+        # (2) Determine pages
+        i = 0
+        pages_count = []
+
+        while (i < scribus.pageCount()):
+            i += 1
+            pages_count.append(i)
+
+        # (3) Setup PDF exporter
+        pdf_exporter = scribus.PDFfile()
+        pdf_exporter.info = CONST.APP_NAME
+        pdf_exporter.file = str(pdf_file)
+        pdf_exporter.pages = pages_count
+
+        # (4) Save PDF file
+        pdf_exporter.save()
+
+        # (5) Close document
+        scribus.closeDoc()
+
+
     # UTILITIES
 
-    def build_file_path(self, directory: str, file_name: str, extension: str):
+    def build_file_path(self, directory: str, filename: str, extension: str):
         # Build an absolute path
         # Examples:
         # "C:/tmp/template.sla" on Windows
         # "/tmp/template.sla" on macOS & Unix-like OS
-        return directory + CONST.SEP_PATH + file_name + CONST.SEP_EXT + extension
+        return directory + CONST.SEP_PATH + filename + CONST.SEP_EXT + extension
 
 
     def get_log(self):
