@@ -742,39 +742,46 @@ class ScribusGenerator:
 
 
     def remove_empty_texts(self, root):
-        # *modifies* root ElementTree by removing empty text elements and their empty placeholders.
+        # *modifies* root `ElementTree` by removing empty text elements and their empty placeholders.
         # returns number of ITEXT elements deleted.
         #   1. clean text in which some variable-like text is not substituted (ie: known or unknown variable):
         #      <ITEXT CH="empty %VAR_empty% variable should not show" FONT="Arial Regular" />
         #   2. remove <ITEXT> with empty @CH and precedings <para/> if any
         #   3. remove any <PAGEOBJECT> that has no <ITEXT> child left
-        emptyXPath = "ITEXT[@CH='']"
-        d = 0
+        empty_xpath = "ITEXT[@CH='']"
+        removal_count = 0
 
-        # little obscure because its parent is needed to remove an element, and ElementTree has no parent() method.
-        for page in root.findall(".//%s/../.." % emptyXPath):
-            # collect emptyXPath and <para> that precede for removal, iter is need for lack of sibling-previous navigation in ElementTree
-            for po in page.findall(".//%s/.." % emptyXPath):
+        # little obscure because its parent is needed to remove an element, and `ElementTree` has no parent() method.
+        for page in root.findall('.//%s/../..' % empty_xpath):
+            # Collect empty_xpath and preceding <para> for removal
+            # Iteration is needed due to lack of sibling-previous navigation in `ElementTree`
+            for page_object in page.findall('.//%s/..' % empty_xpath):
+                # Initialize trash bin
                 trash = []
-                for pos, item in enumerate(po):
-                    if (item.tag == "ITEXT") and (item.get("CH") == ""):
-                        logging.debug(
-                            "cleaning 1 empty ITEXT and preceding linefeed (opt.)")
-                        if (CONST.REMOVE_CLEANED_ELEMENT_PREFIX and po[pos-1].tag == "para"):
-                            trash.append(pos-1)
-                        trash.append(pos)
-                        d += 1
+
+                for position, item in enumerate(page_object):
+                    if (item.tag == 'ITEXT') and (item.get('CH') == ''):
+                        logging.debug('Cleaning 1 empty ITEXT and preceding linefeed (opt.)')
+                        if (CONST.REMOVE_CLEANED_ELEMENT_PREFIX and page_object[position-1].tag == 'para'):
+                            trash.append(position - 1)
+
+                        trash.append(position)
+
+                        removal_count += 1
+
                 trash.reverse()
-                # remove trashed elements as stack (lifo order), to preserve positions validity
-                for i in trash:
-                    po.remove(po[i])
-                if (len(po.findall("ITEXT")) == 0):
-                    logging.debug("cleaning 1 empty PAGEOBJECT")
-                    page.remove(po)
 
-        logging.info("removed %d empty texts items" % d)
+                # Remove trashed elements as stack (lifo order), to preserve positions validity
+                for removed_position in trash:
+                    page_object.remove(page_object[removed_position])
 
-        return d
+                if len(page_object.findall('ITEXT')) == 0:
+                    logging.debug('Cleaning 1 empty PAGEOBJECT')
+                    page.remove(page_object)
+
+        logging.info('Removed %d empty texts items' % removal_count)
+
+        return removal_count
 
 
     # Part III : PDF EXPORT & CLEANUP
