@@ -70,8 +70,8 @@ examples:
  ''')
 parser.add_argument('infiles', nargs='+',
                     help='SLA file(s) to use as template(s) for the generation, wildcards are supported')
-parser.add_argument('-c', '--csvFile', default=None,
-                    help='CSV file containing the data to substitute in each template during generation. Default is scribus source file(s) name with "csv" extension instead of "sla". If csv file is not found, generation from this particular template is skipped.')
+parser.add_argument('-c', '--dataFile', default=None,
+                    help='CSV/JSON data file containing the data to substitute in each template during generation. Default is scribus source file(s) name with "csv" extension instead of "sla". If csv file is not found, generation from this particular template is skipped.')
 parser.add_argument('-d', '--csvDelimiter', default=CONST.CSV_SEP,
                     help='CSV field delimiter character. Default is comma: ","')
 parser.add_argument('-e', '--csvEncoding', default=CONST.CSV_ENCODING,
@@ -119,7 +119,7 @@ if ((not(args.outDir is None)) and (not os.path.exists(args.outDir))):
 # generate
 # Collect the settings made and build the Data Object
 dataObject = GeneratorDataObject(
-    dataSourceFile=ife(not(args.csvFile is None), args.csvFile, CONST.EMPTY),
+    dataSourceFile=ife(not(args.dataFile is None), args.dataFile, CONST.EMPTY),
     outputDirectory=ife(not(args.outDir is None), args.outDir, CONST.EMPTY),
     outputFileName=args.outName,    # is CONST.EMPTY by default
     # ife(args.fast, CONST.FORMAT_SLA, CONST.FORMAT_PDF),

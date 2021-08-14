@@ -37,7 +37,7 @@ For Scribus 1.5.6+, please [download the Python3 ScribusGenerator](https://githu
 
 We recommend running ScribusGenerator in MacOSX from the [command line](#running-scribus-generator-from-the-command-line), since the graphical interface of Scribus Generator requires Tkinter to be installed in your Python setup, which may be difficult under MacOSX.
 
-How to use Scribus Generator 
+How to use Scribus Generator
 ------
 
 ### Create your Scribus "template" file
@@ -98,7 +98,7 @@ Dynamic Images
 
 Images references can also be dynamically modified with **Scribus Generator**. See the [screencast video @6:10](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=370).
 
-All images supported by **Scribus** can be used. However, to work with ScribusGenerator, they must all be located in a single folder containing all images. This folder can be located anywhere on your PC. Duplicate any image in this folder and rename it ``%VAR_pic%`` (and similarly for any other variable name you need to use for pictures, ``%VAR_pic2%, %VAR_photo%``). 
+All images supported by **Scribus** can be used. However, to work with ScribusGenerator, they must all be located in a single folder containing all images. This folder can be located anywhere on your PC. Duplicate any image in this folder and rename it ``%VAR_pic%`` (and similarly for any other variable name you need to use for pictures, ``%VAR_pic2%, %VAR_photo%``).
 
 Add an Image Frame anywhere in the Scribus file (_«Scribus → Insert → Insert Image Frame»_) and open the dialog for getting an image (_e.g. right click Image Frame → Get Image..._ on selected frame). Select the needed "placeholder" picture.
 
@@ -117,10 +117,10 @@ There is unfortunately no way to include dynamically vector files (pdf or svg) w
 Dynamic Colors
 ---------------
 
-Colors can be dynamically replaced just like text. See the [screencast video @8:31](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=512), or simply 
+Colors can be dynamically replaced just like text. See the [screencast video @8:31](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=512), or simply
 
 1. edit the colors of your Scribus file (``edit > colours``) and rename the colors you want to replace with variable names (typically replace ``FromSVG#whatever`` with the now well known form ``%VAR_name%``).
-1. define the colors you want to use in the final document, and use their Scribus names as values in your color data field. 
+1. define the colors you want to use in the final document, and use their Scribus names as values in your color data field.
 
 ![Illustration: Replace colors dynamically](pic/SG-16.png)
 
@@ -164,7 +164,7 @@ Please note Scribus Generator v2.8 (from January 2019) changed the syntax of the
 to a less confusing name, as per [suggestion #118](https://github.com/berteh/ScribusGenerator/issues/118)
 
 Update your older templates manually, changing ``%VAR_NEXT-RECORD%`` to ``%SG_NEXT-RECORD%``, or all at once by calling, for instance:
-    
+
     python ./ConvertVAR_NEXT-RECORDToSG28.py ~/ScribusProjects/*/*.sla
 
 
@@ -189,10 +189,10 @@ To change the properties of a sub-element (such as one particular text line in a
 
 ### Selected examples of SGAttributes:
 
-| Name | Value | Parameter | RelationshipTo | Explanation 
+| Name | Value | Parameter | RelationshipTo | Explanation
 | --- | --- | --- | --- | --- |
 | ``FONT`` | ``%VAR_font%`` | ``SGAttribute`` | ``//ITEXT[2]`` | Font of the 2d text line in a frame, like "Arial Regular"
-| ``FONTSIZE`` | ``%VAR_size%`` | ``SGAttribute`` | ``//ITEXT`` | Text size of all text lines in a frame, like "14" 
+| ``FONTSIZE`` | ``%VAR_size%`` | ``SGAttribute`` | ``//ITEXT`` | Text size of all text lines in a frame, like "14"
 | ``LINESP`` | ``%VAR_spacing%`` | ``SGAttribute`` | ``//para[last()]`` | Fixed line spacing of the last paragraph in a frame, like "9.5"
 | ``YPOS`` | ``%VAR_top%`` | ``SGAttribute`` |  | Margin from the top for vertical element position, like "22.04"
 | ``ROT`` | ``%VAR_degrees%`` | ``SGAttribute`` |   | rotation of the current object, in degrees, [0 , 359]
@@ -206,13 +206,13 @@ Please note ScribusGenerator does not create the attribute, but only looks to up
 
 ### Changes in SGAttribute syntax
 
-Since ScribusGenerator v2.7 (released in April 2018), the syntax of the SGAttributes has been slightly changed to support Scribus 1.5.3. 
+Since ScribusGenerator v2.7 (released in April 2018), the syntax of the SGAttributes has been slightly changed to support Scribus 1.5.3.
 If you had templates written for an older version of the script kindly update your templates according to the documentation above.
 
 This can be done using the classical Scribus Editors windows, simply moving your values of ``Parameter`` to ``RelationshipTo``, and setting ``Parameter`` to ``SGAttribute``.
 
 If you have many such files, or attributes, a script is proposed to make this update automatically. Run it from the command line as follows, it creates automatically a backup of your old files:
- 
+
     python ./ConvertSGAttributesToSG27.py *.sla
 
 
@@ -231,8 +231,8 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -c CSVFILE, --csvFile CSVFILE
-                        CSV file containing the data to substitute in each
+  -c DATAFILE, --dataFile DATAFILE
+                        CSV/JSON file containing the data to substitute in each
                         template during generation. Default is scribus source
                         file(s) name with "csv" extension instead of "sla". If
                         csv file is not found, generation from this particular
@@ -266,23 +266,23 @@ requirements
     This program requires Python 2.7+
 
 examples:
-    
+
   ScribusGeneratorCLI.py my-template.sla
     generates Scribus (SLA) files for each line of 'my-template.csv'
-    by subsituting the provides values into 'my-template.sla' to the 
+    by subsituting the provides values into 'my-template.sla' to the
     current directory.
 
-  ScribusGeneratorCLI.py --outDir "/home/user/tmp" example/Business_Card.sla 
+  ScribusGeneratorCLI.py --outDir "/home/user/tmp" example/Business_Card.sla
     generates Scribus files for each line of example/Business_Card.csv
     in the "/home/user/tmp" subdirectory.
 
-  ScribusGeneratorCLI.py --outName "card_%VAR_email%"  */*.sla 
+  ScribusGeneratorCLI.py --outName "card_%VAR_email%"  */*.sla
     generates Scribus files for each sla file in any subdirectory
     that has a csv file with a similar name in the same directory.
     Generated files will have a name constructed from the "email" field
     data, and are stored in their respective sla file directory.
 
-  ScribusGeneratorCLI.py --single -c translations.csv -n doc_  lang/*.sla 
+  ScribusGeneratorCLI.py --single -c translations.csv -n doc_  lang/*.sla
     generates a single Scribus file for each sla file in the lang/ subdirectory
     using all rows of the translations.csv data file.
     Generated files will have a name constructed from the "doc_" prefix
@@ -323,7 +323,7 @@ Kindly copy-paste the relevant (usually last) lines of your ```.scribusGenerator
 
 ### Variable Names
 
-Try to use plain word characters (``A-Za-a0-9_``) for variable names, with no whitespaces or other special characters (like '&'). E.g. use ``%VAR_first_name%`` and ``%VAR_zip_code%`` instead of ``%VAR_first name%`` and ``%VAR_&zip#code%``. The columns of the data file (CSV) then would be ``first_name`` and ``zip_code``.  
+Try to use plain word characters (``A-Za-a0-9_``) for variable names, with no whitespaces or other special characters (like '&'). E.g. use ``%VAR_first_name%`` and ``%VAR_zip_code%`` instead of ``%VAR_first name%`` and ``%VAR_&zip#code%``. The columns of the data file (CSV) then would be ``first_name`` and ``zip_code``.
 
 This is only important for variable *names* in the scribus file and *column names* of the data file. The data FIELDS (the rows of the CVS) of course may contain ANY characters.
 
@@ -337,17 +337,17 @@ To use data from a database instead a (manual) spreadsheet you can simply export
 
 or
 
-    mysql  -u myuser -p  mydatabase -e 
-    "select field1 , field2 FROM mytable INTO OUTFILE 
+    mysql  -u myuser -p  mydatabase -e
+    "select field1 , field2 FROM mytable INTO OUTFILE
     '/tmp/myfilename.csv' FIELDS TERMINATED BY ','
     ENCLOSED BY '\"' LINES TERMINATED BY '\n' "
-    
+
 More over INTO OUTFILE at http://dev.mysql.com/doc/refman/5.1/en/select.html
 
 #### Postgresql
 
 toggle unaligned output with the ```\a``` switch, activate a comma as a separator with ```\f ,```. Send output to a file with ```\o myfile.csv```, then query your database.
- 
+
 #### Sqlite3
 
 You can use ```sqlite3 -csv``` in command line or ```.mode csv``` in sqlite's interactive shell
@@ -378,8 +378,8 @@ Copyright <br/>
 (c) 2011, Ekkehard Will (www.ekkehardwill.de)<br/>
 (c) 2014-2021, Berteh (https://github.com/berteh/)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: 
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. 
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 The software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealing in the software.

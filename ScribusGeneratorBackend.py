@@ -976,7 +976,7 @@ class GeneratorDataObject:
         return json.dumps({
             '_comment': "this is an automated placeholder for ScribusGenerator default settings. more info at https://github.com/berteh/ScribusGenerator/. modify at your own risks.",
             # 'scribusfile':self.__scribusSourceFile NOT saved
-            'csvfile': self.__dataSourceFile,
+            'datafile': self.__dataSourceFile,
             'outdir': self.__outputDirectory,
             'outname': self.__outputFileName,
             'outformat': self.__outputFormat,
@@ -998,7 +998,7 @@ class GeneratorDataObject:
             if v == None:
                 j[k] = CONST.EMPTY
         # self.__scribusSourceFile NOT loaded
-        self.__dataSourceFile = j['csvfile']
+        self.__dataSourceFile = j['datafile']
         self.__outputDirectory = j['outdir']
         self.__outputFileName = j['outname']
         self.__outputFormat = j['outformat']
