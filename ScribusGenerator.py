@@ -205,7 +205,7 @@ class GeneratorControl:
             scribusSourceFile=slaFile
         )
         generator = ScribusGenerator(dataObject)
-        saved = generator.getSavedSettings()
+        saved = generator.get_saved_settings()
         if (saved):
             dataObject.loadFromString(saved)
             # self.__scribusSourceFileEntryVariable = StringVar() #not loaded
