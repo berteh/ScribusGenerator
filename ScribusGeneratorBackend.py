@@ -401,7 +401,7 @@ class ScribusGenerator:
                         version
                     )
 
-                    if index != min(records_in_document, data_count):
+                    if index > records_in_document:
                         document_element.extend(shifted_elements)
 
                 # .. otherwise, write one of multiple SLA files
@@ -419,10 +419,6 @@ class ScribusGenerator:
 
         # Clean & write single SLA file (merge-mode only)
         if merge_mode:
-            output_element = ET.fromstring(output)
-            org_document_element = output_element.find('DOCUMENT')
-            output_element.remove(org_document_element)
-            output_element.insert(1, document_element)
             output_file = self.create_output_file(
                 index, self.__dataObject.getOutputFileName(), [], len(str(data_count))
             )
@@ -526,9 +522,13 @@ class ScribusGenerator:
                 continue
 
             # Initialize data record replacements
+            if len(data) > index:
+                replaced_strings = data[index]
+            else:
+                replaced_strings = [""] * len(data)
             replacements = dict(list(zip(
                 ['%VAR_' + header + '%' for header in self.headers],
-                data[index]
+                replaced_strings
             )))
 
             logging.debug('Replacements used: %s' % replacements)
