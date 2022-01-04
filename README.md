@@ -87,7 +87,7 @@ In the script dialog you can configure the input and output settings for **Scrib
 | **Output File Name** | You can use the same variables as defined in the Scribus File/Data File. You can also mix the variables with other characters. If you leave the field empty an index will be used. The index/resulting files will be sorted according to the occurrence of rows in the Data File. |
 | **Save Settings** | Store the current Scribus Generator settings in the source SLA file, for future use. |
 | **Merge in Single File** | Select to  generate a single output (SLA and/or PDF) file that combines all data rows. |
-| **Ouput Format** | Choose the Output Format of the generated files, either PDF or Scribus. |
+| **Output Format** | Choose the Output Format of the generated files, either PDF or Scribus. |
 | **Keep Scribus Files** | Select to keep the generated Scribus Files. Otherwise they will be deleted after pdf generation. This option has no effect if you choose Scribus output format.|
 
 Additional (more technical) options can be set to tailor the automatic recording of Scribus Generators actions in your system by editing the ```logging.conf``` file. You may, for instance, want to move the location of the log file (```scribusGenerator.log``` by default) to a directory that does not need admin rights to edit in Windows  (```C:\tmp\scribusGenerator.log```), or replace file-logging with your default system logger (SysLogHandler in Linux, NTEventLogHandler on Windows). All settings (and more) are described in the [Python logging documentation](https://docs.python.org/2/howto/logging.html).
@@ -124,7 +124,7 @@ Colors can be dynamically replaced just like text. See the [screencast video @8:
 
 ![Illustration: Replace colors dynamically](pic/SG-16.png)
 
-Use this together with the many reknown color palettes directly included in Scribus to make your documents design rich and appealing !
+Use this together with the many renown color palettes directly included in Scribus to make your documents design rich and appealing !
 
 Dynamic Links
 --------------
@@ -132,7 +132,7 @@ Dynamic Links
 A clickable (web)link can be inserted on nearly any scribus object in 2 steps:
 
 1. ``right-click > PDF Options``, activate ``Is PDF Annotation``
-1. ``right-click > PDF Options > Annotation Properties``, select type ``External Web-Link`` and enter the target url, where you can obviously use variables to be subsituted too, as illustrated below.
+1. ``right-click > PDF Options > Annotation Properties``, select type ``External Web-Link`` and enter the target url, where you can obviously use variables to be substituted too, as illustrated below.
 
 ![Illustration: Include dynamic clickable (web)links](pic/weblink_pdfannotation.png)
 
@@ -141,7 +141,7 @@ Merged output - single document
 ------------
 Instead of generating a single (sla or pdf) file for each data row, you can generate a single file that merges all these. Simply select the option accordingly to get the result illustrated below in a single Scribus (and/or pdf) file. If your document layout has multiple pages (double sided, or folded leaflet), it is important for Scribus Generator to be able to merge the files that your template has the same number of pages (or a multiple thereof). For instance, for a 3-fold document, your source sla should have 3, 6, or 9 pages (or any multiple of 3).
 
-![Illustration: Single ouput to merge all generated files](pic/mergedSLA.png)
+![Illustration: Single output to merge all generated files](pic/mergedSLA.png)
 
 
 Multiple records on a single page
@@ -197,7 +197,7 @@ To change the properties of a sub-element (such as one particular text line in a
 | ``YPOS`` | ``%VAR_top%`` | ``SGAttribute`` |  | Margin from the top for vertical element position, like "22.04"
 | ``ROT`` | ``%VAR_degrees%`` | ``SGAttribute`` |   | rotation of the current object, in degrees, [0 , 359]
 
-Please note ScribusGenerator does not create the attribute, but only looks to update its value. So you may need to slighlty rotate the object (just put any value but 0 in the rotation box, it will be replaced anyway), to make sure the ``ROT`` attribute is indeed used by Scribus when saving the file.
+Please note ScribusGenerator does not create the attribute, but only looks to update its value. So you may need to slightly rotate the object (just put any value but 0 in the rotation box, it will be replaced anyway), to make sure the ``ROT`` attribute is indeed used by Scribus when saving the file.
 
 
 [1]: # "SGAttribute is short for 'Scribus Generator Attribute'"
@@ -220,7 +220,7 @@ Running Scribus Generator from the command line
 ---------
 It is possible to run Scribus Generator from the command line, and it's fast! Great to automate your workflow or integrate with other tools.
 
-Please note only the SLA generation works from the command line. PDF generation is at the moment not suppoted from the Scribus Generator command line.
+Please note only the SLA generation works from the command line. PDF generation is at the moment not supported from the Scribus Generator command line.
 
 Find all needed information from the script help: ``./ScribusGeneratorCLI.py --help``
 
@@ -269,7 +269,7 @@ examples:
 
   ScribusGeneratorCLI.py my-template.sla
     generates Scribus (SLA) files for each line of 'my-template.csv'
-    by subsituting the provides values into 'my-template.sla' to the
+    by substituting the provides values into 'my-template.sla' to the 
     current directory.
 
   ScribusGeneratorCLI.py --outDir "/home/user/tmp" example/Business_Card.sla

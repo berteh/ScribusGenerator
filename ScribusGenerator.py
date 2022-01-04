@@ -40,7 +40,7 @@ import traceback
 
 
 class GeneratorControl:
-    # Controler being the bridge between UI and Logic.
+    # Controller being the bridge between UI and Logic.
     def __init__(self, root):
         self.__dataSourceFileEntryVariable = StringVar()
         self.__scribusSourceFileEntryVariable = StringVar()
