@@ -1,93 +1,95 @@
-<SCRIBUSUTF8NEW Version="1.5.2">
-    <DOCUMENT ANZPAGES="2" PAGEWIDTH="595.275590551181" PAGEHEIGHT="841.889763779528" BORDERLEFT="40" BORDERRIGHT="40" BORDERTOP="40" BORDERBOTTOM="40" PRESET="0" BleedTop="0" BleedLeft="0" BleedRight="0" BleedBottom="0" ORIENTATION="0" PAGESIZE="A4" FIRSTNUM="1" BOOK="1" AUTOSPALTEN="1" ABSTSPALTEN="11" UNITS="1" DFONT="Arial Regular" DSIZE="12" DCOL="1" DGAP="0" TabFill="" TabWidth="36" AUTHOR="" COMMENTS="" KEYWORDS="" PUBLISHER="" DOCDATE="" DOCTYPE="" DOCFORMAT="" DOCIDENT="" DOCSOURCE="" DOCLANGINFO="" DOCRELATION="" DOCCOVER="" DOCRIGHTS="" DOCCONTRIB="" TITLE="" SUBJECT="" VHOCH="33" VHOCHSC="66" VTIEF="33" VTIEFSC="66" VKAPIT="75" BASEGRID="14.4" BASEO="0" AUTOL="100" UnderlinePos="-1" UnderlineWidth="-1" StrikeThruPos="-1" StrikeThruWidth="-1" GROUPC="13" HCMS="0" DPSo="0" DPSFo="0" DPuse="0" DPgam="0" DPbla="1" DPPr="Fogra27L CMYK Coated Press" DPIn="sRGB IEC61966-2.1" DPInCMYK="Fogra27L CMYK Coated Press" DPIn2="sRGB IEC61966-2.1" DPIn3="Fogra27L CMYK Coated Press" DISc="1" DIIm="0" ALAYER="0" LANGUAGE="en_GB" MINWORDLEN="3" HYCOUNT="2" AUTOMATIC="1" AUTOCHECK="0" GUIDELOCK="0" SnapToGuides="1" SnapToGrid="0" SnapToElement="0" MINGRID="20.0012598425197" MAJGRID="100.00062992126" SHOWGRID="0" SHOWGUIDES="1" showcolborders="1" previewMode="0" SHOWFRAME="1" SHOWControl="0" SHOWLAYERM="0" SHOWMARGIN="1" SHOWBASE="0" SHOWPICT="1" SHOWLINK="0" rulerMode="1" showrulers="1" showBleed="1" rulerXoffset="0" rulerYoffset="0" GuideRad="10" GRAB="4" POLYC="4" POLYF="0.502045814642449" POLYR="0" POLYIR="0" POLYCUR="0" POLYOCUR="0" POLYS="0" arcStartAngle="30" arcSweepAngle="300" spiralStartAngle="0" spiralEndAngle="1080" spiralFactor="1.2" AutoSave="1" AutoSaveTime="600000" AutoSaveCount="1" AutoSaveKeep="0" AUtoSaveInDocDir="1" AutoSaveDir="" ScratchBottom="20.0012598425197" ScratchLeft="100.00062992126" ScratchRight="100.00062992126" ScratchTop="20.0012598425197" GapHorizontal="0" GapVertical="39.9996850393701" StartArrow="0" EndArrow="0" PEN="Black" BRUSH="None" PENLINE="Black" PENTEXT="Black" StrokeText="Black" TextBackGround="None" TextLineColor="None" TextBackGroundShade="100" TextLineShade="100" TextPenShade="100" TextStrokeShade="100" STIL="1" STILLINE="1" WIDTH="1" WIDTHLINE="1" PENSHADE="100" LINESHADE="100" BRUSHSHADE="100" CPICT="None" PICTSHADE="100" CSPICT="None" PICTSSHADE="100" PICTSCX="1" PICTSCY="1" PSCALE="1" PASPECT="1" EmbeddedPath="0" HalfRes="1" dispX="10.0006299212598" dispY="10.0006299212598" constrain="15" MINORC="#00ff00" MAJORC="#00ff00" GuideC="#000080" BaseC="#c0c0c0" renderStack="0 1 2 3 4" GridType="0" PAGEC="#ffffff" MARGC="#0000ff" RANDF="0" currentProfile="PostScript" calligraphicPenFillColor="Black" calligraphicPenLineColor="Black" calligraphicPenFillColorShade="100" calligraphicPenLineColorShade="100" calligraphicPenLineWidth="1" calligraphicPenAngle="0" calligraphicPenWidth="10" calligraphicPenStyle="1">
+<SCRIBUSUTF8NEW Version="1.5.6.1">
+    <DOCUMENT ANZPAGES="2" PAGEWIDTH="595.275590551181" PAGEHEIGHT="841.889763779528" BORDERLEFT="40" BORDERRIGHT="40" BORDERTOP="40" BORDERBOTTOM="40" PRESET="0" BleedTop="0" BleedLeft="0" BleedRight="0" BleedBottom="0" ORIENTATION="0" PAGESIZE="A4" FIRSTNUM="1" BOOK="1" AUTOSPALTEN="1" ABSTSPALTEN="11" UNITS="1" DFONT="Arial Regular" DSIZE="12" DCOL="1" DGAP="0" TabFill="" TabWidth="36" TextDistLeft="0" TextDistRight="0" TextDistBottom="0" TextDistTop="0" AUTHOR="" COMMENTS="" KEYWORDS="" PUBLISHER="" DOCDATE="" DOCTYPE="" DOCFORMAT="" DOCIDENT="" DOCSOURCE="" DOCLANGINFO="" DOCRELATION="" DOCCOVER="" DOCRIGHTS="" DOCCONTRIB="" TITLE="" SUBJECT="" VHOCH="33" VHOCHSC="66" VTIEF="33" VTIEFSC="66" VKAPIT="75" BASEGRID="14.4" BASEO="0" AUTOL="100" UnderlinePos="-1" UnderlineWidth="-1" StrikeThruPos="-1" StrikeThruWidth="-1" GROUPC="12" HCMS="0" DPSo="0" DPSFo="0" DPuse="0" DPgam="0" DPbla="1" DPPr="Fogra27L CMYK Coated Press" DPIn="sRGB IEC61966-2.1" DPInCMYK="Fogra27L CMYK Coated Press" DPIn2="sRGB IEC61966-2.1" DPIn3="Fogra27L CMYK Coated Press" DISc="1" DIIm="0" ALAYER="0" LANGUAGE="en_GB" AUTOMATIC="1" AUTOCHECK="0" GUIDELOCK="0" SnapToGuides="1" SnapToGrid="0" SnapToElement="0" MINGRID="20.0012598425197" MAJGRID="100.00062992126" SHOWGRID="0" SHOWGUIDES="1" showcolborders="1" SHOWFRAME="1" SHOWControl="0" SHOWLAYERM="0" SHOWMARGIN="1" SHOWBASE="0" SHOWPICT="1" SHOWLINK="0" rulerMode="1" showrulers="1" showBleed="1" rulerXoffset="0" rulerYoffset="0" GuideRad="10" GRAB="4" POLYC="4" POLYF="0.502045814642449" POLYR="0" POLYIR="0" POLYCUR="0" POLYOCUR="0" POLYS="0" arcStartAngle="30" arcSweepAngle="300" spiralStartAngle="0" spiralEndAngle="1080" spiralFactor="1.2" AutoSave="1" AutoSaveTime="600000" AutoSaveCount="1" AutoSaveKeep="0" AUtoSaveInDocDir="1" AutoSaveDir="" ScratchBottom="20.0012598425197" ScratchLeft="100.00062992126" ScratchRight="100.00062992126" ScratchTop="20.0012598425197" GapHorizontal="0" GapVertical="39.9996850393701" StartArrow="0" EndArrow="0" PEN="Black" BRUSH="None" PENLINE="Black" PENTEXT="Black" StrokeText="Black" TextBackGround="None" TextLineColor="None" TextBackGroundShade="100" TextLineShade="100" TextPenShade="100" TextStrokeShade="100" STIL="1" STILLINE="1" WIDTH="1" WIDTHLINE="1" PENSHADE="100" LINESHADE="100" BRUSHSHADE="100" CPICT="None" PICTSHADE="100" CSPICT="None" PICTSSHADE="100" PICTSCX="1" PICTSCY="1" PSCALE="1" PASPECT="1" EmbeddedPath="0" HalfRes="1" dispX="10.0006299212598" dispY="10.0006299212598" constrain="15" MINORC="#00ff00" MAJORC="#00ff00" GuideC="#000080" BaseC="#c0c0c0" renderStack="0 1 2 3 4" GridType="0" PAGEC="#ffffff" MARGC="#0000ff" RANDF="0" currentProfile="PostScript" calligraphicPenFillColor="Black" calligraphicPenLineColor="Black" calligraphicPenFillColorShade="100" calligraphicPenLineColorShade="100" calligraphicPenLineWidth="1" calligraphicPenAngle="0" calligraphicPenWidth="10" calligraphicPenStyle="1">
         <CheckProfile Name="PDF 1.3" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="1" minResolution="144" maxResolution="2400" checkAnnotations="0" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="1" checkFontIsOpenType="1" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1" />
         <CheckProfile Name="PDF 1.4" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="0" minResolution="144" maxResolution="2400" checkAnnotations="0" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="1" checkFontIsOpenType="1" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1" />
         <CheckProfile Name="PDF 1.5" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="0" minResolution="144" maxResolution="2400" checkAnnotations="0" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="1" checkFontIsOpenType="1" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1" />
+        <CheckProfile Name="PDF 1.6" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="0" minResolution="144" maxResolution="2400" checkAnnotations="0" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="1" checkFontIsOpenType="0" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1" />
         <CheckProfile Name="PDF/X-1a" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="1" minResolution="144" maxResolution="2400" checkAnnotations="1" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="1" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="1" checkFontIsOpenType="1" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1" />
         <CheckProfile Name="PDF/X-3" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="1" minResolution="144" maxResolution="2400" checkAnnotations="1" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="1" checkFontNotEmbedded="1" checkFontIsOpenType="1" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1" />
         <CheckProfile Name="PDF/X-4" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="0" minResolution="144" maxResolution="2400" checkAnnotations="1" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="1" checkFontNotEmbedded="1" checkFontIsOpenType="0" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1" />
         <CheckProfile Name="PostScript" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="1" minResolution="144" maxResolution="2400" checkAnnotations="0" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="0" checkFontIsOpenType="0" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1" />
-        <JAVA NAME="ScribusGeneratorDefaultSettings" SCRIPT="{&quot;_comment&quot;: &quot;this is an automated placeholder for ScribusGenerator default settings. more info at https://github.com/berteh/ScribusGenerator/. modify at your own risks.&quot;, &quot;close&quot;: 1, &quot;csvfile&quot;: &quot;/mnt/big/Documents/devel/ScribusGenerator3/example/Business_Card.csv&quot;, &quot;from&quot;: &quot;&quot;, &quot;keepsla&quot;: 0, &quot;outdir&quot;: &quot;/home/bertrand/Documents/devel/ScribusGenerator3/example&quot;, &quot;outformat&quot;: &quot;Scribus&quot;, &quot;outname&quot;: &quot;test3.sla&quot;, &quot;separator&quot;: &quot;,&quot;, &quot;single&quot;: 0, &quot;to&quot;: &quot;&quot;}" /><COLOR NAME=" Aluminum 1" RGB="#eeeeec" />
-        <COLOR NAME=" Aluminum 2" RGB="#d3d7cf" />
-        <COLOR NAME=" Aluminum 3" RGB="#babdb6" />
-        <COLOR NAME=" Aluminum 4" RGB="#888a85" />
-        <COLOR NAME=" Aluminum 5" RGB="#555753" />
-        <COLOR NAME=" Aluminum 6" RGB="#2e3436" />
-        <COLOR NAME=" Blue 1" RGB="#bfceea" />
-        <COLOR NAME=" Blue 2" RGB="#4374b7" />
-        <COLOR NAME=" Blue 3" RGB="#214184" />
-        <COLOR NAME=" Blue 4" RGB="#102548" />
-        <COLOR NAME=" Butter 1" RGB="#fce94f" />
-        <COLOR NAME=" Butter 2" RGB="#edd400" />
-        <COLOR NAME=" Butter 3" RGB="#c4a000" />
-        <COLOR NAME=" CC Green 1" RGB="#e0e4e1" />
-        <COLOR NAME=" CC Green 2" RGB="#abb8af" />
-        <COLOR NAME=" CC Green 3" RGB="#43594a" />
-        <COLOR NAME=" CC Green 4" RGB="#2a372f" />
-        <COLOR NAME=" Chameleon 1" RGB="#8ae234" />
-        <COLOR NAME=" Chameleon 2" RGB="#73d216" />
-        <COLOR NAME=" Chameleon 3" RGB="#4e9a06" />
-        <COLOR NAME=" Chocolate 1" RGB="#e9b96e" />
-        <COLOR NAME=" Chocolate 2" RGB="#c17d11" />
-        <COLOR NAME=" Chocolate 3" RGB="#8f5902" />
-        <COLOR NAME=" Gray 1" RGB="#ededee" />
-        <COLOR NAME=" Gray 2" RGB="#dcddde" />
-        <COLOR NAME=" Gray 3" RGB="#a7a9ac" />
-        <COLOR NAME=" Gray 4" RGB="#636466" />
-        <COLOR NAME=" Gray 5" RGB="#393839" />
-        <COLOR NAME=" Gray 6" RGB="#121513" />
-        <COLOR NAME=" Green 1" RGB="#e4eba0" />
-        <COLOR NAME=" Green 2" RGB="#98c807" />
-        <COLOR NAME=" Green 3" RGB="#627d0f" />
-        <COLOR NAME=" Green 4" RGB="#3d5024" />
-        <COLOR NAME=" Magenta 1" RGB="#f7b2cc" />
-        <COLOR NAME=" Magenta 2" RGB="#b62b6e" />
-        <COLOR NAME=" Magenta 3" RGB="#7b1b53" />
-        <COLOR NAME=" Magenta 4" RGB="#4f1035" />
-        <COLOR NAME=" Orange 1" RGB="#fcaf3e" />
-        <COLOR NAME=" Orange 2" RGB="#f57900" />
-        <COLOR NAME=" Orange 3" RGB="#ce5c00" />
-        <COLOR NAME=" Orange 4" RGB="#543d03" />
-        <COLOR NAME=" Plum 1" RGB="#ad7fa8" />
-        <COLOR NAME=" Plum 2" RGB="#75507b" />
-        <COLOR NAME=" Plum 3" RGB="#5c3566" />
-        <COLOR NAME=" Purple 1" RGB="#d6b4d6" />
-        <COLOR NAME=" Purple 2" RGB="#9628c6" />
-        <COLOR NAME=" Purple 3" RGB="#662978" />
-        <COLOR NAME=" Purple 4" RGB="#42194f" />
-        <COLOR NAME=" Red 1" RGB="#fab499" />
-        <COLOR NAME=" Red 2" RGB="#d13814" />
-        <COLOR NAME=" Red 3" RGB="#912b10" />
-        <COLOR NAME=" Red 4" RGB="#5a1c0e" />
-        <COLOR NAME=" Sand 1" RGB="#ebe0b2" />
-        <COLOR NAME=" Sand 2" RGB="#b1a24a" />
-        <COLOR NAME=" Sand 3" RGB="#6d6118" />
-        <COLOR NAME=" Sand 4" RGB="#44411f" />
-        <COLOR NAME=" Scarlet Red 1" RGB="#ef2929" />
-        <COLOR NAME=" Scarlet Red 2" RGB="#cc0000" />
-        <COLOR NAME=" Scarlet Red 3" RGB="#a40000" />
-        <COLOR NAME=" Sky Blue 1" RGB="#729fcf" />
-        <COLOR NAME=" Sky Blue 2" RGB="#3465a4" />
-        <COLOR NAME=" Sky Blue 3" RGB="#204a87" />
-        <COLOR NAME=" Yellow 1" RGB="#fff3a2" />
-        <COLOR NAME=" Yellow 2" RGB="#edd812" />
-        <COLOR NAME=" Yellow 3" RGB="#b09a11" />
-        <COLOR NAME=" Yellow 4" RGB="#4e4917" />
-        <COLOR NAME="%VAR_color1%" RGB="#98c807" />
-        <COLOR NAME="Black" CMYK="#000000ff" />
-        <COLOR NAME="Blue" RGB="#0000ff" />
-        <COLOR NAME="Blue1" RGB="#4374b7" />
-        <COLOR NAME="Cool Black" CMYK="#990000ff" />
-        <COLOR NAME="Cyan" CMYK="#ff000000" />
-        <COLOR NAME="Green" RGB="#00ff00" />
-        <COLOR NAME="Magenta" CMYK="#00ff0000" />
-        <COLOR NAME="Orange1" RGB="#ce5c00" />
-        <COLOR NAME="Red" RGB="#ff0000" />
-        <COLOR NAME="Registration" CMYK="#ffffffff" Register="1" />
-        <COLOR NAME="Rich Black" CMYK="#996666ff" />
-        <COLOR NAME="Warm Black" CMYK="#00994cff" />
-        <COLOR NAME="White" CMYK="#00000000" />
-        <COLOR NAME="Yellow" CMYK="#0000ff00" />
+        <JAVA NAME="ScribusGeneratorDefaultSettings" SCRIPT="{&quot;_comment&quot;: &quot;this is an automated placeholder for ScribusGenerator default settings. more info at https://github.com/berteh/ScribusGenerator/. modify at your own risks.&quot;, &quot;close&quot;: 0, &quot;csvencoding&quot;: &quot;utf-8&quot;, &quot;datafile&quot;: &quot;/home/bertrand/devel/ScribusGenerator/example/Next_Record.csv&quot;, &quot;from&quot;: &quot;&quot;, &quot;keepsla&quot;: 0, &quot;outdir&quot;: &quot;/home/bertrand/devel/ScribusGenerator/example&quot;, &quot;outformat&quot;: &quot;Scribus&quot;, &quot;outname&quot;: &quot;listing-%VAR_COUNT%-%VAR_email%&quot;, &quot;separator&quot;: &quot;,&quot;, &quot;single&quot;: 0, &quot;to&quot;: &quot;&quot;}" />
+        <COLOR NAME=" Aluminum 1" SPACE="RGB" R="238" G="238" B="236" />
+        <COLOR NAME=" Aluminum 2" SPACE="RGB" R="211" G="215" B="207" />
+        <COLOR NAME=" Aluminum 3" SPACE="RGB" R="186" G="189" B="182" />
+        <COLOR NAME=" Aluminum 4" SPACE="RGB" R="136" G="138" B="133" />
+        <COLOR NAME=" Aluminum 5" SPACE="RGB" R="85" G="87" B="83" />
+        <COLOR NAME=" Aluminum 6" SPACE="RGB" R="46" G="52" B="54" />
+        <COLOR NAME=" Blue 4" SPACE="RGB" R="16" G="37" B="72" />
+        <COLOR NAME=" Blue1" SPACE="RGB" R="191" G="206" B="234" />
+        <COLOR NAME=" Blue2" SPACE="RGB" R="67" G="116" B="183" />
+        <COLOR NAME=" Blue3" SPACE="RGB" R="33" G="65" B="132" />
+        <COLOR NAME=" Butter 1" SPACE="RGB" R="252" G="233" B="79" />
+        <COLOR NAME=" Butter 2" SPACE="RGB" R="237" G="212" B="0" />
+        <COLOR NAME=" Butter 3" SPACE="RGB" R="196" G="160" B="0" />
+        <COLOR NAME=" CC Green 1" SPACE="RGB" R="224" G="228" B="225" />
+        <COLOR NAME=" CC Green 2" SPACE="RGB" R="171" G="184" B="175" />
+        <COLOR NAME=" CC Green 3" SPACE="RGB" R="67" G="89" B="74" />
+        <COLOR NAME=" CC Green 4" SPACE="RGB" R="42" G="55" B="47" />
+        <COLOR NAME=" Chameleon 1" SPACE="RGB" R="138" G="226" B="52" />
+        <COLOR NAME=" Chameleon 2" SPACE="RGB" R="115" G="210" B="22" />
+        <COLOR NAME=" Chameleon 3" SPACE="RGB" R="78" G="154" B="6" />
+        <COLOR NAME=" Chocolate 1" SPACE="RGB" R="233" G="185" B="110" />
+        <COLOR NAME=" Chocolate 2" SPACE="RGB" R="193" G="125" B="17" />
+        <COLOR NAME=" Chocolate 3" SPACE="RGB" R="143" G="89" B="2" />
+        <COLOR NAME=" Gray 1" SPACE="RGB" R="237" G="237" B="238" />
+        <COLOR NAME=" Gray 2" SPACE="RGB" R="220" G="221" B="222" />
+        <COLOR NAME=" Gray 3" SPACE="RGB" R="167" G="169" B="172" />
+        <COLOR NAME=" Gray 4" SPACE="RGB" R="99" G="100" B="102" />
+        <COLOR NAME=" Gray 5" SPACE="RGB" R="57" G="56" B="57" />
+        <COLOR NAME=" Gray 6" SPACE="RGB" R="18" G="21" B="19" />
+        <COLOR NAME=" Green 1" SPACE="RGB" R="228" G="235" B="160" />
+        <COLOR NAME=" Green 2" SPACE="RGB" R="152" G="200" B="7" />
+        <COLOR NAME=" Green 3" SPACE="RGB" R="98" G="125" B="15" />
+        <COLOR NAME=" Green 4" SPACE="RGB" R="61" G="80" B="36" />
+        <COLOR NAME=" Magenta 1" SPACE="RGB" R="247" G="178" B="204" />
+        <COLOR NAME=" Magenta 2" SPACE="RGB" R="182" G="43" B="110" />
+        <COLOR NAME=" Magenta 3" SPACE="RGB" R="123" G="27" B="83" />
+        <COLOR NAME=" Magenta 4" SPACE="RGB" R="79" G="16" B="53" />
+        <COLOR NAME=" Orange 4" SPACE="RGB" R="84" G="61" B="3" />
+        <COLOR NAME=" Orange1" SPACE="RGB" R="252" G="175" B="62" />
+        <COLOR NAME=" Orange2" SPACE="RGB" R="245" G="121" B="0" />
+        <COLOR NAME=" Orange3" SPACE="RGB" R="206" G="92" B="0" />
+        <COLOR NAME=" Plum 1" SPACE="RGB" R="173" G="127" B="168" />
+        <COLOR NAME=" Plum 2" SPACE="RGB" R="117" G="80" B="123" />
+        <COLOR NAME=" Plum 3" SPACE="RGB" R="92" G="53" B="102" />
+        <COLOR NAME=" Purple 1" SPACE="RGB" R="214" G="180" B="214" />
+        <COLOR NAME=" Purple 2" SPACE="RGB" R="150" G="40" B="198" />
+        <COLOR NAME=" Purple 3" SPACE="RGB" R="102" G="41" B="120" />
+        <COLOR NAME=" Purple 4" SPACE="RGB" R="66" G="25" B="79" />
+        <COLOR NAME=" Red 1" SPACE="RGB" R="250" G="180" B="153" />
+        <COLOR NAME=" Red 2" SPACE="RGB" R="209" G="56" B="20" />
+        <COLOR NAME=" Red 3" SPACE="RGB" R="145" G="43" B="16" />
+        <COLOR NAME=" Red 4" SPACE="RGB" R="90" G="28" B="14" />
+        <COLOR NAME=" Sand 1" SPACE="RGB" R="235" G="224" B="178" />
+        <COLOR NAME=" Sand 2" SPACE="RGB" R="177" G="162" B="74" />
+        <COLOR NAME=" Sand 3" SPACE="RGB" R="109" G="97" B="24" />
+        <COLOR NAME=" Sand 4" SPACE="RGB" R="68" G="65" B="31" />
+        <COLOR NAME=" Scarlet Red 1" SPACE="RGB" R="239" G="41" B="41" />
+        <COLOR NAME=" Scarlet Red 2" SPACE="RGB" R="204" G="0" B="0" />
+        <COLOR NAME=" Scarlet Red 3" SPACE="RGB" R="164" G="0" B="0" />
+        <COLOR NAME=" Sky Blue 1" SPACE="RGB" R="114" G="159" B="207" />
+        <COLOR NAME=" Sky Blue 2" SPACE="RGB" R="52" G="101" B="164" />
+        <COLOR NAME=" Sky Blue 3" SPACE="RGB" R="32" G="74" B="135" />
+        <COLOR NAME=" Yellow 1" SPACE="RGB" R="255" G="243" B="162" />
+        <COLOR NAME=" Yellow 2" SPACE="RGB" R="237" G="216" B="18" />
+        <COLOR NAME=" Yellow 3" SPACE="RGB" R="176" G="154" B="17" />
+        <COLOR NAME=" Yellow 4" SPACE="RGB" R="78" G="73" B="23" />
+        <COLOR NAME="%VAR_color1%" SPACE="RGB" R="152" G="200" B="7" />
+        <COLOR NAME="Black" SPACE="CMYK" C="0" M="0" Y="0" K="100" />
+        <COLOR NAME="Blue" SPACE="RGB" R="0" G="0" B="255" />
+        <COLOR NAME="Blue1" SPACE="RGB" R="67" G="116" B="183" />
+        <COLOR NAME="Cool Black" SPACE="CMYK" C="60" M="0" Y="0" K="100" />
+        <COLOR NAME="Cyan" SPACE="CMYK" C="100" M="0" Y="0" K="0" />
+        <COLOR NAME="Green" SPACE="RGB" R="0" G="255" B="0" />
+        <COLOR NAME="Magenta" SPACE="CMYK" C="0" M="100" Y="0" K="0" />
+        <COLOR NAME="Orange1" SPACE="RGB" R="206" G="92" B="0" />
+        <COLOR NAME="Red" SPACE="RGB" R="255" G="0" B="0" />
+        <COLOR NAME="Registration" SPACE="CMYK" C="100" M="100" Y="100" K="100" Register="1" />
+        <COLOR NAME="Rich Black" SPACE="CMYK" C="60" M="40" Y="40" K="100" />
+        <COLOR NAME="Warm Black" SPACE="CMYK" C="0" M="60" Y="29.8039215686275" K="100" />
+        <COLOR NAME="White" SPACE="CMYK" C="0" M="0" Y="0" K="0" />
+        <COLOR NAME="Yellow" SPACE="CMYK" C="0" M="0" Y="100" K="0" />
         <HYPHEN />
         <STYLE NAME="Default Paragraph Style" DefaultStyle="1" ALIGN="0" LINESPMode="0" LINESP="15" INDENT="0" RMARGIN="0" FIRST="0" VOR="0" NACH="0" ParagraphEffectOffset="0" DROP="0" DROPLIN="2" Bullet="0" Numeration="0" BCOLOR="None" BSHADE="100" />
         <CHARSTYLE CNAME="Default Character Style" DefaultStyle="1" FONT="Arial Regular" FONTSIZE="12" FEATURES="inherit" FCOLOR="Black" FSHADE="100" SCOLOR="Black" BGCOLOR="None" BGSHADE="100" SSHADE="100" TXTSHX="5" TXTSHY="-5" TXTOUT="1" TXTULP="-0.1" TXTULW="-0.1" TXTSTP="-0.1" TXTSTW="-0.1" SCALEH="100" SCALEV="100" BASEO="0" KERN="0" LANGUAGE="en_GB" />
@@ -120,7 +122,7 @@
             </TableBorderBottom>
         </CellStyle>
         <LAYERS NUMMER="0" LEVEL="0" NAME="Fond de page" SICHTBAR="1" DRUCKEN="1" EDIT="1" SELECT="0" FLOW="1" TRANS="1" BLEND="0" OUTL="0" LAYERC="#000000" />
-        <Printer firstUse="1" toFile="1" useAltPrintCommand="1" outputSeparations="1" useSpotColors="0" useColor="1" mirrorH="0" mirrorV="1" useICC="0" doGCR="1" doClip="1" setDevParam="1" useDocBleeds="1" cropMarks="1" bleedMarks="0" registrationMarks="0" colorMarks="0" includePDFMarks="1" PSLevel="3" PDLanguage="3" markLength="-1.03214308541984e-309" markOffset="2.47032822920623e-322" BleedTop="0" BleedLeft="0" BleedRight="0" BleedBottom="0" printer="" filename="" separationName="" printerCommand="" />
+        <Printer firstUse="1" toFile="0" useAltPrintCommand="0" outputSeparations="0" useSpotColors="1" useColor="1" mirrorH="0" mirrorV="0" useICC="0" doGCR="0" doClip="0" setDevParam="0" useDocBleeds="1" cropMarks="0" bleedMarks="0" registrationMarks="0" colorMarks="0" includePDFMarks="1" PSLevel="3" PrintEngine="3" markLength="20" markOffset="0" BleedTop="0" BleedLeft="0" BleedRight="0" BleedBottom="0" printer="File" filename="" separationName="All" printerCommand="" />
         <PDF firstUse="1" Thumbnails="0" Articles="0" Bookmarks="0" Compress="1" CMethod="0" Quality="0" EmbedPDF="0" MirrorH="0" MirrorV="0" Clip="0" rangeSel="0" rangeTxt="" RotateDeg="0" PresentMode="0" RecalcPic="0" FontEmbedding="0" Grayscale="0" RGBMode="1" UseProfiles="0" UseProfiles2="0" Binding="0" PicRes="300" Resolution="300" Version="14" Intent="1" Intent2="0" SolidP="sRGB IEC61966-2.1" ImageP="sRGB IEC61966-2.1" PrintP="Fogra27L CMYK Coated Press" InfoString="" BTop="0" BLeft="0" BRight="0" BBottom="0" useDocBleeds="0" cropMarks="0" bleedMarks="0" registrationMarks="0" colorMarks="0" docInfoMarks="0" markLength="20.0012598425197" markOffset="0" ImagePr="0" PassOwner="" PassUser="" Permissions="-4" Encrypt="0" UseLayers="0" UseLpi="0" UseSpotColors="1" doMultiFile="0" displayBookmarks="0" displayFullscreen="0" displayLayers="0" displayThumbs="0" hideMenuBar="0" hideToolBar="0" fitWindow="0" openAfterExport="0" PageLayout="0" openAction="">
             <LPI Color="" Frequency="0" Angle="0" SpotFunction="0" />
             <LPI Color="Black" Frequency="133" Angle="45" SpotFunction="3" />
@@ -133,7 +135,6 @@
         <NotesStyles>
             <notesStyle Name="Default" Start="1" Endnotes="0" Type="Type_1_2_3" Range="0" Prefix="" Suffix=")" AutoHeight="1" AutoWidth="1" AutoRemove="1" AutoWeld="1" SuperNote="1" SuperMaster="1" MarksStyle="" NotesStyle="" />
         </NotesStyles>
-        <NotesFrames />
         <PageSets>
             <Set Name="Single Page" FirstPage="0" Rows="1" Columns="1" />
             <Set Name="Double Sided" FirstPage="0" Rows="1" Columns="2">
@@ -159,45 +160,45 @@
         <MASTERPAGE PAGEXPOS="100.00062992126" PAGEYPOS="20.0012598425197" PAGEWIDTH="595.275590551181" PAGEHEIGHT="841.889763779528" BORDERLEFT="40" BORDERRIGHT="40" BORDERTOP="40" BORDERBOTTOM="40" NUM="1" NAM="Normal droite" MNAM="" Size="A4" Orientation="0" LEFT="0" PRESET="0" VerticalGuides="" HorizontalGuides="" AGhorizontalAutoGap="0" AGverticalAutoGap="0" AGhorizontalAutoCount="0" AGverticalAutoCount="0" AGhorizontalAutoRefer="0" AGverticalAutoRefer="0" AGSelection="0 0 0 0" pageEffectDuration="1" pageViewDuration="1" effectType="0" Dm="0" M="0" Di="0" />
         <PAGE PAGEXPOS="100.00062992126" PAGEYPOS="20.0012598425197" PAGEWIDTH="595.275590551181" PAGEHEIGHT="841.889763779528" BORDERLEFT="40" BORDERRIGHT="40" BORDERTOP="40" BORDERBOTTOM="40" NUM="0" NAM="" MNAM="Normal droite" Size="A4" Orientation="0" LEFT="0" PRESET="0" VerticalGuides="" HorizontalGuides="" AGhorizontalAutoGap="0" AGverticalAutoGap="0" AGhorizontalAutoCount="0" AGverticalAutoCount="0" AGhorizontalAutoRefer="0" AGverticalAutoRefer="0" AGSelection="0 0 0 0" pageEffectDuration="1" pageViewDuration="1" effectType="0" Dm="0" M="0" Di="0" />
         <PAGE PAGEXPOS="695.276220472441" PAGEYPOS="20.0012598425197" PAGEWIDTH="595.275590551181" PAGEHEIGHT="841.889763779528" BORDERLEFT="40" BORDERRIGHT="40" BORDERTOP="40" BORDERBOTTOM="40" NUM="1" NAM="" MNAM="Normal gauche" Size="A4" Orientation="0" LEFT="0" PRESET="0" VerticalGuides="" HorizontalGuides="" AGhorizontalAutoGap="0" AGverticalAutoGap="0" AGhorizontalAutoCount="0" AGverticalAutoCount="0" AGhorizontalAutoRefer="0" AGverticalAutoRefer="0" AGSelection="0 0 0 0" pageEffectDuration="1" pageViewDuration="1" effectType="0" Dm="0" M="0" Di="0" />
-        <PAGEOBJECT XPOS="259.5" YPOS="84" OwnPage="0" ItemID="103998032" PTYPE="4" WIDTH="211.5" HEIGHT="39" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L211.5 0 L211.5 39 L0 39 L0 0 Z" copath="M0 0 L211.5 0 L211.5 39 L0 39 L0 0 Z" gXpos="259.5" gYpos="84" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+        <PAGEOBJECT XPOS="165.5" YPOS="157.5" OwnPage="0" ItemID="1593693788" PTYPE="12" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" ANNAME="Group6" groupWidth="213" groupHeight="273" groupClips="1" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="165.5" gYpos="157.5" gWidth="0" gHeight="0" LAYER="0">
+            <PAGEOBJECT XPOS="165.5" YPOS="157.5" OwnPage="0" ItemID="1586167580" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" ANNAME="TextBack2" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+                <StoryText>
+                    <DefaultStyle FONT="%VAR font% Regular" />
+                    <ITEXT FONTSIZE="10" CH="%SG_NEXT-RECORD%" />
+                    <breakline />
+                    <ITEXT FONTSIZE="13" FCOLOR="%VAR_color1%" CH="%VAR_name%" />
+                    <para />
+                    <ITEXT FONTSIZE="12" CH="%VAR_position%" />
+                    <para />
+                    <ITEXT FONTSIZE="9" CH="%VAR_email%@company.com" />
+                    <para />
+                    <para />
+                    <para />
+                    <ITEXT FONTSIZE="10" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
+                    <trail />
+                </StoryText>
+            </PAGEOBJECT>
+            <PAGEOBJECT XPOS="173.669291338583" YPOS="162.169291338583" OwnPage="0" ItemID="1596108156" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" ANNAME="ImageFront2" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="../../ScribusGenerator-python3TAI/example/images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="8.16929133858301" gYpos="4.66929133858301" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="259.5" YPOS="84" OwnPage="0" ItemID="1596966844" PTYPE="4" WIDTH="211.5" HEIGHT="39" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L211.5 0 L211.5 39 L0 39 L0 0 Z" copath="M0 0 L211.5 0 L211.5 39 L0 39 L0 0 Z" gXpos="259.5" gYpos="84" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle />
                 <ITEXT FONTSIZE="30" CH="Listing" />
                 <trail ALIGN="1" />
             </StoryText>
         </PAGEOBJECT>
-        <PAGEOBJECT XPOS="166.5" YPOS="157.5" OwnPage="0" ItemID="104754672" PTYPE="12" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" ANNAME="Groupe 7" groupWidth="213" groupHeight="273" groupClips="1" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="166.5" gYpos="157.5" gWidth="0" gHeight="0" LAYER="0">
-            <PAGEOBJECT XPOS="166.5" YPOS="157.5" OwnPage="0" ItemID="103986704" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
-                <StoryText>
-                    <DefaultStyle />
-                    <breakline />
-                    <ITEXT FONTSIZE="13" FCOLOR="%VAR_color1%" CH="%VAR_name%" />
-                    <para />
-                    <ITEXT FONTSIZE="12" CH="%VAR_position%" />
-                    <para />
-                    <ITEXT FONTSIZE="9" CH="%VAR_email%@company.com" />
-                    <para />
-                    <para />
-                    <para />
-                    <ITEXT FONTSIZE="12" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
-                    <para />
-                    <ITEXT FONTSIZE="12" CH="%SG_NEXT-RECORD%" />
-                    <trail />
-                </StoryText>
-            </PAGEOBJECT>
-            <PAGEOBJECT XPOS="173.669291338583" YPOS="163.169291338583" OwnPage="0" ItemID="97635312" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="7.1692913385827" gYpos="5.6692913385827" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
-        </PAGEOBJECT>
-        <PAGEOBJECT XPOS="900" YPOS="558.583937007874" OwnPage="1" ItemID="104009360" PTYPE="4" WIDTH="204" HEIGHT="132.916062992126" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L204 0 L204 132.916 L0 132.916 L0 0 Z" copath="M0 0 L204 0 L204 132.916 L0 132.916 L0 0 Z" gXpos="900" gYpos="558.583937007874" gWidth="0" gHeight="0" ALIGN="1" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+        <PAGEOBJECT XPOS="900" YPOS="558.583937007874" OwnPage="1" ItemID="1597629308" PTYPE="4" WIDTH="204" HEIGHT="132.916062992126" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L204 0 L204 132.916 L0 132.916 L0 0 Z" copath="M0 0 L204 0 L204 132.916 L0 132.916 L0 0 Z" gXpos="900" gYpos="558.583937007874" gWidth="0" gHeight="0" ALIGN="1" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle ALIGN="1" />
                 <ITEXT CH="Some  terrible quote and a nice picture should still come here." />
                 <trail ALIGN="1" />
             </StoryText>
         </PAGEOBJECT>
-        <PAGEOBJECT XPOS="393.673228346457" YPOS="157.5" OwnPage="0" ItemID="194548432" PTYPE="12" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" ANNAME="Copie de Groupe 7" groupWidth="213" groupHeight="273" groupClips="1" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="393.673228346457" gYpos="157.5" gWidth="0" gHeight="0" LAYER="0">
-            <PAGEOBJECT XPOS="266.50062992126" YPOS="177.50125984252" OwnPage="0" ItemID="104012192" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+        <PAGEOBJECT XPOS="406.846456692913" YPOS="157.5" OwnPage="0" ItemID="1600845612" PTYPE="12" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" ANNAME="Copy of Group6" groupWidth="213" groupHeight="273" groupClips="1" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="406.846456692913" gYpos="157.5" gWidth="0" gHeight="0" LAYER="0">
+            <PAGEOBJECT XPOS="265.50062992126" YPOS="177.50125984252" OwnPage="0" ItemID="1594302412" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" ANNAME="TextBack2" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
                 <StoryText>
-                    <DefaultStyle />
+                    <DefaultStyle FONT="%VAR font% Regular" />
+                    <ITEXT FONTSIZE="10" CH="%SG_NEXT-RECORD%" />
                     <breakline />
                     <ITEXT FONTSIZE="13" FCOLOR="%VAR_color1%" CH="%VAR_name%" />
                     <para />
@@ -207,18 +208,17 @@
                     <para />
                     <para />
                     <para />
-                    <ITEXT FONTSIZE="12" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
-                    <para />
-                    <ITEXT FONTSIZE="12" CH="%SG_NEXT-RECORD%" />
+                    <ITEXT FONTSIZE="10" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
                     <trail />
                 </StoryText>
             </PAGEOBJECT>
-            <PAGEOBJECT XPOS="273.669921259843" YPOS="183.170551181103" OwnPage="0" ItemID="182502016" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="7.1692913385827" gYpos="5.6692913385827" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
+            <PAGEOBJECT XPOS="273.669921259843" YPOS="182.170551181103" OwnPage="0" ItemID="1578082604" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" ANNAME="ImageFront2" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="../../ScribusGenerator-python3TAI/example/images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="8.16929133858301" gYpos="4.66929133858301" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
         </PAGEOBJECT>
-        <PAGEOBJECT XPOS="166.5" YPOS="458.846456692913" OwnPage="0" ItemID="98612544" PTYPE="12" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" ANNAME="Copie de Groupe 7 (2)" groupWidth="213" groupHeight="273" groupClips="1" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="166.5" gYpos="458.846456692913" gWidth="0" gHeight="0" LAYER="0">
-            <PAGEOBJECT XPOS="266.50062992126" YPOS="177.50125984252" OwnPage="0" ItemID="104006528" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+        <PAGEOBJECT XPOS="165.5" YPOS="458.846456692913" OwnPage="0" ItemID="1587713884" PTYPE="12" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" ANNAME="Copy of Group6 (2)" groupWidth="213" groupHeight="273" groupClips="1" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="165.5" gYpos="458.846456692913" gWidth="0" gHeight="0" LAYER="0">
+            <PAGEOBJECT XPOS="265.50062992126" YPOS="177.50125984252" OwnPage="0" ItemID="1597133916" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" ANNAME="TextBack2" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
                 <StoryText>
-                    <DefaultStyle />
+                    <DefaultStyle FONT="%VAR font% Regular" />
+                    <ITEXT FONTSIZE="10" CH="%SG_NEXT-RECORD%" />
                     <breakline />
                     <ITEXT FONTSIZE="13" FCOLOR="%VAR_color1%" CH="%VAR_name%" />
                     <para />
@@ -228,18 +228,17 @@
                     <para />
                     <para />
                     <para />
-                    <ITEXT FONTSIZE="12" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
-                    <para />
-                    <ITEXT FONTSIZE="12" CH="%SG_NEXT-RECORD%" />
+                    <ITEXT FONTSIZE="10" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
                     <trail />
                 </StoryText>
             </PAGEOBJECT>
-            <PAGEOBJECT XPOS="273.669921259843" YPOS="183.170551181103" OwnPage="0" ItemID="100384784" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="7.1692913385827" gYpos="5.6692913385827" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
+            <PAGEOBJECT XPOS="273.669921259843" YPOS="182.170551181103" OwnPage="0" ItemID="1603614732" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" ANNAME="ImageFront2" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="../../ScribusGenerator-python3TAI/example/images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="8.16929133858301" gYpos="4.66929133858301" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
         </PAGEOBJECT>
-        <PAGEOBJECT XPOS="393.673228346457" YPOS="458.846456692913" OwnPage="0" ItemID="194146320" PTYPE="12" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" ANNAME="Copie de Groupe 7 (3)" groupWidth="213" groupHeight="273" groupClips="1" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="393.673228346457" gYpos="458.846456692913" gWidth="0" gHeight="0" LAYER="0">
-            <PAGEOBJECT XPOS="266.50062992126" YPOS="177.50125984252" OwnPage="0" ItemID="104015024" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+        <PAGEOBJECT XPOS="406.846456692913" YPOS="458.846456692913" OwnPage="0" ItemID="1571213148" PTYPE="12" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" ANNAME="Copy of Group6 (3)" groupWidth="213" groupHeight="273" groupClips="1" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="406.846456692913" gYpos="458.846456692913" gWidth="0" gHeight="0" LAYER="0">
+            <PAGEOBJECT XPOS="406.846456692913" YPOS="458.846456692913" OwnPage="0" ItemID="1594868700" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" ANNAME="TextBack2" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
                 <StoryText>
-                    <DefaultStyle />
+                    <DefaultStyle FONT="%VAR font% Regular" />
+                    <ITEXT FONTSIZE="10" CH="%SG_NEXT-RECORD%" />
                     <breakline />
                     <ITEXT FONTSIZE="13" FCOLOR="%VAR_color1%" CH="%VAR_name%" />
                     <para />
@@ -249,18 +248,17 @@
                     <para />
                     <para />
                     <para />
-                    <ITEXT FONTSIZE="12" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
-                    <para />
-                    <ITEXT FONTSIZE="12" CH="%SG_NEXT-RECORD%" />
+                    <ITEXT FONTSIZE="10" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
                     <trail />
                 </StoryText>
             </PAGEOBJECT>
-            <PAGEOBJECT XPOS="273.669921259843" YPOS="183.170551181103" OwnPage="0" ItemID="193572960" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="7.1692913385827" gYpos="5.6692913385827" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
+            <PAGEOBJECT XPOS="415.015748031496" YPOS="463.515748031496" OwnPage="0" ItemID="1574788812" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" ANNAME="ImageFront2" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="../../ScribusGenerator-python3TAI/example/images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="8.16929133858301" gYpos="4.66929133858301" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
         </PAGEOBJECT>
-        <PAGEOBJECT XPOS="783.948818897638" YPOS="223.846456692913" OwnPage="1" ItemID="193584288" PTYPE="12" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" ANNAME="Copie de Groupe 7 (4)" groupWidth="213" groupHeight="273" groupClips="1" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="188.673228346457" gYpos="223.846456692913" gWidth="0" gHeight="0" LAYER="0">
-            <PAGEOBJECT XPOS="961.776850393701" YPOS="197.50251968504" OwnPage="1" ItemID="193587120" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+        <PAGEOBJECT XPOS="769.775590551181" YPOS="134.846456692913" OwnPage="1" ItemID="1575059500" PTYPE="12" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" ANNAME="Copy of Group6 (4)" groupWidth="213" groupHeight="273" groupClips="1" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="174.5" gYpos="134.846456692913" gWidth="0" gHeight="0" LAYER="0">
+            <PAGEOBJECT XPOS="960.776850393701" YPOS="197.50251968504" OwnPage="1" ItemID="1597008444" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" ANNAME="TextBack2" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
                 <StoryText>
-                    <DefaultStyle />
+                    <DefaultStyle FONT="%VAR font% Regular" />
+                    <ITEXT FONTSIZE="10" CH="%SG_NEXT-RECORD%" />
                     <breakline />
                     <ITEXT FONTSIZE="13" FCOLOR="%VAR_color1%" CH="%VAR_name%" />
                     <para />
@@ -270,30 +268,31 @@
                     <para />
                     <para />
                     <para />
-                    <ITEXT FONTSIZE="12" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
-                    <para />
-                    <ITEXT FONTSIZE="12" CH="%SG_NEXT-RECORD%" />
+                    <ITEXT FONTSIZE="10" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
                     <trail />
                 </StoryText>
             </PAGEOBJECT>
-            <PAGEOBJECT XPOS="968.946141732284" YPOS="203.171811023623" OwnPage="1" ItemID="193575792" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="7.1692913385827" gYpos="5.6692913385827" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
+            <PAGEOBJECT XPOS="968.946141732284" YPOS="202.171811023623" OwnPage="1" ItemID="1588192812" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" ANNAME="ImageFront2" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="../../ScribusGenerator-python3TAI/example/images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="8.16929133858301" gYpos="4.66929133858301" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
         </PAGEOBJECT>
-        <PAGEOBJECT XPOS="1010.94881889764" YPOS="224.846456692913" OwnPage="1" ItemID="193578624" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
-            <StoryText>
-                <DefaultStyle />
-                <breakline />
-                <ITEXT FONTSIZE="13" FCOLOR="%VAR_color1%" CH="%VAR_name%" />
-                <para />
-                <ITEXT FONTSIZE="12" CH="%VAR_position%" />
-                <para />
-                <ITEXT FONTSIZE="9" CH="%VAR_email%@company.com" />
-                <para />
-                <para />
-                <para />
-                <ITEXT FONTSIZE="12" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
-                <trail />
-            </StoryText>
+        <PAGEOBJECT XPOS="1011.12204724409" YPOS="134.846456692913" OwnPage="1" ItemID="1593703836" PTYPE="12" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" ANNAME="Copy of Group6 (5)" groupWidth="213" groupHeight="273" groupClips="1" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="415.846456692913" gYpos="134.846456692913" gWidth="0" gHeight="0" LAYER="0">
+            <PAGEOBJECT XPOS="1102.12267716535" YPOS="478.847716535433" OwnPage="1" ItemID="1571070892" PTYPE="4" WIDTH="213" HEIGHT="273" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" ANNAME="TextBack2" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L213 0 L213 273 L0 273 L0 0 Z" copath="M0 0 L213 0 L213 273 L0 273 L0 0 Z" gXpos="0" gYpos="0" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+                <StoryText>
+                    <DefaultStyle FONT="%VAR font% Regular" />
+                    <ITEXT FONTSIZE="10" CH="%SG_NEXT-RECORD%" />
+                    <breakline />
+                    <ITEXT FONTSIZE="13" FCOLOR="%VAR_color1%" CH="%VAR_name%" />
+                    <para />
+                    <ITEXT FONTSIZE="12" CH="%VAR_position%" />
+                    <para />
+                    <ITEXT FONTSIZE="9" CH="%VAR_email%@company.com" />
+                    <para />
+                    <para />
+                    <para />
+                    <ITEXT FONTSIZE="10" CH="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut a sapien. Aliquam aliquet purus molestie dolor. Integer quis eros ut erat posuere dictum. Curabitur dignissim. Integer orci. Fusce vulputate lacus at ipsum. Quisque in libero nec mi laoreet volutpat. Aliquam eros pede, scelerisque quis, tristique cursus, placerat convallis, velit. Nam condimentum.  volutpat" />
+                    <trail />
+                </StoryText>
+            </PAGEOBJECT>
+            <PAGEOBJECT XPOS="1110.29196850394" YPOS="483.517007874016" OwnPage="1" ItemID="1594435868" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" ANNAME="ImageFront2" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="../../ScribusGenerator-python3TAI/example/images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="8.16929133858301" gYpos="4.66929133858301" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
         </PAGEOBJECT>
-        <PAGEOBJECT XPOS="1018.11811023622" YPOS="230.515748031495" OwnPage="1" ItemID="193592784" PTYPE="2" WIDTH="63" HEIGHT="60.9264566929134" RADRECT="8.50393700787402" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR2="%VAR_color1%" PLINEART="1" TEXTFLOWMODE="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="images/%VAR_logo%" PRFILE="sRGB IEC61966-2.1" IRENDER="0" HASSOFTSHADOW="1" SOFTSHADOWXOFFSET="2.83464566929134" SOFTSHADOWYOFFSET="2.83464566929134" SOFTSHADOWCOLOR="Black" SOFTSHADOWBLURRADIUS="5" SOFTSHADOWSHADE="100" SOFTSHADOWBLENDMODE="0" SOFTSHADOWOPACITY="0" SOFTSHADOWERASE="0" SOFTSHADOWOBJTRANS="0" path="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" copath="M0 8.50394 C0 3.80734 3.80734 0 8.50394 0 L54.4961 0 C59.1927 0 63 3.80734 63 8.50394 L63 52.4225 C63 57.1191 59.1927 60.9265 54.4961 60.9265 L8.50394 60.9265 C3.80734 60.9265 0 57.1191 0 52.4225 L0 8.50394 Z" gXpos="7.1692913385827" gYpos="5.6692913385827" gWidth="213" gHeight="273" LAYER="0" NEXTITEM="-1" BACKITEM="-1" />
     </DOCUMENT>
 </SCRIBUSUTF8NEW>
