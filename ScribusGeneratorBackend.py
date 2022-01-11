@@ -339,7 +339,7 @@ class ScribusGenerator:
         output = ''
 
         for item in data:
-        #e ach iteration substitutions 1 x the template, consuming required 
+        # each iteration substitutions 1 x the template, consuming required 
         # data entries per active options.
         #
         # invariant: data has been substituted up to data[index-1], and
@@ -370,15 +370,14 @@ class ScribusGenerator:
                     # Update DOCUMENT properties on first substitution
                     if index == min(records_in_document, data_count):
                         logging.debug('Generating reference content from buffer at #%s' % index)
-
-                        output_element = ET.fromstring(output)
-                        document_element = output_element.find('DOCUMENT')
+                        scribus_element= ET.fromstring(output)
+                        document_element = scribus_element.find('DOCUMENT')
                         pages_count = int(document_element.get('ANZPAGES'))
                         page_height = float(document_element.get('PAGEHEIGHT'))
                         vertical_gap = float(document_element.get('GapVertical'))
                         groups_count = int(document_element.get('GROUPC'))
-                        objects_count = len(output_element.findall('.//PAGEOBJECT'))
-                        version = str(document_element.get('DOCDATE'))
+                        objects_count = len(scribus_element.findall('.//PAGEOBJECT'))
+                        version = str(scribus_element.get('Version')) #str(document_element.get('DOCDATE'))
 
                         logging.debug('Current template has #%s page objects' % objects_count)
 
@@ -410,8 +409,9 @@ class ScribusGenerator:
 
                 # .. otherwise, write one of multiple SLA files
                 else:
+                    #logging.debug('writing one file with buffer %s' % item)
                     output_file = self.create_output_file(
-                        index, self.__dataObject.getOutputFileName(), buffer, len(str(data_count))
+                        index, self.__dataObject.getOutputFileName(), item, len(str(data_count))
                     )
 
                     self.write_sla_file(ET.fromstring(output), output_file)
@@ -423,11 +423,13 @@ class ScribusGenerator:
 
         # Clean & write single SLA file (merge-mode only)
         if merge_mode:
+            var_names_dic = dict(list(zip(self.headers,self.headers)))
+            #logging.debug('writing merged file with dic %s' % var_names_dic)
             output_file = self.create_output_file(
-                index, self.__dataObject.getOutputFileName(), [], len(str(data_count))
+                index-1, self.__dataObject.getOutputFileName(), var_names_dic, len(str(data_count))
             )
 
-            self.write_sla_file(output_element, output_file)
+            self.write_sla_file(scribus_element, output_file)
             output_files.append(output_file)
 
         return output_files
@@ -510,7 +512,7 @@ class ScribusGenerator:
 
 
     def substitute_data(self, var_names: list, data: list, template: list, keep_tabs_lf=0, clean=CONST.CLEAN_UNUSED_EMPTY_VARS):
-        # for each line of *data* array, substitute all %VAR_*var_names*% placeholders in 
+        # for each list of *data* array, substitute all %VAR_*var_names*% placeholders in 
         # *template* array with the *data* value at the same index. Return concatenated
         # substituted template.
         
@@ -520,10 +522,10 @@ class ScribusGenerator:
         
         result = ''
         index = 0
+        replacements_outdated = 1
 
         for line in template:
-            # logging.debug("replacing vars in (out of %s): %s"%(len(line), line[:30]))
-
+            
             # Skip redundant computations & preserve colors declarations
             if re.search('%VAR_|' + CONST.NEXT_RECORD, line) == None or re.search('\s*<COLOR\s+', line) != None:
                 result = result + line
@@ -531,29 +533,25 @@ class ScribusGenerator:
                 continue
 
             # Initialize data record replacements
-            if len(data) > index:
-                replaced_strings = data[index]
-            else:
-                replaced_strings = [""] * len(data)
-            replacements = dict(list(zip(
-                ['%VAR_' + header + '%' for header in var_names],
-                replaced_strings
-            )))
-
-            logging.debug('Replacements used: %s' % replacements)
-
+            if replacements_outdated:
+                if index < len(data):
+                    replaced_strings = data[index]                
+                else:
+                    replaced_strings = [""] * len(var_names)
+                logging.debug('Replacements updated: %s' % replaced_strings)
+                replacements_outdated = 0
+            
+            if index < len(data):
+                replacements = dict(list(zip(
+                    ['%VAR_' + n + '%' for n in var_names],
+                    replaced_strings
+                )))
+            
             # Look for 'NEXT_RECORD' entry
             if CONST.NEXT_RECORD in line:
                 index += 1
-
-                if index < len(data):
-                    logging.debug('Loading next record ..')
-
-                # Leave remaining variables to be cleaned when reaching last record
-                else:
-                    replacements = {'END-OF-REPLACEMENTS': 'END-OF-REPLACEMENTS'}
-                    logging.debug('Next record reached last data entry')
-
+                replacements_outdated = 1
+                
             # Replace placeholders with actual data
             #logging.debug("replacing VARS_* in %s" % line[:30].strip())
             line = self.multiple_replace(line, replacements)
@@ -662,8 +660,9 @@ class ScribusGenerator:
 
             # Version 1.5 / 1.6
             else:
-                #logging.debug("version is %s shifting object %s (#%s)" %
-                #              (version, page_object.tag, page_object.get('ItemID')))
+                logging.debug("version is %s shifting object %s (#%s)" %
+                              (version, page_object.tag, page_object.get('ItemID')))
+                logging.debug("index is %s" %(index))
 
                 # TODO: Update ID with something unlikely allocated
                 # TODO: Ensure unique ID instead of 6:, issue #101
@@ -690,7 +689,7 @@ class ScribusGenerator:
         return shifted
 
 
-    def create_output_file(self, index, filename, data, fill_count):
+    def create_output_file(self, index, filename, dico, fill_count):
         # If the User has not set an Output File Name, an internal unique file name
         # will be generated which is the index of the loop.
         result = str(index).zfill(fill_count)
@@ -717,8 +716,13 @@ class ScribusGenerator:
                 # ord(u'/'): u'_',
                 ord('*'): '_'
             }
-
-            result = self.substitute_data(self.headers, data, [filename])
+            
+            list_vars = list(dico.keys())
+            list_vars.append('COUNT')
+            list_values = list(dico.values())
+            list_values.append(result)
+            logging.debug('computing output file name from %s (count is %s)'%(filename,result))
+            result = self.substitute_data(list_vars, [list_values], [filename])
 
             # TODO: check for utf8 characters support in windows filesystem
             result = result.translate(table)
@@ -797,7 +801,7 @@ class ScribusGenerator:
                     logging.debug('Cleaning 1 empty PAGEOBJECT')
                     page.remove(page_object)
 
-        logging.info('Removed %d empty texts items' % removal_count)
+        logging.debug('Removed %d empty texts items' % removal_count)
 
         return removal_count
 

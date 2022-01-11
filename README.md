@@ -243,6 +243,8 @@ optional arguments:
                         name of the generated files, with no extension.
                         Default is a simple incremental index. Using SG variables
                         is allowed to define the name of generated documents.
+                        Use %VAR_COUNT% as a unique counter defined automatically
+                        from the data entry position.
   -o OUTDIR, --outDir OUTDIR
                         directory were generated files are stored. Default is
                         the directory of the scribus source file. outputDir
@@ -276,11 +278,11 @@ examples:
     generates Scribus files for each line of example/Business_Card.csv
     in the "/home/user/tmp" subdirectory.
 
-  ScribusGeneratorCLI.py --outName "card_%VAR_email%"  */*.sla
+  ScribusGeneratorCLI.py --outName "card-%VAR_COUNT%-%VAR_email%"  */*.sla
     generates Scribus files for each sla file in any subdirectory
     that has a csv file with a similar name in the same directory.
-    Generated files will have a name constructed from the "email" field
-    data, and are stored in their respective sla file directory.
+    Generated files will have a name constructed from the entry position
+    and "email" field, and are stored in their respective sla file directory.
 
   ScribusGeneratorCLI.py --single -c translations.csv -n doc_  lang/*.sla
     generates a single Scribus file for each sla file in the lang/ subdirectory
