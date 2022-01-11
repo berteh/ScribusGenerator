@@ -9,7 +9,7 @@ Automatic document generation for Scribus.
 For further information (manual, description, etc.) please visit:
 http://berteh.github.io/ScribusGenerator/
 
-# v3.0 (2022-01-11): port to Python3 and added features
+# v3.0.0 (2022-01-12): port to Python3 for Scribut 1.5.6+, some features (count, fill)
 # v2.0 (2015-12-02): added features (merge, range, clean, save/load)
 # v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
 
@@ -19,7 +19,7 @@ This script is the Command Line ScribusGenerator
 The MIT License
 =================
 
-Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2021 Berteh (https://github.com/berteh/)
+Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2022 Berteh (https://github.com/berteh/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -41,7 +41,7 @@ parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpForm
  Mail-Merge-like extension to Scribus.''',
                                  usage="%(prog)s [options] infiles+",
                                  epilog='''requirements
-    This program requires Python 2.7+
+    This program requires Python 3.0+
 
 examples:
 
@@ -54,11 +54,11 @@ examples:
     generates Scribus files for each line of example/Business_Card.csv
     in the "/home/user/tmp" subdirectory.
 
-  %(prog)s --outName "card_%%VAR_email%%"  */*.sla
+  %(prog)s --outName "card-%%VAR_COUNT%%-%%VAR_email%%"  */*.sla
     generates Scribus files for each sla file in any subdirectory
     that has a csv file with a similar name in the same directory.
-    Generated files will have a name constructed from the "email" field
-    data, and are stored in their respective sla file directory.
+    Generated files will have a name constructed from the entry position
+    and "email" field, and are stored in their respective sla file directory.
 
   %(prog)s --single -c translations.csv -n doc_  lang/*.sla
     generates a single Scribus file for each sla file in the lang/ subdirectory
@@ -80,7 +80,7 @@ parser.add_argument('-e', '--csvEncoding', default=CONST.CSV_ENCODING,
 # parser.add_argument('-f', '--fast', '--noPdf', action='store_true', default=False, # commented utile Scribus allows pdf generation from command line
 #    help='no PDF generation, scribus SLA only (much faster)')
 parser.add_argument('-n', '--outName', default=CONST.EMPTY,
-                    help='name of the generated files, with no extension. Default is a simple incremental index. Using SG variables is allowed to define the name of generated documents.')
+                    help='name of the generated files, with no extension. Default is a simple incremental index. Using SG variables is allowed to define the name of generated documents. Use %VAR_COUNT% as a unique counter defined automatically from the data entry position.')
 parser.add_argument('-o', '--outDir', default=None,
                     help='directory were generated files are stored. Default is the directory of the scribus source file. outputDir will be created if it does not exist.')
 # parser.add_argument('-p', '--pdfOnly', '--noSla', action='store_true', default=False, # for pdf from CLI

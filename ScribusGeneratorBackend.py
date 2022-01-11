@@ -8,7 +8,10 @@ Automatic document generation for Scribus.
 For further information (manual, description, etc.) please visit:
 http://berteh.github.io/ScribusGenerator/
 
-# v2.9.1 (2021-01-22): update port to Python3 for Scribut 1.5.6+, various DOC update
+# v3.0.0 (2022-01-12): port to Python3 for Scribut 1.5.6+, some features (count, fill)
+# v2.0 (2015-12-02): added features (merge, range, clean, save/load)
+# v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
+
 
 This script is the ScribusGenerator Engine
 

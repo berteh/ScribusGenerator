@@ -28,9 +28,12 @@ A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces t
 How to install Scribus Generator ?
 -------
 
-For Scribus 1.4.x to 1.5.5: [Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine in a folder your user can write to. **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
+For Scribus 1.5.6+: [download the latest (Python3) ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/python3.zip) version. A few added features and syntactic updates for the more recent Python3 engine.
 
-For Scribus 1.5.6+, please [download the Python3 ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/python3.zip) version. No features added, just a few syntactic updates for the more recent Python3 engine.
+For Scribus 1.4.x to 1.5.5: [Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the archive script. It is still supported against bugs but no new features will be added.
+
+Uncompress the script anywhere on the local machine in a folder your user can write to. **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
+
 
 
 ### MacOSX issues
@@ -84,7 +87,7 @@ In the script dialog you can configure the input and output settings for **Scrib
 | Output Setting | explanation |
 | ---- | ---- |
 | **Output Directory** | Choose the path to an existing directory where to save the result. Click ⏏ to open a file explorer. |
-| **Output File Name** | You can use the same variables as defined in the Scribus File/Data File. You can also mix the variables with other characters. If you leave the field empty an index will be used. The index/resulting files will be sorted according to the occurrence of rows in the Data File. |
+| **Output File Name** | You can use the same variables as defined in the Scribus File/Data File. You can also use variables and the dedicated ``%VAR_COUNT%`` index reflecting the row position in the Data File. It is used by default if you leave the field empty.|
 | **Save Settings** | Store the current Scribus Generator settings in the source SLA file, for future use. |
 | **Merge in Single File** | Select to  generate a single output (SLA and/or PDF) file that combines all data rows. |
 | **Output Format** | Choose the Output Format of the generated files, either PDF or Scribus. |
