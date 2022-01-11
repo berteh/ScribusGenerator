@@ -16,7 +16,8 @@ This script is the ScribusGenerator Engine
 The MIT License
 =================
 
-Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2021 Berteh (https://github.com/berteh/)
+Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2022
+ Berteh (https://github.com/berteh/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -71,7 +72,7 @@ class ScribusGenerator:
     # The Generator Module has all the logic and will do all the work
     def __init__(self, dataObject):
         self.__dataObject = dataObject
-
+        
         logging.config.fileConfig(os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'logging.conf'
         ))
@@ -338,6 +339,9 @@ class ScribusGenerator:
         output = ''
 
         for item in data:
+        #e ach iteration substitutions 1 x the template, consuming required 
+        # data entries per active options.
+        #
         # invariant: data has been substituted up to data[index-1], and
         # SLA code is stored accordingly in output,
         # SLA files have been generated up to index-1 entry as per generation
@@ -353,14 +357,14 @@ class ScribusGenerator:
                 logging.debug(
                     'Substitute, with data entry index being %s' % index
                 )
-
+                
                 # Generate output
-                output = self.substitute_data(
+                output = self.substitute_data(self.headers,
                     self.encode_scribus_xml(buffer),
                     ET.tostring(template_element, method='xml').decode().split('\n'),
                     CONST.KEEP_TAB_LINEBREAK
                 )
-
+                
                 # Check if merge-mode is selected ..
                 if merge_mode:
                     # Update DOCUMENT properties on first substitution
@@ -505,14 +509,19 @@ class ScribusGenerator:
         return result
 
 
-    def substitute_data(self, data: list, lines: list, keep_tabs_lf=0, clean=CONST.CLEAN_UNUSED_EMPTY_VARS):
-        result = ''
-
+    def substitute_data(self, var_names: list, data: list, template: list, keep_tabs_lf=0, clean=CONST.CLEAN_UNUSED_EMPTY_VARS):
+        # for each line of *data* array, substitute all %VAR_*var_names*% placeholders in 
+        # *template* array with the *data* value at the same index. Return concatenated
+        # substituted template.
+        
         # done in string instead of XML for lack of efficient
         # attribute-value-based substring-search in ElementTree
+        # but that makes NEXT-RECORD token position in XML critical.
+        
+        result = ''
         index = 0
 
-        for line in lines:
+        for line in template:
             # logging.debug("replacing vars in (out of %s): %s"%(len(line), line[:30]))
 
             # Skip redundant computations & preserve colors declarations
@@ -527,7 +536,7 @@ class ScribusGenerator:
             else:
                 replaced_strings = [""] * len(data)
             replacements = dict(list(zip(
-                ['%VAR_' + header + '%' for header in self.headers],
+                ['%VAR_' + header + '%' for header in var_names],
                 replaced_strings
             )))
 
@@ -709,10 +718,9 @@ class ScribusGenerator:
                 ord('*'): '_'
             }
 
-            result = self.substitute_data(data, [filename])
+            result = self.substitute_data(self.headers, data, [filename])
 
-            # TODO: ??
-            # result = result
+            # TODO: check for utf8 characters support in windows filesystem
             result = result.translate(table)
             logging.debug('output file name is %s' % result)
 
