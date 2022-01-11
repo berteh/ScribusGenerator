@@ -214,8 +214,9 @@ class ScribusGenerator:
         if extension == '.csv':
             # .. from CSV file
             data = self.load_csv(data_file)
+            logging.debug(data)
 
-            if len(data) <= 1:
+            if len(data) < 1:
                 logging.error(
                     'Data file %s has only one line or is empty. ' +
                     'At least a header line and a line of data is needed. Halting.' % (
@@ -353,7 +354,6 @@ class ScribusGenerator:
                     'Substitute, with data entry index being %s' % index
                 )
 
-                print(buffer)
                 # Generate output
                 output = self.substitute_data(
                     self.encode_scribus_xml(buffer),
@@ -370,10 +370,11 @@ class ScribusGenerator:
                         output_element = ET.fromstring(output)
                         document_element = output_element.find('DOCUMENT')
                         pages_count = int(document_element.get('ANZPAGES'))
-                        page_height = float(document_element.get('page_height'))
+                        page_height = float(document_element.get('PAGEHEIGHT'))
                         vertical_gap = float(document_element.get('GapVertical'))
                         groups_count = int(document_element.get('GROUPC'))
                         objects_count = len(output_element.findall('.//PAGEOBJECT'))
+                        version = str(document_element.get('DOCDATE'))
 
                         logging.debug('Current template has #%s page objects' % objects_count)
 
@@ -400,7 +401,8 @@ class ScribusGenerator:
                         version
                     )
 
-                    document_element.extend(shifted_elements)
+                    if index > records_in_document:
+                        document_element.extend(shifted_elements)
 
                 # .. otherwise, write one of multiple SLA files
                 else:
@@ -417,6 +419,10 @@ class ScribusGenerator:
 
         # Clean & write single SLA file (merge-mode only)
         if merge_mode:
+            output_file = self.create_output_file(
+                index, self.__dataObject.getOutputFileName(), [], len(str(data_count))
+            )
+
             self.write_sla_file(output_element, output_file)
             output_files.append(output_file)
 
@@ -516,9 +522,13 @@ class ScribusGenerator:
                 continue
 
             # Initialize data record replacements
+            if len(data) > index:
+                replaced_strings = data[index]
+            else:
+                replaced_strings = [""] * len(data)
             replacements = dict(list(zip(
                 ['%VAR_' + header + '%' for header in self.headers],
-                data[index]
+                replaced_strings
             )))
 
             logging.debug('Replacements used: %s' % replacements)
