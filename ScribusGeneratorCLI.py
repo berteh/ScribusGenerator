@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 
@@ -9,6 +9,7 @@ Automatic document generation for Scribus.
 For further information (manual, description, etc.) please visit:
 http://berteh.github.io/ScribusGenerator/
 
+# v3.0 (2022-01-11): port to Python3 and added features
 # v2.0 (2015-12-02): added features (merge, range, clean, save/load)
 # v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
 

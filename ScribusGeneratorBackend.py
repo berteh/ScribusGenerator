@@ -60,10 +60,12 @@ class CONST:
     REMOVE_CLEANED_ELEMENT_PREFIX = 1
     # set to 0 to replace all tabs and linebreaks in csv data by simple spaces.
     KEEP_TAB_LINEBREAK = 1
-    SG_VERSION = '2.9.2 python3'
+    SG_VERSION = '3.0.0 python3'
     # set to any word you'd like to use to trigger a jump to the next data record. using a name similar to the variables %VAR_ ... % will ensure it is cleaned after generation, and not show in the final document(s).
     NEXT_RECORD = '%SG_NEXT-RECORD%'
-
+    OUTPUTCOUNT_VAR = 'COUNT'
+    # set to the minimum amount of numbers you want to force in the output files name counter. 3 leads to 001,002,...; default is 1, 
+    OUTPUTCOUNT_FILL = 1
 
 class ScribusGenerator:
     # Column headers (= keys of each data record)
@@ -692,7 +694,7 @@ class ScribusGenerator:
     def create_output_file(self, index, filename, dico, fill_count):
         # If the User has not set an Output File Name, an internal unique file name
         # will be generated which is the index of the loop.
-        result = str(index).zfill(fill_count)
+        result = str(index).zfill(max(fill_count, CONST.OUTPUTCOUNT_FILL))
 
         # Following characters are not allowed for File-Names on WINDOWS: < > ? " : | \ / *
         # Note / is still allowed in filename as it allows dynamic subdirectory in Linux (issue 102);
@@ -718,7 +720,7 @@ class ScribusGenerator:
             }
             
             list_vars = list(dico.keys())
-            list_vars.append('COUNT')
+            list_vars.append(CONST.OUTPUTCOUNT_VAR)
             list_values = list(dico.values())
             list_values.append(result)
             logging.debug('computing output file name from %s (count is %s)'%(filename,result))
