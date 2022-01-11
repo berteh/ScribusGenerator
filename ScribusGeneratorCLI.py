@@ -46,7 +46,7 @@ examples:
 
   %(prog)s my-template.sla
     generates Scribus (SLA) files for each line of 'my-template.csv'
-    by subsituting the provides values into 'my-template.sla' to the
+    by substituting the provides values into 'my-template.sla' to the 
     current directory.
 
   %(prog)s --outDir "/home/user/tmp" example/Business_Card.sla

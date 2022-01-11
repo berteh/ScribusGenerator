@@ -55,7 +55,7 @@ class CONST:
     STORAGE_NAME = "ScribusGeneratorDefaultSettings"
     # set to 0 to prevent removal of un-subsituted variables, along with their empty containing itext
     CLEAN_UNUSED_EMPTY_VARS = 1
-    # set to 0 to keep the separating element before an unused/empty variable, typicaly a linefeed (<para>) or list syntax token (,;-.)
+    # set to 0 to keep the separating element before an unused/empty variable, typically a linefeed (<para>) or list syntax token (,;-.)
     REMOVE_CLEANED_ELEMENT_PREFIX = 1
     # set to 0 to replace all tabs and linebreaks in csv data by simple spaces.
     KEEP_TAB_LINEBREAK = 1
@@ -337,7 +337,7 @@ class ScribusGenerator:
         output = ''
 
         for item in data:
-        # invariant: data has been substituded up to data[index-1], and
+        # invariant: data has been substituted up to data[index-1], and
         # SLA code is stored accordingly in output,
         # SLA files have been generated up to index-1 entry as per generation
         # options and number of records consumed by the source template.
@@ -710,7 +710,7 @@ class ScribusGenerator:
 
 
     def write_sla_file(self, sla_element, output_file, clean=CONST.CLEAN_UNUSED_EMPTY_VARS, sla_indent=CONST.INDENT_SLA):
-        # write SLA to filepath computed from given elements, optionnaly cleaning empty ITEXT elements and their empty PAGEOBJECTS
+        # write SLA to filepath computed from given elements, optionally cleaning empty ITEXT elements and their empty PAGEOBJECTS
         sla_file = self.build_file_path(
             self.__dataObject.getOutputDirectory(), output_file, CONST.FILE_EXTENSION_SCRIBUS
         )
@@ -863,7 +863,7 @@ class ScribusGenerator:
 
 
 class GeneratorDataObject:
-    # Data Object for transfering the settings made by the user on the UI / CLI
+    # Data Object for transferring the settings made by the user on the UI / CLI
     def __init__(self,
         scribusSourceFile=CONST.EMPTY,
         dataSourceFile=CONST.EMPTY,
