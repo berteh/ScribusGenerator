@@ -172,9 +172,9 @@ Dynamic output file location
 -----------
 [**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) allows you to customize the name (and location) of the generated document easily. Add the output file name you wish in your data, and use the corresponding variable (or combination of multiple variables) in the field "Output File Name". Kindly note this file name is always relative to the output directory, and has *no extension*.
 
-A dedicated variable ``%VAR_COUNT%`` can be used anywhere in the file output option that will be substituted with the position of the related data entry in the data file. Force that count figure to have a specific length by setting the ``OUTPUTCOUNT_FILL`` accordingly (only in [Scribus 1.5.6+ version]https://github.com/berteh/ScribusGenerator/blob/python3/ScribusGeneratorBackend.py#L68))
+A dedicated variable ``%VAR_COUNT%`` can be used anywhere in the file output option that will be substituted with the position of the related data entry in the data file. Force that count figure to have a specific length by setting the ``OUTPUTCOUNT_FILL`` accordingly (only in [Scribus 1.5.6+ version](https://github.com/berteh/ScribusGenerator/blob/python3/ScribusGeneratorBackend.py#L68))
 
-Have a look at the combination of values of ``parent`` and ``outfile`` in our [example dataset](https://github.com/berteh/ScribusGenerator/blob/master/example/DynamicOutFile.csv) and related [example template](https://github.com/berteh/ScribusGenerator/blob/master/example/DynamicOutFile.csv)..
+Have a look at the combination of values of ``parent`` and ``outfile`` in our [example dataset](https://github.com/berteh/ScribusGenerator/blob/master/example/DynamicOutFile.csv) and related [example template](https://github.com/berteh/ScribusGenerator/blob/master/example/DynamicOutFile.csv).
 
 ![Illustration: Name your generated documents as like](pic/DynamicOutFile.png)
 
