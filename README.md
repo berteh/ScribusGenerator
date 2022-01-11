@@ -1,16 +1,16 @@
 ScribusGenerator
 ================
 
-Mail-Merge-like extension to Scribus, to generate Scribus and pdf documents automatically from external data (spreadsheet, database and more).
+Template and Mail-Merge-like engine, to generate beautilful documents automatically from your spreadsheet content, in PDF of Scribus OpenSource PAO format.
 
 [<img alt="Scribus Generator. Generate beautiful documents from data." src="https://github.com/berteh/ScribusGenerator/raw/master/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source high-quality pdf template and mail-merge alternative. Your imagination is the limit for creating beautiful yearbooks, personalised weedings invitations, game cards decks, clubs rosters, art or work portfolio and [many more](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates).
 
 What is Scribus Generator?
 -------
 
-[Scribus](http://www.scribus.net/) comes with a broad set of page layout features and functionality. One feature missing is to replace text with data dynamically. This kind of feature you may already know as the typical __mail merge__ functionality in your preferred office application.
+[**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) turns any beautiful document into a template to create an original set based on your data, on top of the [Scribus](http://www.scribus.net/) opensource PAO studio. Use it to create Cards Decks, Business Cards, personalized Letters, Leaflets... Just like Mail Merge in your preferred office application, but beautiful and flexible.
 
-[**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) provides this functionality. It allows you to:
+[**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) allows you to:
 
 - replace texts and images dynamically
 - change object colors, position, text font or size dynamically
@@ -30,7 +30,7 @@ How to install Scribus Generator ?
 
 For Scribus 1.4.x to 1.5.5: [Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the script and uncompress it anywhere on the local machine in a folder your user can write to. **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
 
-For Scribus 1.5.6+, please [download the Python3 ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/python3.zip) version. No features added, just a few syntactic updates for the more recent Python3 engine.
+For Scribus 1.5.6+, please [download the (more recent) ScribusGenerator for Python3](https://github.com/berteh/ScribusGenerator/archive/python3.zip) version. A few small features added and syntactic updates for the more recent Python3 engine.
 
 
 ### MacOSX issues
