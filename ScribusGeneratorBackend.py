@@ -273,7 +273,7 @@ class ScribusGenerator:
                     'Custom data range is: %s - %s' % (first_item, last_item)
                 )
 
-                data = data[first_item:last_item]
+                data = data[first_item - 1:last_item]
 
             else:
                 logging.debug('Full data range will be used.')
