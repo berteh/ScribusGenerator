@@ -3,7 +3,7 @@ ScribusGenerator
 
 Template and "Mail Merge"-like engine, to generate beautiful documents automatically from your spreadsheet content, in PDF or Scribus OpenSource PAO format.
 
-[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://github.com/berteh/ScribusGenerator/raw/master/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source high-quality PDF template and mail-merge alternative. Your imagination is the limit for creating beautiful yearbooks, personalised weddings invitations, game card decks, club rosters, art or work portfolio and [many more](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates).
+[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://github.com/berteh/ScribusGenerator/raw/master/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source high-quality PDF template and mail-merge alternative. Your imagination is the limit for creating beautiful yearbooks, personalised weddings invitations, game card decks, club rosters, art or work portfolios and [many more](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates).
 
 What is Scribus Generator?
 -------
@@ -14,7 +14,7 @@ What is Scribus Generator?
 
 - replace texts and images dynamically
 - change object colors, positions, font or size dynamically
-- generate separate PDF (or Scribus) files for each data entry, or a single file from all your data
+- generate separate PDF (or Scribus) files for each data record, or a single file from all your data
 - work directly in Scribus with a nice user interface, or from the command line
 - use any data source (Excel, Libre/OpenOffice, MySQL, Notepad, ...) that can export to CSV
 - and much more...
@@ -42,16 +42,16 @@ How to use ScribusGenerator
 
 ### Create your Scribus "template" file
 
-Create and design your Scribus file as any other. At the positions where you need to replace text with data, just add ``%VAR_name%`` where ``name`` is the column name your data file. Check out our [gallery of examples](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates) to see what others did. [Any existing Scribus file](https://www.scribus-templates.net/) can be used as template.
+Create and design your Scribus file as any other. At the positions where you need to replace text with data, just add ``%VAR_name%``, where ``name`` is the column name your data file. Check out our [gallery of examples](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates) to see what others did. [Any existing Scribus file](https://www.scribus-templates.net/) can be used as template.
 
 You can place the variable at any position within a Text Frame. Apply all format and styles to the variable that you wish the final text to have.
 
 ![Illustration: Scribus File for Generator](pic/SG-01.png)
 
-If you wish to generate one page for each data entry (or however many one data entry gets you), you're done, congratulations! If you would rather display many data records on a single page, simply add the text ``%SG_NEXT-RECORD%`` **before each entry except the first**: ScribusGenerator will automatically load the new data record as soon as it detects this token. For more information see the [dedicated documentation page](https://github.com/berteh/ScribusGenerator/wiki/How-to-use-%25SG_NEXT-RECORD%25).
+If you wish to generate one page for each data record (or however many pages one data record gets you), you're done, congratulations! If you would rather display many data records on a single page, simply add the text ``%SG_NEXT-RECORD%`` **before each entry except the first**: ScribusGenerator will automatically load the new data record as soon as it detects this token. For more information see the [dedicated documentation page](https://github.com/berteh/ScribusGenerator/wiki/How-to-use-%25SG_NEXT-RECORD%25).
 
 
-### Create your (CSV) data File
+### Create your (CSV) data file
 
 **ScribusGenerator** expects a CSV file (_Comma Separated Values_), which is very simple to create with a standard spreadsheet editor (such as [LibreOffice](http://www.libreoffice.org/), Excel or Google Sheets): enter the data and save/export as CSV. Just make sure your CSV file is encoded in UTF-8 to have a full character set (accents, braille, math, cyrillic, symbols, ...).
 
@@ -70,7 +70,7 @@ CSV files can easily be generated from many existing data sources (incl. enterpr
 Run the Generator Script - Settings
 ---------
 
-Run the script via the menu: ``Script > execute Script`` and launch ``ScribusGenerator.py``.
+Run the script via the menu: _«Script → Execute Script»_ and launch ``ScribusGenerator.py``.
 
 In the script dialog you can configure the input and output settings for **ScribusGenerator**.
 
@@ -102,7 +102,7 @@ Images references can also be dynamically modified with **ScribusGenerator**. Se
 
 All images supported by **Scribus** can be used. However, to work with ScribusGenerator, they must all be located in a single folder containing all images. This folder can be located anywhere on your PC. Duplicate any image in this folder and rename it ``%VAR_pic%`` (and similarly for any other variable name you would like to use, e.g. ``%VAR_pic2%, %VAR_photo%``). 
 
-Add an Image Frame anywhere in the Scribus file (_«Scribus → Insert → Insert Image Frame»_) and open the dialog for getting an image (e.g. right-click _Image Frame → Get Image..._ on selected frame). Select the required "placeholder" picture.
+Add an Image Frame anywhere in the Scribus file (_«Scribus → Insert → Insert Image Frame»_) and open the dialog for getting an image (e.g. right-click on selected frame, then _Image Frame → Get Image..._). Select the required "placeholder" picture.
 
 ![Illustration: Insert variable instead of image](pic/SG-15-1.png)
 
@@ -114,14 +114,14 @@ Importing vector images (SVG, PDF or other) as Image Frames does work in Scribus
 
 Scribus sometimes renders the included image in really low resolution, so you should check out the resolution (dpi) (and or size) or your source material. To quickly batch export SVG objects in multiple resolutions you may be interested in this [Inkscape object export script](https://github.com/berteh/svg-objects-export).
 
-There is unfortunately no way to dynamically include vector files (pdf or svg) with ScribusGenerator, because of the way Scribus imports them (from the menu _File > Import > Vector_) by converting them on-the-fly to Scribus objects. Which is great for direct editing in Scribus, but not for including external files by reference.
+There is unfortunately no way to dynamically include vector files (pdf or svg) with ScribusGenerator, because of the way Scribus imports them (from the menu _«File → Import → Vector»_) by converting them on-the-fly to Scribus objects. Which is great for direct editing in Scribus, but not for including external files by reference.
 
 Dynamic Colors
 ---------------
 
 Colors can be dynamically replaced just like text. See the [screencast video @8:31](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=512), or simply 
 
-1. edit the colors of your Scribus file (``edit > colours``) and rename the colors you want to replace with variable names (typically replace ``FromSVG#whatever`` with the now well known form ``%VAR_name%``).
+1. edit the colors of your Scribus file (_«Edit > Colors»_) and rename the colors you want to replace with variable names (typically replace ``FromSVG#whatever`` with the now well-known pattern ``%VAR_name%``).
 1. define the colors you want to use in the final document, and use their Scribus names as values in your color data field. 
 
 ![Illustration: Replace colors dynamically](pic/SG-16.png)
@@ -133,8 +133,8 @@ Dynamic Links
 
 A clickable (web)link can be inserted on nearly any scribus object in 2 steps:
 
-1. ``right-click > PDF Options``, activate ``Is PDF Annotation``
-1. ``right-click > PDF Options > Annotation Properties``, select type ``External Web-Link`` and enter the target url, where you can obviously use variables to be substituted too, as illustrated below.
+1. right-click, then _«PDF Options»_, activate ``Is PDF Annotation``
+1. right-click, then _«PDF Options → Annotation Properties»_, select type ``External Web-Link`` and enter the target url, where you can obviously use variables to be substituted too, as illustrated below.
 
 ![Illustration: Include dynamic clickable (web)links](pic/weblink_pdfannotation.png)
 
@@ -170,7 +170,7 @@ More advanced uses
 -----------
 ScribusGenerator allows more tech-savvy users to customize the generated documents even more, changing virtually any attribute of any object, such as fill or outline color of a line, text color, line thickness, object position, ... See the [screencast video @13:13](https://www.youtube.com/watch?feature=player_detailpage&v=kMsRn38TOiQ#t=793).
 
-For instance, to change the *font* of an object dynamically, add an *attribute* to it (_«right-click on object → Attributes → Add »_). The **Parameter** attribute must be set to [``SGAttribute``][1], its **name** to the [object property][2] you want to change (in this case ``FONT``) and its **value** to the desired dynamic value (typically some ``%VAR_name%``).  Your data (CSV) file should then contain the font name to use in the column of the given variable, such as "Arial Regular" or "Courier New Bold".
+For instance, to change the *font* of an object dynamically, add an *attribute* to it (right-click on object, then _«Attributes → Add»_). The **Parameter** attribute must be set to [``SGAttribute``][1], its **name** to the [object property][2] you want to change (in this case ``FONT``) and its **value** to the desired dynamic value (typically some ``%VAR_name%``).  Your data (CSV) file should then contain the font name to use in the column of the given variable, such as "Arial Regular" or "Courier New Bold".
 
 ![Illustration: Use Attributes to modify advanced object properties](pic/SG-20-new.png "Use Attributes to modify advanced object properties")
 
@@ -314,11 +314,11 @@ Kindly copy and paste the relevant (usually last) lines of your ```.scribusGener
 
 Try to use plain word characters (``A-Za-a0-9_``) for variable names, with no whitespaces or other special characters (like '&'). E.g. use ``%VAR_first_name%`` and ``%VAR_zip_code%`` instead of ``%VAR_first name%`` and ``%VAR_&zip#code%``. The columns of the data file (CSV) then would be ``first_name`` and ``zip_code``.  
 
-This is only important for variable *names* in the Scribus file and *column names* of the data file. The data FIELDS (the rows of the CVS) may of course contain ANY characters that your character set supports.
+This is only important for variable *names* in the Scribus file and *column names* of the data file. The data RECORDS (the rows of the CSV) may of course contain ANY characters that your character set supports.
 
 ### Database source
 
-To use data from a database instead a (manual) spreadsheet you can simply export the related query result to a CSV file. Some examples below for common database engines. Find out more about using external data sources in our [wiki](https://github.com/berteh/ScribusGenerator/wiki) .
+To use data from a database instead of a (manual) spreadsheet, you can simply export the respective query result to a CSV file. Some examples for common database engines are provided below. Find out more about using external data sources in our [wiki](https://github.com/berteh/ScribusGenerator/wiki) .
 
 #### MySQL:
 
