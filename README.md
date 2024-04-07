@@ -36,9 +36,11 @@ Uncompress the script anywhere on the local machine in a folder your user can wr
 
 
 
-### MacOSX issues
+### macOS
 
-We recommend running ScribusGenerator in MacOSX from the [command line](#running-scribus-generator-from-the-command-line), since the graphical interface of Scribus Generator requires Tkinter to be installed in your Python setup, which may be difficult under MacOSX.
+Since the graphical user interface of the main Scribus Generator requires Tkinter to be installed in your Python setup, and that may be difficult under macOS, there is now an alternative [ScribusGeneratorMac](/pic/mac/README.md) script that uses the Scribus Plugin API dialogs instead of Tkinter.  Though the script has "Mac" in the name it should also work on Windows and Linux systems whether or not they have Tkinter installed.
+
+You can also still use the [command line](#running-scribus-generator-from-the-command-line) version of Scribus Generator in a terminal window.
 
 How to use Scribus Generator
 ------
@@ -366,11 +368,17 @@ Check out the [related README](https://github.com/berteh/ScribusGenerator/blob/m
 
 Known Issues
 -------
-### Mac OSX troubleshooting
+### Mac OSX/macOS troubleshooting
 
-Some install of Python on Mac OSX do not ship a working Tkinter package, that is required for ScribusGenerator GUI. Either find a way to setup a compliant TCL/Tk environment, or simply use the [Scribus Generator command line interface](#running-scribus-generator-from-the-command-line).
+Some installs of Python on Mac OSX and macOS do not ship a working Tkinter package, that is required for regular ScribusGenerator GUI. Your options are to:
 
-If you would like to contribute another GUI to Scribus Generator that works in Mac OSX don't hesitate! Simply [fork, branch, code and pull a request](https://guides.github.com/activities/contributing-to-open-source/#contributing) to get your contribution reviewed !
+* Use the [ScribusGeneratorMac](/pic/mac/README.md) script, which uses the Scribus Plugin API dialogs instead of Tkinter, or
+
+* Find a way to setup a compliant TCL/Tk environment or
+
+* Simply use the [Scribus Generator command line interface](#running-scribus-generator-from-the-command-line) script.
+
+If you would like to improve the API dialog version or contribute another GUI to Scribus Generator that works on Macs don't hesitate! Simply [fork, branch, code and pull a request](https://guides.github.com/activities/contributing-to-open-source/#contributing) to get your contribution reviewed !
 
 Support
 --------
