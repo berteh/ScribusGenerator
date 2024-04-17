@@ -94,7 +94,13 @@ Additional (more technical) options can be set to tailor the automatic recording
 Run the Generator Script - Settings  (MacOS)
 ---------
 
-Since the graphical user interface of the main Scribus Generator requires Tkinter to be installed in your Python setup, and that may be difficult under macOS, there is now an alternative [ScribusGeneratorMac](/pic/mac/README.md) script that uses the Scribus Plugin API dialogs instead of Tkinter.  Though the script has "Mac" in the name it should also work on Windows and Linux systems whether or not they have Tkinter installed.
+Run the appropriate script via the menu: ``Script > execute Script`` and launch ``ScribusGeneratorMac.py``.
+
+The Mac version of the script uses the Scribus Plugin API which has support for a *very* limited GUI, so you will instead have to enter and confirm your settings in a series of dialog boxes:
+
+![Illustration: Splash Dialog](01_Splash.png)
+
+This dialog just lets you know that Scribus Generator is now running, and tells you that you will be presented with a series of dialogs collecting the needed input infos. Kindly follow the very detailed  [ScribusGeneratorMac guide](/pic/mac/README.md) for a step-by-step walktrough. Many thanks to [kmcreative](https://github.com/kmhcreative) for this nice addition to ScribusGenerator.
 
 You can also still use the [command line](#running-scribus-generator-from-the-command-line) version of Scribus Generator in a terminal window.
 
