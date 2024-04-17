@@ -3,7 +3,9 @@ ScribusGenerator
 
 Mail-Merge-like extension to Scribus, to generate Scribus and pdf documents automatically from external data (spreadsheet, database and more).
 
-[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://raw.githubusercontent.com/berteh/ScribusGenerator/default/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source high-quality pdf template and mail-merge alternative. Your imagination is the limit for creating beautiful yearbooks, personalised weedings invitations, game cards decks, clubs rosters, art or work portfolio and [many more](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates).
+[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://raw.githubusercontent.com/berteh/ScribusGenerator/default/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/).
+
+Open source high-quality pdf template and mail-merge alternative. Your imagination is the limit for creating beautiful yearbooks, personalised weedings invitations, game cards decks, clubs rosters, art or work portfolio and [many more](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates).
 
 What is Scribus Generator?
 -------
@@ -98,11 +100,11 @@ Run the appropriate script via the menu: ``Script > execute Script`` and launch 
 
 The Mac version of the script uses the Scribus Plugin API which has support for a *very* limited GUI, so you will instead have to enter and confirm your settings in a series of dialog boxes:
 
-![Illustration: Splash Dialog](01_Splash.png)
+![Illustration: Splash Dialog](pic/mac/01_Splash.png)
 
 This dialog just lets you know that Scribus Generator is now running, and tells you that you will be presented with a series of dialogs collecting the needed input infos. Kindly follow the very detailed  [ScribusGeneratorMac guide](/pic/mac/README.md) for a step-by-step walktrough. Many thanks to [kmcreative](https://github.com/kmhcreative) for this nice addition to ScribusGenerator.
 
-You can also still use the [command line](#running-scribus-generator-from-the-command-line) version of Scribus Generator in a terminal window.
+Mac users can also use the [command line](#running-scribus-generator-from-the-command-line) version of Scribus Generator, from a terminal window.
 
 
 Dynamic Images
