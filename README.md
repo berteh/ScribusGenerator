@@ -3,7 +3,7 @@ ScribusGenerator
 
 Mail-Merge-like extension to Scribus, to generate Scribus and pdf documents automatically from external data (spreadsheet, database and more).
 
-[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://github.com/berteh/ScribusGenerator/raw/master/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source high-quality pdf template and mail-merge alternative. Your imagination is the limit for creating beautiful yearbooks, personalised weedings invitations, game cards decks, clubs rosters, art or work portfolio and [many more](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates).
+[<img alt="Scribus Generator. Generate beautiful documents from data." src="https://raw.githubusercontent.com/berteh/ScribusGenerator/default/pic/ScribusGenerator_logo.png" width="60px" align="top"> Scribus Generator: Create beautiful documents with data](https://github.com/berteh/ScribusGenerator/). Open source high-quality pdf template and mail-merge alternative. Your imagination is the limit for creating beautiful yearbooks, personalised weedings invitations, game cards decks, clubs rosters, art or work portfolio and [many more](https://github.com/berteh/ScribusGenerator/wiki#gallery-of-examples--some-templates).
 
 What is Scribus Generator?
 -------
