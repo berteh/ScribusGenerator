@@ -28,19 +28,12 @@ A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces t
 How to install Scribus Generator ?
 -------
 
-For Scribus 1.5.6+: [download the latest (Python3) ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/python3.zip) version. A few added features and syntactic updates for the more recent Python3 engine.
+For recent Scribus (1.5.6+, 1.6.x,..): [download the latest ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/master.zip) version. A few added features, including GUI for MacOSX users.
 
-For Scribus 1.4.x to 1.5.5: [Download](https://github.com/berteh/ScribusGenerator/archive/master.zip) the archive script. It is still supported against bugs but no new features will be added.
+For legacy Scribus 1.4.x to 1.5.5: [Download the older ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/refs/heads/archive-python2-scribus1.5.x.zip) archived script. It is not supported any longer, but just works with older (python2-based) systems.
 
 Uncompress the script anywhere on the local machine in a folder your user can write to. **Scribus Generator** can then be started by choosing the script (``ScribusGenerator.py``) within the dialog: _«Scribus → Script → Execute Script»_, or from the [command line](#running-scribus-generator-from-the-command-line).
 
-
-
-### macOS
-
-Since the graphical user interface of the main Scribus Generator requires Tkinter to be installed in your Python setup, and that may be difficult under macOS, there is now an alternative [ScribusGeneratorMac](/pic/mac/README.md) script that uses the Scribus Plugin API dialogs instead of Tkinter.  Though the script has "Mac" in the name it should also work on Windows and Linux systems whether or not they have Tkinter installed.
-
-You can also still use the [command line](#running-scribus-generator-from-the-command-line) version of Scribus Generator in a terminal window.
 
 How to use Scribus Generator
 ------
@@ -70,7 +63,7 @@ To export well-formated CSV in UTF-8 encoding is easy as pie with OpenOffice or 
 
 CSV files can easily be generated from many existing data sources (incl. enterprise-grade ETL platforms, most databases like MySQL, PostgreSQL, SQLite3 and more, ), see our wiki page for using [other data sources](https://github.com/berteh/ScribusGenerator/wiki/Other-data-sources)
 
-Run the Generator Script - Settings
+Run the Generator Script - Settings  (Linux and Windows)
 ---------
 
 Run the script via the menu: ``Script > execute Script`` and launch ``ScribusGenerator.py``.
@@ -96,6 +89,14 @@ In the script dialog you can configure the input and output settings for **Scrib
 | **Keep Scribus Files** | Select to keep the generated Scribus Files. Otherwise they will be deleted after pdf generation. This option has no effect if you choose Scribus output format.|
 
 Additional (more technical) options can be set to tailor the automatic recording of Scribus Generators actions in your system by editing the ```logging.conf``` file. You may, for instance, want to move the location of the log file (```scribusGenerator.log``` by default) to a directory that does not need admin rights to edit in Windows  (```C:\tmp\scribusGenerator.log```), or replace file-logging with your default system logger (SysLogHandler in Linux, NTEventLogHandler on Windows). All settings (and more) are described in the [Python logging documentation](https://docs.python.org/2/howto/logging.html).
+
+
+Run the Generator Script - Settings  (MacOS)
+---------
+
+Since the graphical user interface of the main Scribus Generator requires Tkinter to be installed in your Python setup, and that may be difficult under macOS, there is now an alternative [ScribusGeneratorMac](/pic/mac/README.md) script that uses the Scribus Plugin API dialogs instead of Tkinter.  Though the script has "Mac" in the name it should also work on Windows and Linux systems whether or not they have Tkinter installed.
+
+You can also still use the [command line](#running-scribus-generator-from-the-command-line) version of Scribus Generator in a terminal window.
 
 
 Dynamic Images
@@ -373,9 +374,7 @@ Known Issues
 Some installs of Python on Mac OSX and macOS do not ship a working Tkinter package, that is required for regular ScribusGenerator GUI. Your options are to:
 
 * Use the [ScribusGeneratorMac](/pic/mac/README.md) script, which uses the Scribus Plugin API dialogs instead of Tkinter, or
-
 * Find a way to setup a compliant TCL/Tk environment or
-
 * Simply use the [Scribus Generator command line interface](#running-scribus-generator-from-the-command-line) script.
 
 If you would like to improve the API dialog version or contribute another GUI to Scribus Generator that works on Macs don't hesitate! Simply [fork, branch, code and pull a request](https://guides.github.com/activities/contributing-to-open-source/#contributing) to get your contribution reviewed !
@@ -391,7 +390,7 @@ Licence
 The MIT License<br/>
 Copyright <br/>
 (c) 2011, Ekkehard Will (www.ekkehardwill.de)<br/>
-(c) 2014-2022, Berteh (https://github.com/berteh/)
+(c) 2014-2024, Berteh (https://github.com/berteh/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
