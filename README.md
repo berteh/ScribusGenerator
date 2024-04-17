@@ -28,7 +28,7 @@ A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces t
 How to install Scribus Generator ?
 -------
 
-For recent Scribus (1.5.6+, 1.6.x,..): [download the latest ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/master.zip) version. A few added features, including GUI for MacOSX users.
+For recent Scribus (1.5.6+, 1.6.x,..): [download the latest ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/master.zip) version. A few added features, including GUI for MacOS users.
 
 For legacy Scribus 1.4.x to 1.5.5: [Download the older ScribusGenerator](https://github.com/berteh/ScribusGenerator/archive/refs/heads/archive-python2-scribus1.5.x.zip) archived script. It is not supported any longer, but just works with older (python2-based) systems.
 
