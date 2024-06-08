@@ -563,9 +563,9 @@ class ScribusGenerator:
                 
             # Replace placeholders with actual data
             logging.debug("replacing VARS_* in %s" % line[:50].strip())
-            logging.debug("  with replacements %s" % replacements)
+            #logging.debug("  with replacements %s" % replacements)
             line = self.multiple_replace(line, replacements)
-            logging.debug("replaced in line: %s" % line)
+            #logging.debug("replaced in line: %s" % line)
 
             # Remove (& trim) any (unused) %VAR_\w*% like string
             if clean:
