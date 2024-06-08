@@ -463,6 +463,7 @@ class ScribusGenerator:
 
                 attribute = sga.get('Name')
                 value = sga.get('Value')
+                #logging.debug('parsing SGAttribute with Name %s and Value %s, while reference is "%s"' % (attribute, value, reference)
 
                 try:
                     targets = page_object.findall(reference)
@@ -506,7 +507,7 @@ class ScribusGenerator:
     def encode_scribus_xml(self, data: list) -> list:
         # Encode some characters that can be found in CSV into XML entities
         # not all are needed as Scribus handles most UTF8 characters just fine.
-        replacements = {'&': '&amp;', '"': '&quot;', '<': '&lt;'} #TODO check: here may lie issue #219
+        replacements = {'&': '&amp;', '"': '&quot;', '<': '&lt;'}
 
         result = []
 
