@@ -8,6 +8,7 @@ Automatic document generation for Scribus.
 For further information (manual, description, etc.) please visit:
 http://berteh.github.io/ScribusGenerator/
 
+# v4.0 (2024-04-17): various bug fix, python3 branch made maste,  MacOS compatible GUI
 # v3.0 (2022-01-12): port to Python3 for Scribut 1.5.6+, some features (count, fill)
 # v2.0 (2015-12-02): added features (merge, range, clean, save/load)
 # v1.9 (2015-08-03): initial command-line support (SLA only, use GUI version to generate PDF)
@@ -19,8 +20,7 @@ This script is the ScribusGenerator Engine
 The MIT License
 =================
 
-Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2022
- Berteh (https://github.com/berteh/)
+Copyright (c) 2010-2014 Ekkehard Will (www.ekkehardwill.de), 2014-2024 Berteh (https://github.com/berteh/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -63,7 +63,7 @@ class CONST:
     REMOVE_CLEANED_ELEMENT_PREFIX = 1
     # set to 0 to replace all tabs and linebreaks in csv data by simple spaces.
     KEEP_TAB_LINEBREAK = 1
-    SG_VERSION = '3.0.0 python3'
+    SG_VERSION = '4.0.0'
     # set to any word you'd like to use to trigger a jump to the next data record. using a name similar to the variables %VAR_ ... % will ensure it is cleaned after generation, and not show in the final document(s).
     NEXT_RECORD = '%SG_NEXT-RECORD%'
     OUTPUTCOUNT_VAR = 'COUNT'
@@ -337,19 +337,20 @@ class ScribusGenerator:
 
         # Create list for generated files & set index for current data record
         output_files = []
-        index = 1
+        index_current = 1
+        index_first_of_batch = 1
 
         # Create buffer & output variable
         buffer = []
-        output = ''
+        output = ''        
 
         for item in data:
         # each iteration substitutions 1 x the template, consuming required 
         # data entries per active options.
         #
-        # invariant: data has been substituted up to data[index-1], and
+        # invariant: data has been substituted up to data[index_current-1], and
         # SLA code is stored accordingly in output,
-        # SLA files have been generated up to index-1 entry as per generation
+        # SLA files have been generated up to index_current-1 entry as per generation
         # options and number of records consumed by the source template.
 
             # Add values to buffer
@@ -358,23 +359,23 @@ class ScribusGenerator:
             # Check if ..
             # (1) .. done buffering data for current document OR
             # (2) .. last data record
-            if index % records_in_document == 0 or index == data_count:
+            if index_current % records_in_document == 0 or index_current == data_count:
                 logging.debug(
-                    'Substitute, with data entry index being %s' % index
+                    'Substituting buffer, with index_current being %s and index_first_of_batch %s' % (index_current, index_first_of_batch)
                 )
                 
                 # Generate output
                 output = self.substitute_data(self.headers,
                     self.encode_scribus_xml(buffer),
                     ET.tostring(template_element, method='xml').decode().split('\n'),
-                    CONST.KEEP_TAB_LINEBREAK
+                    CONST.KEEP_TAB_LINEBREAK, index_first_of_batch=index_first_of_batch
                 )
                 
                 # Check if merge-mode is selected ..
                 if merge_mode:
                     # Update DOCUMENT properties on first substitution
-                    if index == min(records_in_document, data_count):
-                        logging.debug('Generating reference content from buffer at #%s' % index)
+                    if index_current == min(records_in_document, data_count):
+                        logging.debug('Generating reference content from buffer at #%s' % index_current)
                         scribus_element= ET.fromstring(output)
                         document_element = scribus_element.find('DOCUMENT')
                         pages_count = int(document_element.get('ANZPAGES'))
@@ -395,43 +396,44 @@ class ScribusGenerator:
                         )
 
                     # Append DOCUMENT content
-                    logging.debug('Merging content from buffer up to entry index #%s' % index)
+                    logging.debug('Merging content from buffer up to entry index_current #%s' % index_current)
 
                     shifted_elements = self.shift_pages_and_objects(
                         ET.fromstring(output).find('DOCUMENT'),
                         pages_count,
                         page_height,
                         vertical_gap,
-                        index - 1,
+                        index_current - 1,
                         records_in_document,
                         groups_count,
                         objects_count,
                         version
                     )
 
-                    if index > records_in_document:
+                    if index_current > records_in_document:
                         document_element.extend(shifted_elements)
 
                 # .. otherwise, write one of multiple SLA files
                 else:
                     #logging.debug('writing one file with buffer %s' % item)
                     output_file = self.create_output_file(
-                        index, self.__dataObject.getOutputFileName(), item, len(str(data_count))
+                        index_current, self.__dataObject.getOutputFileName(), item, len(str(data_count))
                     )
 
                     self.write_sla_file(ET.fromstring(output), output_file)
                     output_files.append(output_file)
 
                 buffer = []
+                index_first_of_batch = index_current + 1
 
-            index += 1
+            index_current += 1
 
         # Clean & write single SLA file (merge-mode only)
         if merge_mode:
             var_names_dic = dict(list(zip(self.headers,self.headers)))
             #logging.debug('writing merged file with dic %s' % var_names_dic)
             output_file = self.create_output_file(
-                index-1, self.__dataObject.getOutputFileName(), var_names_dic, len(str(data_count))
+                index_current-1, self.__dataObject.getOutputFileName(), var_names_dic, len(str(data_count))
             )
 
             self.write_sla_file(scribus_element, output_file)
@@ -504,7 +506,7 @@ class ScribusGenerator:
     def encode_scribus_xml(self, data: list) -> list:
         # Encode some characters that can be found in CSV into XML entities
         # not all are needed as Scribus handles most UTF8 characters just fine.
-        replacements = {'&': '&amp;', '"': '&quot;', '<': '&lt;'}
+        replacements = {'&': '&amp;', '"': '&quot;', '<': '&lt;'} #TODO check: here may lie issue #219
 
         result = []
 
@@ -516,10 +518,10 @@ class ScribusGenerator:
         return result
 
 
-    def substitute_data(self, var_names: list, data: list, template: list, keep_tabs_lf=0, clean=CONST.CLEAN_UNUSED_EMPTY_VARS):
+    def substitute_data(self, var_names: list, data: list, template: list, keep_tabs_lf=0, clean=CONST.CLEAN_UNUSED_EMPTY_VARS, index_first_of_batch=0):
         # for each list of *data* array, substitute all %VAR_*var_names*% placeholders in 
-        # *template* array with the *data* value at the same index. Return concatenated
-        # substituted template.
+        # *template* array with the *data* value at the same index (in local data subset).
+        #  Return concatenated substituted template.
         
         # done in string instead of XML for lack of efficient
         # attribute-value-based substring-search in ElementTree
@@ -541,16 +543,18 @@ class ScribusGenerator:
             if replacements_outdated:
                 if index < len(data):
                     replaced_strings = data[index]                
-                else:
+                else: # empty remplacements after available data is consumed.
                     replaced_strings = [""] * len(var_names)
-                logging.debug('Replacements updated: %s' % replaced_strings)
-                replacements_outdated = 0
-            
-            if index < len(data):
+                
                 replacements = dict(list(zip(
                     ['%VAR_' + n + '%' for n in var_names],
                     replaced_strings
                 )))
+                replacements['%VAR_' + CONST.OUTPUTCOUNT_VAR + '%'] = str(index + index_first_of_batch)
+
+                logging.debug('Replacements updated: %s' % replacements)
+                replacements_outdated = 0
+            
             
             # Look for 'NEXT_RECORD' entry
             if CONST.NEXT_RECORD in line:
@@ -558,9 +562,10 @@ class ScribusGenerator:
                 replacements_outdated = 1
                 
             # Replace placeholders with actual data
-            #logging.debug("replacing VARS_* in %s" % line[:30].strip())
+            logging.debug("replacing VARS_* in %s" % line[:50].strip())
+            logging.debug("  with replacements %s" % replacements)
             line = self.multiple_replace(line, replacements)
-            #logging.debug("replaced in line: %s" % line)
+            logging.debug("replaced in line: %s" % line)
 
             # Remove (& trim) any (unused) %VAR_\w*% like string
             if clean:
@@ -727,7 +732,7 @@ class ScribusGenerator:
             list_values = list(dico.values())
             list_values.append(result)
             logging.debug('computing output file name from %s (count is %s)'%(filename,result))
-            result = self.substitute_data(list_vars, [list_values], [filename])
+            result = self.substitute_data(list_vars, [list_values], [filename], index_first_of_batch=index)
 
             # TODO: check for utf8 characters support in windows filesystem
             result = result.translate(table)
