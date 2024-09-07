@@ -162,7 +162,7 @@ Multiple records on a single page
 -----------
 [**Scribus Generator**](https://github.com/berteh/ScribusGenerator/) allows you to display mupliple data entries in a single document. Great to generate your own listings, team charts, game cards, who's who posters and more.
 
-Simply drop the text ``%SG_NEXT-RECORD%`` in your document _before each data entry except the first_ record, following our [example document](https://github.com/berteh/ScribusGenerator/blob/master/example/Next-Record.sla). Kindly note this token is case sensitive and must be _upper-case_. Scribus Generator will automatically load the next record as soon as it detects ``%SG_NEXT-RECORD%``, and when it reaches the end of your template.
+Simply drop the text ``%SG_NEXT-RECORD%`` in your document _before each data entry except the first_ record, following our [example document](https://github.com/berteh/ScribusGenerator/blob/master/example/Next_Record.sla). Kindly note this token is case sensitive and must be _upper-case_. Scribus Generator will automatically load the next record as soon as it detects ``%SG_NEXT-RECORD%``, and when it reaches the end of your template.
 
 A full example to generate Monsters Game Cards based on [Dungeon World](http://www.dungeon-world.com/) is available in the [MonsterCards](https://github.com/berteh/ScribusGenerator/tree/master/example/MonsterCards) directory, created by [Dustin Andrews](https://github.com/dustinandrews):
 
