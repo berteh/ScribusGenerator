@@ -628,8 +628,11 @@ class ScribusGenerator:
         groups_count,
         objects_count, version
     ):
-        vertical_offset = (float(page_height)+float(vertical_gap)) * \
-            (index // records_in_document)
+        vertical_offset = (
+            (float(page_height) + float(vertical_gap))
+            * (index // records_in_document)
+            * (pages_count // 2 if document_element.get("BOOK") == "1" else pages_count)
+        )
 
         #logging.debug("shifting to vertical_offset %s " % (vertical_offset))
 
