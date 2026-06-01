@@ -210,7 +210,7 @@ class ScribusGenerator:
         data = []
 
         # .. depending on file type
-        extension = os.path.splitext(data_file)[1]
+        extension = os.path.splitext(data_file)[1].lower()
 
         if extension == '.json':
             # .. from JSON file
