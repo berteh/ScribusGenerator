@@ -21,7 +21,7 @@ What is Scribus Generator?
 - use any data source (Excel, OpenOffice, MySQL, Notepad, ...) that can export to CSV.
 - and much more...
 
-Generally speaking, **Scribus Generator** replaces text with data to automatically generate files (e.g. SLA, PDF). It has been originally written by [Ekkehard Will](http://www.ekkehardwill.de/sg/) and further extended by [Berteh](https://github.com/berteh/).
+Generally speaking, **Scribus Generator** replaces text with data to automatically generate files (e.g. SLA, PDF). It has been originally written by Ekkehard Will and further extended by [Berteh](https://github.com/berteh/).
 
 A [short *how to* video](https://www.youtube.com/watch/kMsRn38TOiQ) introduces this Scribus Generator. 6 first minutes for the basic overview, 12 last for some more advanced features.
 
@@ -61,7 +61,7 @@ It is important to make sure the columns have the same ``name`` as the variables
 
 We recommend saving in UTF-8 encoding to enable the full set of accentuated characters, chinese, cyrillic, math symbols, arrows, braille, symbols and [many more](http://csbruce.com/software/utf-8.html). Simply copy-paste those for which you lack a keyboard combination.
 
-To export well-formated CSV in UTF-8 encoding is easy as pie with OpenOffice or LibreOffice Calc, less so with Excel. If you are using Microsoft's Excel you may be interested in this free add-in that provides good export/import features: http://www.csvio.net/
+To export well-formated CSV in UTF-8 encoding is easy as pie with OpenOffice or LibreOffice Calc, less so with Excel.
 
 CSV files can easily be generated from many existing data sources (incl. enterprise-grade ETL platforms, most databases like MySQL, PostgreSQL, SQLite3 and more, ), see our wiki page for using [other data sources](https://github.com/berteh/ScribusGenerator/wiki/Other-data-sources)
 
